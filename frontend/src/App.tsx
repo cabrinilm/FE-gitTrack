@@ -1,16 +1,19 @@
-// import { useState } from 'react'
-// import reactLogo from './assets/react.svg'
-// import viteLogo from '/vite.svg'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import './App.css'
+import AllChallenges from '@/pages/AllChallenges'
+import CreateChallenge from '@/pages/CreateChallenge'
+import HeatMap from '@/pages/Heatmap'
+import Home from '@/pages/Home'
 
-function App() {
+export default function App() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-neutral-900">
-      <h1 className="text-4xl font-bold text-lime-400">
-        Tailwind v4 OK 🚀
-      </h1>
-    </div>
+    <BrowserRouter>
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/create" element={<CreateChallenge />} />
+      <Route path="/challenges" element={<AllChallenges />} />
+      <Route path="/heatmap" element={<HeatMap />} />
+    </Routes>
+    </BrowserRouter>
   )
-}
-
-export default App
+};
