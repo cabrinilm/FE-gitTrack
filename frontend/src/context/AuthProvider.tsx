@@ -18,7 +18,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
 
   return (
-    <AuthContext.Provider value={/* algo */}>
+    <AuthContext.Provider value={}>
       {children}
     </AuthContext.Provider>
   )
