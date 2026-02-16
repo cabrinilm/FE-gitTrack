@@ -1,5 +1,5 @@
 
-import { createContext, useState } from "react";
+import { createContext} from "react";
 
 import type { User, Session, AuthError } from "@supabase/supabase-js";
 // type 
@@ -11,7 +11,7 @@ type AuthResponse = {
   error: AuthError | null
 };
 
-interface AuthContextValue {
+export interface AuthContextValue {
     user: User | null,
     isLoading: boolean, 
     error: string | null
