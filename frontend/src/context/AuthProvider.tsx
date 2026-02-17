@@ -1,14 +1,9 @@
 import { useState, useEffect, type ReactNode } from "react"
-import { AuthContext } from "./AuthContext"
+import { AuthContext} from "./AuthContext"
 import type { User, Session, AuthError } from "@supabase/supabase-js"
 import { supabase } from "@/lib/supabaseClient"
+import type { AuthResponse } from "./types"
 
-// Tipo do retorno das funções de autenticação
-type AuthResponse = {
-  user: User | null
-  session: Session | null
-  error: AuthError | null
-}
 
 interface AuthProviderProps {
   children: ReactNode
