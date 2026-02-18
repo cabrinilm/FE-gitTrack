@@ -9,12 +9,12 @@ export const Button = ({
   isLoading = false,
   type = "button",
   disabled = false,
-  className = "",           // default vazio para não precisar de ?? ''
+  className = "",          
 }: ButtonProps) => {
   const baseClasses = "rounded-lg font-semibold transition";
 
 const variantClasses = {
-  primary: "bg-primary hover:bg-primary/90 text-text-primary",   // hover com opacidade (funciona sem shades!)
+  primary: "bg-primary hover:bg-primary/90 text-text-primary",   
   secondary: "bg-secondary hover:bg-secondary/80 text-white",
   destructive: "bg-error hover:bg-error/90 text-white",
 }[variant];

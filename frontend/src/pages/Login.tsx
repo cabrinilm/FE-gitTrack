@@ -1,7 +1,7 @@
 // src/pages/Login.tsx   (ou src/routes/Login.tsx)
 
 import { useState } from "react";
-import { Input } from "@/components/Input/Input"; // ajuste o caminho conforme seu projeto
+import { Input } from "@/components/Input/Input"; 
 import { Button } from "@/components/Button/Button";
 
 export default function Login() {
