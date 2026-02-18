@@ -1,1 +1,44 @@
 @import "tailwindcss";
+
+
+/* Defina todas as customizações no @theme */
+@theme {
+  /* Cores simples (flat) – geram bg-background, text-background, etc. */
+  --color-background: #0B0B0F;
+  --color-surface:    #11111A;
+  --color-border:     #23233A;
+
+  /* primary como cor principal (DEFAULT) */
+  --color-primary:         #150578;   /* bg-primary, text-primary, border-primary... */
+  --color-primary-400:     #2E1BE6;   /* bg-primary-400, hover:bg-primary-400 etc. */
+  --color-primary-500:     #1E08A8;
+  --color-primary-600:     #150578;
+  --color-primary-700:     #0F035A;
+
+  /* secondary */
+  --color-secondary:       #22C55E;   /* bg-secondary */
+  --color-secondary-500:   #22C55E;
+  --color-secondary-600:   #16A34A;
+
+  /* Cores de texto – use nomes com hífen para gerar text-text-primary etc. */
+  --color-text-primary:   #F1F5F9;
+  --color-text-secondary: #94A3B8;
+  --color-text-muted:     #64748B;
+
+  /* Outras cores simples */
+  --color-success: #22C55E;
+  --color-error:   #EF4444;
+  --color-warning: #F59E0B;
+}
+
+/* Opcional: Estilos base (ex: fundo e texto padrão do body) */
+@layer base {
+  body {
+    @apply bg-background text-text-primary;
+  }
+}
+
+/* Se quiser hover mais suave sem precisar de shade específica */
+.hover\:bg-primary\/90:hover {
+  background-color: color-mix(in oklab, var(--color-primary) 90%, transparent);
+}

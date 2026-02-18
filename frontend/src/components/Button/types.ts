@@ -1,9 +1,12 @@
-import type { ReactNode } from "react";
-
 export interface ButtonProps {
-    children: ReactNode
-    onClick?: () => void
-    variant?: "primary" | "secondary" | "destructive"
-    isLoading?: boolean
-    size?: "sm" | "md" | "lg"
-};
+  children: React.ReactNode;           // ou ReactNode se já tiver o import
+  onClick?: () => void;                // ou com MouseEvent se preferir
+  variant?: "primary" | "secondary" | "destructive";
+  size?: "sm" | "md" | "lg";
+  isLoading?: boolean;
+  type?: "button" | "submit" | "reset";
+  disabled?: boolean;
+
+  // ── adicione essa linha ────────
+  className?: string;
+}

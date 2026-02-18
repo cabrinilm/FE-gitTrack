@@ -1,40 +1,44 @@
 // src/components/Button/Button.tsx
-import type { ButtonProps } from "./types"
+import type { ButtonProps } from "./types";
 
 export const Button = ({
   children,
   onClick,
   variant = "primary",
   size = "md",
-  isLoading = false
+  isLoading = false,
+  type = "button",
+  disabled = false,
+  className = "",           // default vazio para não precisar de ?? ''
 }: ButtonProps) => {
+  const baseClasses = "rounded-lg font-semibold transition";
 
+const variantClasses = {
+  primary: "bg-primary hover:bg-primary/90 text-text-primary",   // hover com opacidade (funciona sem shades!)
+  secondary: "bg-secondary hover:bg-secondary/80 text-white",
+  destructive: "bg-error hover:bg-error/90 text-white",
+};[variant];
 
-  const baseClasses = "rounded-lg font-semibold transition"
-
-
-  const variantClasses = {
-    primary: "bg-primary hover:bg-primary-400 text-text-primary",
-    secondary: "bg-secondary hover:bg-secondary-hover text-text-primary",
-    destructive: "bg-error hover:bg-error-hover text-text-primary"
-  }[variant]
 
   const sizeClasses = {
     sm: "px-3 py-2 text-sm",
     md: "px-6 py-3 text-base",
-    lg: "px-8 py-4 text-lg"
-  }[size]
+    lg: "px-8 py-4 text-lg",
+  }[size];
 
-
-  const loadingClasses = isLoading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+  const stateClasses =
+    isLoading || disabled
+      ? "opacity-60 cursor-not-allowed"
+      : "cursor-pointer hover:opacity-90 active:opacity-80";
 
   return (
     <button
+      type={type}
       onClick={onClick}
-      disabled={isLoading}
-      className={`${baseClasses} ${variantClasses} ${sizeClasses} ${loadingClasses}`}
+      disabled={isLoading || disabled}
+      className={`${baseClasses} ${variantClasses} ${sizeClasses} ${stateClasses} ${className}`}
     >
-      {isLoading ? "Loading..." : children}
+      {isLoading ? "Carregando..." : children}
     </button>
-  )
-}
+  );
+};
