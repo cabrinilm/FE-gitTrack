@@ -61,16 +61,14 @@ export default function Login() {
           />
 
 
-<Button variant="primary" size="lg" className="w-full">
-  Sign in
-</Button>
+
 
           <Button
             type="submit"
             variant="secondary"
             size="lg"
             isLoading={isLoading}
-            className="w-full bg-primary"
+            className="w-full"
           >
             Sign in
           </Button>

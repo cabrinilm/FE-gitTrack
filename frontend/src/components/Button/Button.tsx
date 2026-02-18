@@ -17,7 +17,7 @@ const variantClasses = {
   primary: "bg-primary hover:bg-primary/90 text-text-primary",   // hover com opacidade (funciona sem shades!)
   secondary: "bg-secondary hover:bg-secondary/80 text-white",
   destructive: "bg-error hover:bg-error/90 text-white",
-};[variant];
+}[variant];
 
 
   const sizeClasses = {
