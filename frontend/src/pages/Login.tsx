@@ -1,8 +1,10 @@
 // src/pages/Login.tsx   (ou src/routes/Login.tsx)
 
 import { useState } from "react";
-import { Input } from "@/components/Input/Input"; 
+import { Input } from "@/components/Input/Input";
 import { Button } from "@/components/Button/Button";
+import { useAuth } from "@/context/useAuth";
+import { useNavigate } from "react-router-dom";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -10,10 +12,13 @@ export default function Login() {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const navigate = useNavigate();
+
+  const { signIn } = useAuth();
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // simple simulation — later replaced with real fetch/axios
     if (!email || !password) {
       setError("Please fill in all fields");
       return;
@@ -22,12 +27,22 @@ export default function Login() {
     setError(null);
     setIsLoading(true);
 
-    // fake delay
-    setTimeout(() => {
+    try {
+      const response = await signIn(email, password);
+      if (response.error) {
+        // Erro: mostra mensagem no formulário
+        setError(
+          response.error.message ||
+            "Credenciais inválidas. Verifique email e senha.",
+        );
+      } else {
+        // Sucesso: redireciona para a home (ou dashboard)
+        navigate("/"); // ou '/dashboard', '/challenges', o que fizer sentido no seu app
+      }
+    } catch (err) {
+    } finally {
       setIsLoading(false);
-      // here would come the real login logic
-      alert("Simulated login successful!");
-    }, 1500);
+    }
   };
 
   return (
@@ -59,9 +74,6 @@ export default function Login() {
             required
             error={error && !password ? "Required field" : undefined}
           />
-
-
-
 
           <Button
             type="submit"
