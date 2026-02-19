@@ -10,7 +10,6 @@ export const Input = ({
   error,
   disabled = false,
   size = "md",
-  required = false,
   className = "",
   type = "text",
 }: InputProps) => {
@@ -67,7 +66,6 @@ export const Input = ({
       {label && (
         <label className="text-sm font-medium text-text-primary flex items-center gap-1">
           {label}
-          {required && <span className="text-error text-xs">*</span>}
         </label>
       )}
 
@@ -78,7 +76,6 @@ export const Input = ({
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         disabled={disabled}
-        required={required}
         className={inputClasses}
       />
 

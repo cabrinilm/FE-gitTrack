@@ -30,14 +30,15 @@ export default function Login() {
     try {
       const response = await signIn(email, password);
       if (response.error) {
-        // Erro: mostra mensagem no formulário
+      
         setError(
-          response.error.message ||
-            "Credenciais inválidas. Verifique email e senha.",
-        );
+          response.error.message
+        
+        )
+       
       } else {
-        // Sucesso: redireciona para a home (ou dashboard)
-        navigate("/"); // ou '/dashboard', '/challenges', o que fizer sentido no seu app
+        
+        navigate("/"); 
       }
     } catch (err) {
     } finally {
@@ -61,8 +62,8 @@ export default function Login() {
             value={email}
             onChange={setEmail}
             placeholder="your@email.com"
-            required
-            error={error && !email ? "Required field" : undefined}
+
+    
           />
 
           <Input
@@ -71,9 +72,13 @@ export default function Login() {
             value={password}
             onChange={setPassword}
             placeholder="••••••••"
-            required
-            error={error && !password ? "Required field" : undefined}
+         
+        
           />
+
+          {error && (
+            <p className="text-error text-sm text-center mt-2">{error}</p>
+          )}
 
           <Button
             type="submit"
