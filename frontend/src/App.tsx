@@ -6,6 +6,7 @@ import HeatMap from '@/pages/Heatmap'
 import Home from '@/pages/Home'
 import { AuthProvider } from '@/context/AuthProvider'
 import Login from '@/pages/Login'
+import { ProtectedRoute } from './components/ProtectedRoute/ProtectedRoute'
 
 export default function App() {
   return (
@@ -13,11 +14,12 @@ export default function App() {
      <AuthProvider>
     <Routes>
       <Route path="/login" element={<Login/>} />
+      <Route element={<ProtectedRoute />}>
       <Route path="/" element={<Home />} />
       <Route path="/create" element={<CreateChallenge />} />
       <Route path="/challenges" element={<AllChallenges />} />
       <Route path="/heatmap" element={<HeatMap />} />
-   
+   </Route>
     </Routes>
     </AuthProvider>
     </BrowserRouter>
