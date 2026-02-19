@@ -30,18 +30,12 @@ export default function Login() {
     try {
       const response = await signIn(email, password);
       if (response.error) {
-      
-        setError(
-          response.error.message
-        
-        )
-       
+        setError(response.error.message);
       } else {
-        
-        navigate("/"); 
+        navigate("/");
       }
-    } catch (err) {
-    } finally {
+    } 
+     finally {
       setIsLoading(false);
     }
   };
@@ -62,8 +56,6 @@ export default function Login() {
             value={email}
             onChange={setEmail}
             placeholder="your@email.com"
-
-    
           />
 
           <Input
@@ -72,8 +64,6 @@ export default function Login() {
             value={password}
             onChange={setPassword}
             placeholder="••••••••"
-         
-        
           />
 
           {error && (
@@ -93,11 +83,11 @@ export default function Login() {
 
         {/* Links below */}
         <div className="mt-6 text-center text-sm text-text-secondary">
-          <a href="#" className="text-primary hover:underline">
+          <a href="#" className="text-primary-400 hover:underline">
             Forgot password?
           </a>
           <span className="mx-3">•</span>
-          <a href="/signup" className="text-primary hover:underline">
+          <a href="/signup" className="text-primary-400 hover:underline">
             Create account
           </a>
         </div>

@@ -38,7 +38,7 @@ const variantClasses = {
       disabled={isLoading || disabled}
       className={`${baseClasses} ${variantClasses} ${sizeClasses} ${stateClasses} ${className}`}
     >
-      {isLoading ? "Carregando..." : children}
+      {isLoading ? "Loading..." : children}
     </button>
   );
 };
