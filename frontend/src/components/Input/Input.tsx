@@ -1,5 +1,3 @@
-// src/components/Input/InputForm.tsx  (ou Input.tsx, você decide o nome)
-
 import type { InputProps } from "./types";
 
 export const Input = ({
