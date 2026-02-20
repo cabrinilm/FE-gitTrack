@@ -1,17 +1,23 @@
 import { useAuth } from "@/context/useAuth";
 import type { SignupFormProps } from "./type";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Input } from "../Input/Input";
 import { Button } from "../Button/Button";
 import { useNavigate } from "react-router-dom";
+import { mapAuthError } from "@/utils/authErrors";
 
 export const SignupForm = (props: SignupFormProps) => {
-  const [email, setEmail] = useState<string>("");
+const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [username, setUserName] = useState<string>("");
+  const [username, setUsername] = useState<string>("");
+  const [successMessage, setSuccessMessage] = useState<string | null>(null); 
+  
+  useEffect(() => {
+    setError(null);
+  }, [email, password, confirmPassword, username]);
 
   const navigate = useNavigate();
   const { signUp } = useAuth();
@@ -23,69 +29,112 @@ export const SignupForm = (props: SignupFormProps) => {
       setError("Please fill in all fields");
       return;
     }
+
     if (password !== confirmPassword) {
       setError("Passwords do not match");
+      return;
+    }
+
+    // Validação extra: senha mínima 6 caracteres
+    if (password.length < 6) {
+      setError("Password must be at least 6 characters long");
+      return;
+    }
+
+    // Validação simples de email (regex básica)
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setError("Please enter a valid email address");
+      return;
     }
 
     setError(null);
+    setSuccessMessage(null);
     setIsLoading(true);
 
     try {
       const response = await signUp(email, password, username);
       if (response.error) {
-        setError(response.error.message);
+        const friendlyMessage = mapAuthError(response.error);
+        setError(friendlyMessage);
+        console.error("Signup failed:", { email, error: response.error });
       } else {
-        navigate("/login");
+        
+        setSuccessMessage("Account created! Redirecting to login...");
+        setTimeout(() => {
+          props.onSuccess?.(); 
+          navigate("/login");
+        }, 2000);
       }
     } finally {
       setIsLoading(false);
     }
   };
 
-  return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      <Input
-        label="Email"
-        type="email"
-        value={email}
-        onChange={setEmail}
-        placeholder="your@email.com"
-      />
+ return (
+    <div className="min-h-screen bg-background flex items-center justify-center p-4">
+      <div className="w-full max-w-md bg-surface rounded-xl border border-border p-8 shadow-xl">
+   
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold text-text-primary">Create your account</h1>
+          <p className="text-text-secondary mt-2">Sign up to get started</p>
+        </div>
 
-      <Input
-        label="Password"
-        type="password"
-        value={password}
-        onChange={setPassword}
-        placeholder="••••••••"
-      />
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <Input
+            label="Email"
+            type="email"
+            value={email}
+            onChange={setEmail}
+            placeholder="your@email.com"
+          />
 
-      <Input
-        label="Password"
-        type="password"
-        value={confirmPassword}
-        onChange={setConfirmPassword}
-        placeholder="••••••••"
-      />
+          <Input
+            label="Username"
+            type="text"
+            value={username}
+            onChange={setUsername}
+            placeholder="yourusername"
+          />
 
-      <Input
-        label="Name"
-        type="text"
-        value={username}
-        onChange={setUserName}
-        placeholder="name"
-      />
-      {error && <p className="text-error text-sm text-center mt-2">{error}</p>}
+          <Input
+            label="Password"
+            type="password"
+            value={password}
+            onChange={setPassword}
+            placeholder="••••••••"
+          />
 
-      <Button
-        type="submit"
-        variant="secondary"
-        size="lg"
-        isLoading={isLoading}
-        className="w-full"
-      >
-        Sign Up
-      </Button>
-    </form>
+          <Input
+            label="Confirm Password"
+            type="password"
+            value={confirmPassword}
+            onChange={setConfirmPassword}
+            placeholder="••••••••"
+          />
+
+          {error && (
+            <p className="text-error text-sm text-center mt-2">{error}</p>
+          )}
+
+          <Button
+            type="submit"
+            variant="secondary"
+            size="lg"
+            isLoading={isLoading}
+            className="w-full"
+          >
+            Sign up
+          </Button>
+        </form>
+
+        <div className="mt-6 text-center text-sm text-text-secondary">
+          <span>Already have an account?</span>{" "}
+          <a href="/login" className="text-primary-400 hover:underline">
+            Log in
+          </a>
+        </div>
+      </div>
+    </div>
   );
-};
+}
