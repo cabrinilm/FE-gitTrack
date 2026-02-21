@@ -1,10 +1,11 @@
 import { useAuth } from "@/context/useAuth";
-import type { SignupFormProps } from "./type";
+import type { SignupFormProps } from "./SignupForm /type";
 import { useEffect, useState } from "react";
-import { Input } from "../Input/Input";
-import { Button } from "../Button/Button";
+import { Input } from "../../components/Input/Input";
+import { Button } from "../../components/Button/Button";
 import { useNavigate } from "react-router-dom";
 import { mapAuthError } from "@/utils/authErrors";
+import { Link } from "react-router-dom";
 
 export const SignupForm = (props: SignupFormProps) => {
 const [email, setEmail] = useState<string>("");
@@ -72,10 +73,8 @@ const [email, setEmail] = useState<string>("");
   };
 
  return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
-      <div className="w-full max-w-md bg-surface rounded-xl border border-border p-8 shadow-xl">
-   
-        <div className="text-center mb-8">
+   <>
+         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-text-primary">Create your account</h1>
           <p className="text-text-secondary mt-2">Sign up to get started</p>
         </div>
@@ -130,11 +129,11 @@ const [email, setEmail] = useState<string>("");
 
         <div className="mt-6 text-center text-sm text-text-secondary">
           <span>Already have an account?</span>{" "}
-          <a href="/login" className="text-primary-400 hover:underline">
+          <Link to="/auth/login" className="text-primary-400 hover:underline">
             Log in
-          </a>
+          </Link>
         </div>
-      </div>
-    </div>
+ </>
+    
   );
 }

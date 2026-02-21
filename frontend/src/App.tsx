@@ -1,27 +1,41 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import './App.css'
-import AllChallenges from '@/pages/AllChallenges'
-import CreateChallenge from '@/pages/CreateChallenge'
-import HeatMap from '@/pages/Heatmap'
-import Home from '@/pages/Home'
-import { AuthProvider } from '@/context/AuthProvider'
-import Login from '@/pages/Login'
-import { ProtectedRoute } from './components/ProtectedRoute/ProtectedRoute'
+import { BrowserRouter, Routes, Route, Navigate} from "react-router-dom";
+import "./App.css";
+import AllChallenges from "@/pages/AllChallenges";
+import CreateChallenge from "@/pages/CreateChallenge";
+import HeatMap from "@/pages/Heatmap";
+import Home from "@/pages/Home";
+import LoginForm from "@/pages/auth/LoginForm";
+import { SignupForm } from "@/pages/auth/SignupForm";
+
+import { AuthProvider } from "@/context/AuthProvider";
+
+import { ProtectedRoute } from "./components/ProtectedRoute/ProtectedRoute";
+import { AuthLayout } from "./pages/auth/AuthLayout";
 
 export default function App() {
   return (
     <BrowserRouter>
-     <AuthProvider>
-    <Routes>
-      <Route path="/login" element={<Login/>} />
-      <Route element={<ProtectedRoute />}>
-      <Route path="/" element={<Home />} />
-      <Route path="/create" element={<CreateChallenge />} />
-      <Route path="/challenges" element={<AllChallenges />} />
-      <Route path="/heatmap" element={<HeatMap />} />
-   </Route>
-    </Routes>
-    </AuthProvider>
+      <AuthProvider>
+        <Routes>
+           <Route path="/login" element={<Navigate to="/auth/login" replace />} />
+          <Route path="/signup" element={<Navigate to="/auth/signup" replace />} />
+          <Route path="/forgot" element={<Navigate to="/auth/forgot" replace />} />
+
+          {/* Rotas de autenticação */}
+          <Route path="/auth" element={<AuthLayout />}>
+            <Route path="login" element={<LoginForm />} />
+            <Route path="signup" element={<SignupForm />} />
+            {/* <Route path="forgot" element={<ForgotPasswordForm />} /> */}
+       
+          </Route>
+          <Route element={<ProtectedRoute />}>
+            <Route path="/" element={<Home />} />
+            <Route path="/create" element={<CreateChallenge />} />
+            <Route path="/challenges" element={<AllChallenges />} />
+            <Route path="/heatmap" element={<HeatMap />} />
+          </Route>
+        </Routes>
+      </AuthProvider>
     </BrowserRouter>
-  )
-};
+  );
+}
