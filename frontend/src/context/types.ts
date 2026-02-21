@@ -1,20 +1,21 @@
-import type { User, Session, AuthError } from "@supabase/supabase-js"
+import type { User, Session, AuthError } from "@supabase/supabase-js";
 
 export type AuthResponse = {
-  user: User | null
-  session: Session | null
-  error: AuthError | null
-}
+  user: User | null;
+  session: Session | null;
+  error: AuthError | null;
+};
 
 export interface AuthContextValue {
-  user: User | null
-  isLoading: boolean
-  error: string | null
-  signIn: (email: string, password: string) => Promise<AuthResponse>
-  signOut: () => Promise<void>
+  user: User | null;
+  isLoading: boolean;
+  error: string | null;
+  signIn: (email: string, password: string) => Promise<AuthResponse>;
+  signOut: () => Promise<void>;
   signUp: (
     email: string,
     password: string,
-    username: string
-  ) => Promise<AuthResponse>
+    username: string,
+  ) => Promise<AuthResponse>;
+  recoverPassword: (email: string) => Promise<AuthResponse>;
 }

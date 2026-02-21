@@ -24,7 +24,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       const { data, error } = await supabase.auth.signInWithPassword({ email, password })
 
       if (error) throw error
-      if (!data.user) throw new Error("Usuário não retornado pelo servidor")
+      if (!data.user) throw new Error("User not found")
 
       setUser(data.user)
 
@@ -68,7 +68,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       })
 
       if (error) throw error
-      if (!data.user) throw new Error("Usuário não retornado pelo servidor")
+      if (!data.user) throw new Error("User not found")
 
       setUser(data.user)
 
@@ -81,6 +81,24 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       setIsLoading(false)
     }
   }
+
+ const recoverPassword = async (email: string): Promise<AuthResponse> => {
+  try {
+    setIsLoading(true)
+    setError(null)
+
+    const { error } = await supabase.auth.resetPasswordForEmail(email)
+    if (error) throw error
+
+ 
+    return { user: null, session: null, error: null }
+  } catch (err: any) {
+    setError(err.message)
+    return { user: null, session: null, error: err }
+  } finally {
+    setIsLoading(false)
+  }
+}
 
 
   useEffect(() => {
@@ -118,6 +136,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         signIn,
         signOut,
         signUp,
+        recoverPassword
       }}
     >
       {children}

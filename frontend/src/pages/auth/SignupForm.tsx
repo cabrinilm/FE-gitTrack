@@ -1,5 +1,5 @@
 import { useAuth } from "@/context/useAuth";
-import type { SignupFormProps } from "./SignupForm /type";
+
 import { useEffect, useState } from "react";
 import { Input } from "../../components/Input/Input";
 import { Button } from "../../components/Button/Button";
@@ -7,15 +7,15 @@ import { useNavigate } from "react-router-dom";
 import { mapAuthError } from "@/utils/authErrors";
 import { Link } from "react-router-dom";
 
-export const SignupForm = (props: SignupFormProps) => {
-const [email, setEmail] = useState<string>("");
+export const SignupForm = () => {
+  const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [username, setUsername] = useState<string>("");
-  const [successMessage, setSuccessMessage] = useState<string | null>(null); 
-  
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
   useEffect(() => {
     setError(null);
   }, [email, password, confirmPassword, username]);
@@ -60,11 +60,9 @@ const [email, setEmail] = useState<string>("");
         setError(friendlyMessage);
         console.error("Signup failed:", { email, error: response.error });
       } else {
-        
         setSuccessMessage("Account created! Redirecting to login...");
         setTimeout(() => {
-          props.onSuccess?.(); 
-          navigate("/login");
+          navigate("/auth/login");
         }, 2000);
       }
     } finally {
@@ -72,68 +70,73 @@ const [email, setEmail] = useState<string>("");
     }
   };
 
- return (
-   <>
-         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-text-primary">Create your account</h1>
-          <p className="text-text-secondary mt-2">Sign up to get started</p>
-        </div>
+  return (
+    <>
+      <div className="text-center mb-8">
+        <h1 className="text-3xl font-bold text-text-primary">
+          Create your account
+        </h1>
+        <p className="text-text-secondary mt-2">Sign up to get started</p>
+      </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <Input
-            label="Email"
-            type="email"
-            value={email}
-            onChange={setEmail}
-            placeholder="your@email.com"
-          />
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <Input
+          label="Email"
+          type="email"
+          value={email}
+          onChange={setEmail}
+          placeholder="your@email.com"
+        />
 
-          <Input
-            label="Username"
-            type="text"
-            value={username}
-            onChange={setUsername}
-            placeholder="yourusername"
-          />
+        <Input
+          label="Username"
+          type="text"
+          value={username}
+          onChange={setUsername}
+          placeholder="yourusername"
+        />
 
-          <Input
-            label="Password"
-            type="password"
-            value={password}
-            onChange={setPassword}
-            placeholder="••••••••"
-          />
+        <Input
+          label="Password"
+          type="password"
+          value={password}
+          onChange={setPassword}
+          placeholder="••••••••"
+        />
 
-          <Input
-            label="Confirm Password"
-            type="password"
-            value={confirmPassword}
-            onChange={setConfirmPassword}
-            placeholder="••••••••"
-          />
+        <Input
+          label="Confirm Password"
+          type="password"
+          value={confirmPassword}
+          onChange={setConfirmPassword}
+          placeholder="••••••••"
+        />
 
-          {error && (
-            <p className="text-error text-sm text-center mt-2">{error}</p>
-          )}
+        {error && (
+          <p className="text-error text-sm text-center mt-2">{error}</p>
+        )}
+        {successMessage && (
+          <p className="text-success text-sm text-center mt-2">
+            {successMessage}
+          </p>
+        )}
+        <Button
+          type="submit"
+          variant="secondary"
+          size="lg"
+          isLoading={isLoading}
+          className="w-full"
+        >
+          Sign up
+        </Button>
+      </form>
 
-          <Button
-            type="submit"
-            variant="secondary"
-            size="lg"
-            isLoading={isLoading}
-            className="w-full"
-          >
-            Sign up
-          </Button>
-        </form>
-
-        <div className="mt-6 text-center text-sm text-text-secondary">
-          <span>Already have an account?</span>{" "}
-          <Link to="/auth/login" className="text-primary-400 hover:underline">
-            Log in
-          </Link>
-        </div>
- </>
-    
+      <div className="mt-6 text-center text-sm text-text-secondary">
+        <span>Already have an account?</span>{" "}
+        <Link to="/auth/login" className="text-primary-400 hover:underline">
+          Log in
+        </Link>
+      </div>
+    </>
   );
-}
+};
