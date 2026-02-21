@@ -80,7 +80,7 @@ export default function LoginForm() {
 
       {/* Links below */}
       <div className="mt-6 text-center text-sm text-text-secondary">
-        <Link to="/auth/forgotpassword" className="text-primary-400 hover:underline">
+        <Link to="/auth/forgot" className="text-primary-400 hover:underline">
           Forgot password?
         </Link>
         <span className="mx-3">•</span>
