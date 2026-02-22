@@ -18,4 +18,5 @@ export interface AuthContextValue {
     username: string,
   ) => Promise<AuthResponse>;
   recoverPassword: (email: string) => Promise<AuthResponse>;
+  resetPasswordWithToken: (newPassword: string) => Promise<AuthResponse>;
 }

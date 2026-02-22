@@ -100,6 +100,41 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   }
 }
 
+const resetPasswordWithToken = async (
+  newPassword: string
+): Promise<AuthResponse> => {
+  try {
+    setIsLoading(true)
+    setError(null)
+
+    const { data, error } = await supabase.auth.updateUser({
+      password: newPassword,
+    })
+
+    if (error) throw error
+    if (!data.user) throw new Error("User not found")
+
+    setUser(data.user)
+
+    return {
+      user: data.user,
+      session: null, 
+      error: null,
+    }
+  } catch (err: any) {
+    setError(err.message)
+
+    return {
+      user: null,
+      session: null,
+      error: err,
+    }
+  } finally {
+    setIsLoading(false)
+  }
+}
+
+
 
   useEffect(() => {
     const checkSession = async () => {
@@ -136,7 +171,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         signIn,
         signOut,
         signUp,
-        recoverPassword
+        recoverPassword,
+        resetPasswordWithToken
       }}
     >
       {children}
