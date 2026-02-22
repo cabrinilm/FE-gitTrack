@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate} from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import "./App.css";
 import AllChallenges from "@/pages/AllChallenges";
 import CreateChallenge from "@/pages/CreateChallenge";
@@ -12,22 +12,32 @@ import { AuthProvider } from "@/context/AuthProvider";
 
 import { ProtectedRoute } from "./components/ProtectedRoute/ProtectedRoute";
 import { AuthLayout } from "./pages/auth/AuthLayout";
+import { ResetPasswordForm } from "./pages/auth/ResetPasswordForm";
 
 export default function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
         <Routes>
-           <Route path="/login" element={<Navigate to="/auth/login" replace />} />
-          <Route path="/signup" element={<Navigate to="/auth/signup" replace />} />
-          <Route path="/forgot" element={<Navigate to="/auth/forgot" replace />} />
-
+          <Route
+            path="/login"
+            element={<Navigate to="/auth/login" replace />}
+          />
+          <Route
+            path="/signup"
+            element={<Navigate to="/auth/signup" replace />}
+          />
+          <Route
+            path="/forgot"
+            element={<Navigate to="/auth/forgot" replace />}
+          />
          
+
           <Route path="/auth" element={<AuthLayout />}>
             <Route path="login" element={<LoginForm />} />
             <Route path="signup" element={<SignupForm />} />
             <Route path="forgot" element={<ForgotPasswordForm />} />
-       
+             <Route path="reset-password" element={<ResetPasswordForm />} />
           </Route>
           <Route element={<ProtectedRoute />}>
             <Route path="/" element={<Home />} />

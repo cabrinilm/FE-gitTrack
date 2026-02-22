@@ -99,7 +99,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     setIsLoading(false)
   }
 }
-
 const resetPasswordWithToken = async (
   newPassword: string
 ): Promise<AuthResponse> => {
@@ -107,9 +106,7 @@ const resetPasswordWithToken = async (
     setIsLoading(true)
     setError(null)
 
-    const { data, error } = await supabase.auth.updateUser({
-      password: newPassword,
-    })
+    const { data, error } = await supabase.auth.updateUser({ password: newPassword })
 
     if (error) throw error
     if (!data.user) throw new Error("User not found")
@@ -118,7 +115,7 @@ const resetPasswordWithToken = async (
 
     return {
       user: data.user,
-      session: null, 
+      session: null,  // nenhuma sessão nova gerada
       error: null,
     }
   } catch (err: any) {
@@ -133,7 +130,6 @@ const resetPasswordWithToken = async (
     setIsLoading(false)
   }
 }
-
 
 
   useEffect(() => {
