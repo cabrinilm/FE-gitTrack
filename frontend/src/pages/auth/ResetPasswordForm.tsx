@@ -1,34 +1,23 @@
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Input } from "@/components/Input/Input";
 import { Button } from "@/components/Button/Button";
 import { useAuth } from "@/context/useAuth";
-import { supabase } from "@/lib/supabaseClient";
+// import { supabase } from "@/lib/supabaseClient";
 
 export const ResetPasswordForm = () => {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
-  const [isRecoveryMode, setIsRecoveryMode] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const { resetPasswordWithToken } = useAuth();
+  const { resetPasswordWithToken, user } = useAuth();
   const navigate = useNavigate();
-
-  // Detecta se o usuário abriu a página com token de recuperação
-  useEffect(() => {
-    const { data: listener } = supabase.auth.onAuthStateChange((event) => {
-      if (event === "PASSWORD_RECOVERY") {
-        setIsRecoveryMode(true);
-      }
-    });
-
-    // Cleanup
-    return () => {
-      listener.subscription.unsubscribe();
-    };
-  }, []);
+console.log("ResetPasswordForm render — window.location.hash:", window.location.hash);
+    console.log("ResetPasswordForm renderizado");
+  console.log("User:", user);
+  console.log("Location:", window.location.pathname + window.location.hash);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -54,25 +43,16 @@ export const ResetPasswordForm = () => {
     const response = await resetPasswordWithToken(newPassword);
 
     if (response.error) {
-      setError(response.error.message || "Failed to update password");
+      setError(response.error.message || "Invalid or expired recovery link");
     } else {
       setSuccessMessage("Password updated successfully! Redirecting...");
       setTimeout(() => {
         navigate("/auth/login");
       }, 2000);
     }
+
     setIsLoading(false);
   };
-
-  if (!isRecoveryMode) {
-    return (
-      <div className="text-center mt-10">
-        <p className="text-error text-sm">
-          Invalid or expired recovery link.
-        </p>
-      </div>
-    );
-  }
 
   return (
     <>
