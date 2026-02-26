@@ -79,22 +79,25 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   }
 
-  const recoverPassword = async (email: string): Promise<AuthResponse> => {
-    try {
-      setIsLoading(true)
-      setError(null)
+const recoverPassword = async (email: string): Promise<AuthResponse> => {
+  try {
+    setIsLoading(true)
+    setError(null)
 
-      const { error } = await supabase.auth.resetPasswordForEmail(email)
-      if (error) throw error
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: "http://localhost:5173/auth/reset-password",
+    })
 
-      return { user: null, session: null, error: null }
-    } catch (err: any) {
-      setError(err.message)
-      return { user: null, session: null, error: err }
-    } finally {
-      setIsLoading(false)
-    }
+    if (error) throw error
+
+    return { user: null, session: null, error: null }
+  } catch (err: any) {
+    setError(err.message)
+    return { user: null, session: null, error: err }
+  } finally {
+    setIsLoading(false)
   }
+}
 
   const resetPasswordWithToken = async (newPassword: string): Promise<AuthResponse> => {
     try {
