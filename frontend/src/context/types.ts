@@ -8,9 +8,8 @@ export type AuthResponse = {
 
 export interface AuthContextValue {
   user: User | null;
-  isLoading: boolean;
-  isCheckingSession: boolean;    // <- novo
-  isRecoveryMode: boolean;       // <- novo
+  isCheckingSession: boolean;    
+  isRecoveryMode: boolean;       
   error: string | null;
   signIn: (email: string, password: string) => Promise<AuthResponse>;
   signOut: () => Promise<void>;

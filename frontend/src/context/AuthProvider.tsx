@@ -10,7 +10,6 @@ interface AuthProviderProps {
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<User | null>(null)
-  const [isLoading, setIsLoading] = useState(false)
   const [isCheckingSession, setIsCheckingSession] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [isRecoveryMode, setIsRecoveryMode] = useState(false)
@@ -21,7 +20,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const signIn = async (email: string, password: string): Promise<AuthResponse> => {
     try {
-      setIsLoading(true)
+  
       setError(null)
 
       const { data, error } = await supabase.auth.signInWithPassword({ email, password })
@@ -34,14 +33,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       setUser(null)
       setError(err.message)
       return { user: null, session: null, error: err }
-    } finally {
-      setIsLoading(false)
-    }
+    } 
   }
 
   const signUp = async (email: string, password: string, username: string): Promise<AuthResponse> => {
     try {
-      setIsLoading(true)
       setError(null)
 
       const { data, error } = await supabase.auth.signUp({
@@ -58,14 +54,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       setUser(null)
       setError(err.message)
       return { user: null, session: null, error: err }
-    } finally {
-      setIsLoading(false)
-    }
-  }
+    } 
+  };
 
   const signOut = async (): Promise<void> => {
     try {
-      setIsLoading(true)
+      
       setError(null)
 
       const { error } = await supabase.auth.signOut()
@@ -74,14 +68,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       setUser(null)
     } catch (err: any) {
       setError(err.message)
-    } finally {
-      setIsLoading(false)
-    }
-  }
+    } 
+  };
 
 const recoverPassword = async (email: string): Promise<AuthResponse> => {
   try {
-    setIsLoading(true)
+    
     setError(null)
 
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
@@ -94,14 +86,12 @@ const recoverPassword = async (email: string): Promise<AuthResponse> => {
   } catch (err: any) {
     setError(err.message)
     return { user: null, session: null, error: err }
-  } finally {
-    setIsLoading(false)
-  }
-}
+  } 
+};
 
   const resetPasswordWithToken = async (newPassword: string): Promise<AuthResponse> => {
     try {
-      setIsLoading(true)
+    
       setError(null)
 
       const { data, error } = await supabase.auth.updateUser({ password: newPassword })
@@ -111,10 +101,8 @@ const recoverPassword = async (email: string): Promise<AuthResponse> => {
     } catch (err: any) {
       setError(err.message)
       return { user: null, session: null, error: err }
-    } finally {
-      setIsLoading(false)
-    }
-  }
+    } 
+  };
 
   // =========================
   // Checagem inicial de sessão
@@ -171,7 +159,6 @@ const recoverPassword = async (email: string): Promise<AuthResponse> => {
     <AuthContext.Provider
       value={{
         user,
-        isLoading,
         isCheckingSession,
         error,
         isRecoveryMode,

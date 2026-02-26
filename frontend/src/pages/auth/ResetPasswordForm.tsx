@@ -12,12 +12,9 @@ export const ResetPasswordForm = () => {
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const { resetPasswordWithToken, user } = useAuth();
+  const { resetPasswordWithToken } = useAuth();
   const navigate = useNavigate();
-console.log("ResetPasswordForm render — window.location.hash:", window.location.hash);
-    console.log("ResetPasswordForm renderizado");
-  console.log("User:", user);
-  console.log("Location:", window.location.pathname + window.location.hash);
+
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
