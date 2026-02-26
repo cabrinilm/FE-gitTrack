@@ -10,7 +10,6 @@ export interface AuthContextValue {
   user: User | null;
   isCheckingSession: boolean;    
   isRecoveryMode: boolean;       
-  error: string | null;
   signIn: (email: string, password: string) => Promise<AuthResponse>;
   signOut: () => Promise<void>;
   signUp: (

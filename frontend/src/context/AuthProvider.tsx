@@ -1,156 +1,101 @@
-import { useState, useEffect, type ReactNode } from "react"
-import { AuthContext } from "./AuthContext"
-import type { User } from "@supabase/supabase-js"
-import { supabase } from "@/lib/supabaseClient"
-import type { AuthResponse } from "./types"
+import { useState, useEffect, type ReactNode } from "react";
+import { AuthContext } from "./AuthContext";
+import type { User } from "@supabase/supabase-js";
+import { supabase } from "@/lib/supabaseClient";
+import type { AuthResponse } from "./types";
 
 interface AuthProviderProps {
-  children: ReactNode
+  children: ReactNode;
 }
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-  const [user, setUser] = useState<User | null>(null)
-  const [isCheckingSession, setIsCheckingSession] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const [isRecoveryMode, setIsRecoveryMode] = useState(false)
+  const [user, setUser] = useState<User | null>(null);
+  const [isCheckingSession, setIsCheckingSession] = useState(true);
+  const [isRecoveryMode, setIsRecoveryMode] = useState(false);
 
   // =========================
   // Funções de autenticação
   // =========================
+  const signIn = async (
+    email: string,
+    password: string,
+  ): Promise<AuthResponse> => {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+    if (error || !data.user) return { user: null, session: null, error };
+    setUser(data.user);
+    return { user: data.user, session: data.session ?? null, error: null };
+  };
 
-  const signIn = async (email: string, password: string): Promise<AuthResponse> => {
-    try {
-  
-      setError(null)
-
-      const { data, error } = await supabase.auth.signInWithPassword({ email, password })
-      if (error) throw error
-      if (!data.user) throw new Error("User not found")
-
-      setUser(data.user)
-      return { user: data.user, session: data.session ?? null, error: null }
-    } catch (err: any) {
-      setUser(null)
-      setError(err.message)
-      return { user: null, session: null, error: err }
-    } 
-  }
-
-  const signUp = async (email: string, password: string, username: string): Promise<AuthResponse> => {
-    try {
-      setError(null)
-
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: { data: { username } },
-      })
-      if (error) throw error
-      if (!data.user) throw new Error("User not found")
-
-      setUser(data.user)
-      return { user: data.user, session: data.session ?? null, error: null }
-    } catch (err: any) {
-      setUser(null)
-      setError(err.message)
-      return { user: null, session: null, error: err }
-    } 
+  const signUp = async (
+    email: string,
+    password: string,
+    username: string,
+  ): Promise<AuthResponse> => {
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: { data: { username } },
+    });
+    if (error || !data.user) return { user: null, session: null, error };
+    setUser(data.user);
+    return { user: data.user, session: data.session ?? null, error: null };
   };
 
   const signOut = async (): Promise<void> => {
-    try {
-      
-      setError(null)
-
-      const { error } = await supabase.auth.signOut()
-      if (error) throw error
-
-      setUser(null)
-    } catch (err: any) {
-      setError(err.message)
-    } 
+    const { error } = await supabase.auth.signOut();
+    if (!error) setUser(null);
   };
 
-const recoverPassword = async (email: string): Promise<AuthResponse> => {
-  try {
-    
-    setError(null)
-
+  const recoverPassword = async (email: string): Promise<AuthResponse> => {
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: "http://localhost:5173/auth/reset-password",
-    })
+    });
+    return { user: null, session: null, error: error ?? null };
+  };
 
-    if (error) throw error
-
-    return { user: null, session: null, error: null }
-  } catch (err: any) {
-    setError(err.message)
-    return { user: null, session: null, error: err }
-  } 
-};
-
-  const resetPasswordWithToken = async (newPassword: string): Promise<AuthResponse> => {
-    try {
-    
-      setError(null)
-
-      const { data, error } = await supabase.auth.updateUser({ password: newPassword })
-      if (error) throw error
-
-      return { user: data.user, session: null, error: null }
-    } catch (err: any) {
-      setError(err.message)
-      return { user: null, session: null, error: err }
-    } 
+  const resetPasswordWithToken = async (
+    newPassword: string,
+  ): Promise<AuthResponse> => {
+    const { data, error } = await supabase.auth.updateUser({
+      password: newPassword,
+    });
+    return { user: data?.user ?? null, session: null, error: error ?? null };
   };
 
   // =========================
   // Checagem inicial de sessão
   // =========================
   useEffect(() => {
-    // Detecta hash do recovery link
-    const hash = window.location.hash
-    if (hash.includes("type=recovery")) {
-      setIsRecoveryMode(true)
-    }
+    const hash = window.location.hash;
+    if (hash.includes("type=recovery")) setIsRecoveryMode(true);
 
     const checkInitialSession = async () => {
-      setIsCheckingSession(true)
-      try {
-        const { data: { session }, error } = await supabase.auth.getSession()
-        if (error) throw error
-        setUser(session?.user ?? null)
-      } catch (err: any) {
-        console.error("Erro ao carregar sessão inicial:", err)
-        setUser(null)
-        setError(err.message)
-      } finally {
-        setIsCheckingSession(false)
-      }
-    }
+      setIsCheckingSession(true);
+      const {
+        data: { session },
+        error,
+      } = await supabase.auth.getSession();
+      setUser(session?.user ?? null);
+      setIsCheckingSession(false);
+      if (error) console.error("Erro ao carregar sessão inicial:", error);
+    };
 
-    checkInitialSession()
+    checkInitialSession();
 
-    // Listener de auth events (SIGNED_IN, SIGNED_OUT, PASSWORD_RECOVERY)
-    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
-      console.log("Auth event:", event, session ? "Sessão ativa" : "Sem sessão")
+    const { data: authListener } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        if (event === "SIGNED_IN" || event === "PASSWORD_RECOVERY")
+          setUser(session?.user ?? null);
+        if (event === "SIGNED_OUT") setUser(null);
+        if (event === "PASSWORD_RECOVERY") setIsRecoveryMode(true);
+      },
+    );
 
-      if (event === "SIGNED_IN" || event === "PASSWORD_RECOVERY") {
-        setUser(session?.user ?? null)
-      }
-
-      if (event === "SIGNED_OUT") {
-        setUser(null)
-      }
-
-      if (event === "PASSWORD_RECOVERY") {
-        setIsRecoveryMode(true)
-        console.log("Modo PASSWORD_RECOVERY ativado")
-      }
-    })
-
-    return () => authListener.subscription.unsubscribe()
-  }, [])
+    return () => authListener.subscription.unsubscribe();
+  }, []);
 
   // =========================
   // Provider
@@ -160,16 +105,15 @@ const recoverPassword = async (email: string): Promise<AuthResponse> => {
       value={{
         user,
         isCheckingSession,
-        error,
         isRecoveryMode,
         signIn,
         signOut,
         signUp,
         recoverPassword,
-        resetPasswordWithToken
+        resetPasswordWithToken,
       }}
     >
       {children}
     </AuthContext.Provider>
-  )
-}
+  );
+};
