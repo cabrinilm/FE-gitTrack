@@ -13,6 +13,8 @@ import { AuthProvider } from "@/context/AuthProvider";
 import { ProtectedRoute } from "./components/ProtectedRoute/ProtectedRoute";
 import { AuthLayout } from "./pages/auth/AuthLayout";
 import { ResetPasswordForm } from "./pages/auth/ResetPasswordForm";
+import { ProtectedLayout } from "./components/layout/ProtectedLayout";
+
 
 export default function App() {
   return (
@@ -40,10 +42,12 @@ export default function App() {
              <Route path="reset-password" element={<ResetPasswordForm />} />
           </Route>
           <Route element={<ProtectedRoute />}>
+          <Route element={<ProtectedLayout />}>
             <Route path="/" element={<Home />} />
             <Route path="/create" element={<CreateChallenge />} />
             <Route path="/challenges" element={<AllChallenges />} />
             <Route path="/heatmap" element={<HeatMap />} />
+            </Route>
           </Route>
         </Routes>
       </AuthProvider>
