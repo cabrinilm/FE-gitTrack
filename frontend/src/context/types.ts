@@ -1,4 +1,5 @@
 import type { User, Session, AuthError } from "@supabase/supabase-js";
+import type { ReactNode } from "react";
 
 export type AuthResponse = {
   user: User | null;
@@ -19,4 +20,8 @@ export interface AuthContextValue {
   ) => Promise<AuthResponse>;
   recoverPassword: (email: string) => Promise<AuthResponse>;
   resetPasswordWithToken: (newPassword: string) => Promise<AuthResponse>;
+}
+
+export interface AuthProviderProps {
+  children: ReactNode;
 }
