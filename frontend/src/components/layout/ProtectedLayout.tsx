@@ -2,16 +2,14 @@ import { Outlet } from "react-router-dom";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { cn } from "@/utils/cn";
 import { BottomNav } from "../BottomNav";
+import { Sidebar } from "../Sidebar";
 
 export function ProtectedLayout() {
   const isMobile = useMediaQuery("(max-width: 767px)");
 
   return (
     <div className="relative min-h-screen bg-background text-foreground">
-      {/* 
-        Aqui no futuro colocaremos a Sidebar quando NÃO for mobile
-        Por enquanto deixamos vazio
-      */}
+      {!isMobile && <Sidebar />}
       {/* Área principal onde as páginas aparecem */}
       <main
         className={cn(
@@ -25,10 +23,6 @@ export function ProtectedLayout() {
         <Outlet />
       </main>
       {isMobile && <BottomNav />}
-      {/* 
-        Aqui no futuro colocaremos o BottomNav quando for mobile
-        Por enquanto deixamos vazio
-      */}
     </div>
   );
 }
