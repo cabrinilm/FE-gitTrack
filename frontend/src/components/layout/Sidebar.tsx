@@ -2,46 +2,9 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/context/useAuth';
 import { cn } from '@/utils/cn';
 import toast, { Toaster } from 'react-hot-toast';
+import  { navItems }  from './navItem';
 
-import {
-  FaHome,
-  FaPlusCircle,
-  FaListAlt,
-  FaChartLine,
-  FaSignOutAlt,
-} from 'react-icons/fa';
 
-const sidebarItems = [
-  {
-    label: 'Home',
-    path: '/',
-    icon: <FaHome className="text-xl" />,
-    isLogout: false,
-  },
-  {
-    label: 'Create',
-    path: '/create',
-    icon: <FaPlusCircle className="text-xl" />,
-    isLogout: false,
-  },
-  {
-    label: 'Challenges',
-    path: '/challenges',
-    icon: <FaListAlt className="text-xl" />,
-    isLogout: false,
-  },
-  {
-    label: 'Heatmap',
-    path: '/heatmap',
-    icon: <FaChartLine className="text-xl" />,
-    isLogout: false,
-  },
-  {
-    label: 'Logout',
-    isLogout: true,
-    icon: <FaSignOutAlt className="text-xl" />,
-  },
-] as const;
 
 
 export const Sidebar = () => {
@@ -77,7 +40,7 @@ export const Sidebar = () => {
 
       {/* Lista de itens */}
       <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
-        {sidebarItems.map((item) => {
+        {navItems.map((item) => {
           const isActive = !item.isLogout && location.pathname === item.path;
           const isLogoutItem = item.isLogout;
 

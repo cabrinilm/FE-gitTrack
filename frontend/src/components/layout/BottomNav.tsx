@@ -4,51 +4,14 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/context/useAuth";
 import { cn } from "@/utils/cn";
 import toast, { Toaster } from "react-hot-toast";
+import { navItems } from "./navItem";
 
-import {
-  FaHome,
-  FaPlusCircle,
-  FaListAlt,
-  FaChartLine,
-  FaSignOutAlt,
-} from "react-icons/fa";
+
 
 export function BottomNav() {
   const navigate = useNavigate();
   const location = useLocation();
   const { signOut } = useAuth();
-
-  const navItems = [
-    {
-      label: "Home",
-      path: "/",
-      icon: <FaHome className="text-2xl" />,
-      isLogout: false,
-    },
-    {
-      label: "Create",
-      path: "/create",
-      icon: <FaPlusCircle className="text-2xl" />,
-      isLogout: false,
-    },
-    {
-      label: "Challenges",
-      path: "/challenges",
-      icon: <FaListAlt className="text-2xl" />,
-      isLogout: false,
-    },
-    {
-      label: "Heatmap",
-      path: "/heatmap",
-      icon: <FaChartLine className="text-2xl" />,
-      isLogout: false,
-    },
-    {
-      label: "Logout",
-      isLogout: true,
-      icon: <FaSignOutAlt className="text-2xl" />,
-    },
-  ] as const;
 
   return (
     <>
