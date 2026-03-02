@@ -9,6 +9,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<User | null>(null);
   const [isCheckingSession, setIsCheckingSession] = useState(true);
   const [isRecoveryMode, setIsRecoveryMode] = useState(false);
+  const [token, setToken] = useState<string | null>(null);
 
   // =========================
   // Funções de autenticação
@@ -76,6 +77,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         error,
       } = await supabase.auth.getSession();
       setUser(session?.user ?? null);
+      setToken(session?.access_token ?? null);
       setIsCheckingSession(false);
       if (error) console.error("Erro ao carregar sessão inicial:", error);
     };
@@ -86,6 +88,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       (event, session) => {
         if (event === "SIGNED_IN" || event === "PASSWORD_RECOVERY")
           setUser(session?.user ?? null);
+          setToken(session?.access_token ?? null);
         if (event === "SIGNED_OUT") setUser(null);
         if (event === "PASSWORD_RECOVERY") setIsRecoveryMode(true);
       },
@@ -101,6 +104,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     <AuthContext.Provider
       value={{
         user,
+        token,
         isCheckingSession,
         isRecoveryMode,
         signIn,

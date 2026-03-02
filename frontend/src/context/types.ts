@@ -9,8 +9,9 @@ export type AuthResponse = {
 
 export interface AuthContextValue {
   user: User | null;
-  isCheckingSession: boolean;    
-  isRecoveryMode: boolean;       
+  token: string | null;
+  isCheckingSession: boolean;
+  isRecoveryMode: boolean;
   signIn: (email: string, password: string) => Promise<AuthResponse>;
   signOut: () => Promise<void>;
   signUp: (
