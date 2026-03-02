@@ -13,39 +13,69 @@ export default function Home() {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  const { token } = useAuth();
-    setApiToken(token);
+  const { token, user } = useAuth();
 
+  
+useEffect(() => {
+  // Só dispara se tiver token
+  if (!token || !user) return;
+console.log(user.id)
+  const fetchData = async () => {
+    try {
+      // 1️⃣ Buscar active challenge
+      const { data: activeData } = await api.get("/active-challenge", {
+        params: { user_id: user.id }, // depende de como você identifica o user
+      });
 
+      if (!activeData || activeData.length === 0) return;
 
+      const challengeId = activeData[0].challenge_id;
 
-  useEffect(() => {
-    
-   
-  }, [token]);
+      // 2️⃣ Buscar detalhes do challenge
+      const { data: challengeDetails } = await api.get("/challenges", {
+        params: { id: challengeId },
+      });
 
-  const handleCompletedActivity = async (activityId: number) => {
+      setActiveChallenge(challengeDetails[0]);
 
+      // 3️⃣ Buscar activities do challenge
+      const { data: challengeActivities } = await api.get(`/challenges/${challengeId}/activities`, {
+        params: { challenge_id: challengeId },
+      });
 
+      // Adicionar campo `completed` se precisar para controlar localmente
+      const activitiesWithState = challengeActivities.map((act: any) => ({
+        ...act,
+        completed: false,
+      }));
 
+      setActivities(activitiesWithState);
 
+    } catch (err) {
+      console.error("Error fetching home data:", err);
+      // toast.error("Failed to load challenge data");
+    }
   };
+
+  fetchData();
+
+}, [token]);
+
+//   const handleCompletedActivity = async (activityId: number) => {
+
+
+
+
+//   };
 
   //   const progres =
   //   activechallenge
   //   ? (activeChallenge.activities.filter(a => a.completed). length / activeChallenge.activties.lengt) * 100 : 0;
 
   return (
-    <div>
-      <h1>{activeChallenge?.name}</h1>
-      <p>Progress: {progress}%</p>
-      {activeChallenge?.activities.map((activity) => (
-        <ActivityCard
-          key={activity.id}
-          activity={activity}
-          onComplete={() => handleCompleteActivity(activity.id)}
-        />
-      ))}
-    </div>
-  );
-}
+  <div>
+    <h1>Home - Test Fetch</h1>
+    <pre>{JSON.stringify(activities, null, 2)}</pre>
+  </div>
+);
+};
