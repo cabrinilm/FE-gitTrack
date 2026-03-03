@@ -8,77 +8,67 @@ export default function Home() {
   const [activeChallenge, setActiveChallenge] = useState<Challenge | null>(
     null,
   );
-  const [activities, setActivities] = useState<Activity[]>([]);
+  const [challengeActivities, setChallengeActivities] = useState<any[]>([]);
   const [progress, setProgress] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   const { token, user } = useAuth();
-  let consolevalue; 
-  
-useEffect(() => {
-  // Só dispara se tiver token
-  if (!token || !user) return;
-  setApiToken(token);
-  const fetchData = async () => {
-    try {
-      // 1️⃣ Buscar active challenge
-      const { data: activeData } = await api.get("/api/active-challenge");
 
-      if (!activeData || activeData.length === 0) return;
-      
-      const challengeId = activeData[0].challenge_id;
-       consolevalue = challengeId
+  useEffect(() => {
+    // Só dispara se tiver token
+    if (!token || !user) return;
+    setApiToken(token);
+    const fetchData = async () => {
+      try {
+        // 1️⃣ Buscar active challenge
+        const { data: activeData } = await api.get("/api/active-challenge");
 
-    //   // 2️⃣ Buscar detalhes do challenge
-    //   const { data: challengeDetails } = await api.get("/challenges", {
-    //     params: { id: challengeId },
-    //   });
+        if (!activeData || activeData.length === 0) return;
+        setActiveChallenge(activeData);
 
-    //   setActiveChallenge(challengeDetails[0]);
-      
+        const challengeId = activeData.id;
 
-    //   // 3️⃣ Buscar activities do challenge
-    //   const { data: challengeActivities } = await api.get(`/challenges/${challengeId}/activities`, {
-    //     params: { challenge_id: challengeId },
-    //   });
+        // 3️⃣ Buscar activities do challenge
+        const { data: challengeActivities } = await api.get(
+          `/api/challenges/${challengeId}/activities`,
+        );
+          setChallengeActivities(challengeActivities);
+        console.log(challengeActivities);
+        //   // Adicionar campo `completed` se precisar para controlar localmente
+        //   const activitiesWithState = challengeActivities.map((act: any) => ({
+        //     ...act,
+        //     completed: false,
+        //   }));
 
-    //   // Adicionar campo `completed` se precisar para controlar localmente
-    //   const activitiesWithState = challengeActivities.map((act: any) => ({
-    //     ...act,
-    //     completed: false,
-    //   }));
+        //   setActivities(activitiesWithState);
+      } catch (err) {
+        console.error("Error fetching home data:", err);
+        // toast.error("Failed to load challenge data");
+      }
+    };
 
-    //   setActivities(activitiesWithState);
+    fetchData();
+  }, [token]);
 
-    } catch (err) {
-      console.error("Error fetching home data:", err);
-      // toast.error("Failed to load challenge data");
-    }
-  };
+  //   const handleCompletedActivity = async (activityId: number) => {
 
-  fetchData();
-
-}, [token]);
-
-
-//   const handleCompletedActivity = async (activityId: number) => {
-
-
-
-
-//   };
+  //   };
 
   //   const progres =
   //   activechallenge
   //   ? (activeChallenge.activities.filter(a => a.completed). length / activeChallenge.activties.lengt) * 100 : 0;
- console.log(consolevalue, "console")
- console.log(user?.id)
+
   return (
   <div>
-    <h1>Home - Test Fetch</h1>
-    
-    <pre>{JSON.stringify(activities, null, 2, )}</pre>
+    <h2>{activeChallenge?.name}</h2>
+    <ul>
+      {challengeActivities.map((act) => (
+        <li key={act.id}>
+          {act.name} - {act.duration_minutes} min
+        </li>
+      ))}
+    </ul>
   </div>
 );
-};
+}
