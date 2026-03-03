@@ -14,42 +14,42 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null);
 
   const { token, user } = useAuth();
-
+  let consolevalue; 
   
 useEffect(() => {
   // Só dispara se tiver token
   if (!token || !user) return;
-console.log(user.id)
+  setApiToken(token);
   const fetchData = async () => {
     try {
       // 1️⃣ Buscar active challenge
-      const { data: activeData } = await api.get("/active-challenge", {
-        params: { user_id: user.id }, // depende de como você identifica o user
-      });
+      const { data: activeData } = await api.get("/api/active-challenge");
 
       if (!activeData || activeData.length === 0) return;
-
+      
       const challengeId = activeData[0].challenge_id;
+       consolevalue = challengeId
 
-      // 2️⃣ Buscar detalhes do challenge
-      const { data: challengeDetails } = await api.get("/challenges", {
-        params: { id: challengeId },
-      });
+    //   // 2️⃣ Buscar detalhes do challenge
+    //   const { data: challengeDetails } = await api.get("/challenges", {
+    //     params: { id: challengeId },
+    //   });
 
-      setActiveChallenge(challengeDetails[0]);
+    //   setActiveChallenge(challengeDetails[0]);
+      
 
-      // 3️⃣ Buscar activities do challenge
-      const { data: challengeActivities } = await api.get(`/challenges/${challengeId}/activities`, {
-        params: { challenge_id: challengeId },
-      });
+    //   // 3️⃣ Buscar activities do challenge
+    //   const { data: challengeActivities } = await api.get(`/challenges/${challengeId}/activities`, {
+    //     params: { challenge_id: challengeId },
+    //   });
 
-      // Adicionar campo `completed` se precisar para controlar localmente
-      const activitiesWithState = challengeActivities.map((act: any) => ({
-        ...act,
-        completed: false,
-      }));
+    //   // Adicionar campo `completed` se precisar para controlar localmente
+    //   const activitiesWithState = challengeActivities.map((act: any) => ({
+    //     ...act,
+    //     completed: false,
+    //   }));
 
-      setActivities(activitiesWithState);
+    //   setActivities(activitiesWithState);
 
     } catch (err) {
       console.error("Error fetching home data:", err);
@@ -61,6 +61,7 @@ console.log(user.id)
 
 }, [token]);
 
+
 //   const handleCompletedActivity = async (activityId: number) => {
 
 
@@ -71,11 +72,13 @@ console.log(user.id)
   //   const progres =
   //   activechallenge
   //   ? (activeChallenge.activities.filter(a => a.completed). length / activeChallenge.activties.lengt) * 100 : 0;
-
+ console.log(consolevalue, "console")
+ console.log(user?.id)
   return (
   <div>
     <h1>Home - Test Fetch</h1>
-    <pre>{JSON.stringify(activities, null, 2)}</pre>
+    
+    <pre>{JSON.stringify(activities, null, 2, )}</pre>
   </div>
 );
 };
