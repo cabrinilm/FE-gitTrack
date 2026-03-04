@@ -8,9 +8,9 @@ export default function Home() {
   const [activeChallenge, setActiveChallenge] = useState<Challenge | null>(
     null,
   );
-  const [challengeActivities, setChallengeActivities] = useState<any[]>([]);
+  const [challengeActivities, setChallengeActivities] = useState<Activity[]>([]);
   const [progress, setProgress] = useState<string>("");
-  const [loading, setLoading] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   const { token, user } = useAuth();
@@ -51,9 +51,29 @@ export default function Home() {
     fetchData();
   }, [token]);
 
-  //   const handleCompletedActivity = async (activityId: number) => {
+    const handleCompletedActivity = async (activityId: number) => {
+    
 
-  //   };
+      if(!activityId){
+        setError("Please fill activity");
+        return;
+      }
+
+      setError(null);
+      setIsLoading(true)
+    
+      try {
+        const response = await api.post("/api/progress/fulfillments", {
+          activity_id: activityId
+        });
+        console.log(response.data)
+      } catch (error){
+        console.log(error)
+      } finally {
+        setIsLoading(false)
+      };
+
+   };
 
   //   const progres =
   //   activechallenge
@@ -65,7 +85,18 @@ export default function Home() {
     <ul>
       {challengeActivities.map((act) => (
         <li key={act.id}>
+         <Button 
+         type="submit"
+         variant="secondary"
+         size="lg"
+         isLoading={isLoading} 
+         className="w-full">
+          onClick={() => handleCompletedActivity(act.id)}
+      
           {act.name} - {act.duration_minutes} min
+
+         </Button>
+  
         </li>
       ))}
     </ul>
