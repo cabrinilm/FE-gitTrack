@@ -155,110 +155,105 @@ export default function Home() {
       </div>
     );
   }
-
-  return (
-    <div className="container mx-auto max-w-4xl px-4 py-8">
-      <div className="mb-10 text-center">
+ return (
+  <div className="container mx-auto max-w-4xl px-4 py-8 space-y-10">
+    {/* Container 1: Today's Progress */}
+    <section className="bg-white/5 backdrop-blur-sm rounded-xl border border-border/50 shadow-md p-6">
+      <div className="text-center mb-6">
         <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-          {activeChallenge.name}
+          Today's Progress
         </h1>
-        {activeChallenge.description && (
-          <p className="mt-4 text-lg text-muted-foreground">
-            {activeChallenge.description}
-          </p>
-        )}
       </div>
 
-      {/* Progress */}
-      <div className="mb-8">
-        <div className="flex justify-between items-center mb-2">
+      <div>
+        <div className="flex justify-between items-center mb-3">
           <h3 className="text-lg font-medium text-foreground">Progress</h3>
           <span className="text-sm text-muted-foreground">
-            {completedCount} of {totalActivities} completed (
-            {progressPercentage}%)
+            {completedCount} of {totalActivities} completed ({progressPercentage}%)
           </span>
         </div>
-        <div className="h-2.5 w-full bg-primary rounded-full overflow-hidden">
+
+        <div className="h-3 w-full bg-muted rounded-full overflow-hidden">
           <div
             className="h-full bg-primary transition-all duration-500 ease-out"
             style={{ width: `${progressPercentage}%` }}
           />
         </div>
       </div>
+    </section>
 
-      <div className="space-y-6">
-        <h2 className="text-2xl font-semibold text-foreground">
-          Challenge Activities
-        </h2>
+    {/* Container 2: Challenge + Activities */}
+    <section className="bg-white/5 backdrop-blur-sm rounded-xl border border-border/50 shadow-md p-6">
+      <h2 className="text-2xl font-semibold text-foreground mb-6">
+        {activeChallenge.name}
+      </h2>
 
-        {challengeActivities.length === 0 ? (
-          <p className="text-muted-foreground">
-            No activities found for this challenge.
-          </p>
-        ) : (
-         <ul role="list" className="space-y-4">
-  {challengeActivities.map((act) => (
-    <li key={act.id}>
-      <div
-        onClick={() => !act.completed && !completingActivityId && handleCompleteActivity(act.id)}
-        className={cn(
-          "flex items-center gap-4 p-4 rounded-lg border border-border",
-          "transition-all duration-200 cursor-pointer",
-          act.completed && "bg-muted/50 opacity-80",
-          completingActivityId === act.id && "opacity-70 animate-pulse",
-          !act.completed && "hover:bg-accent hover:border-accent-foreground/20"
-        )}
-        role="button"
-        tabIndex={0}
-        aria-label={`${act.name} - ${act.duration_minutes} minutes - ${
-          act.completed ? "Completed" : "Mark as complete"
-        }`}
-        onKeyDown={(e) => {
-          if (e.key === "Enter" || e.key === " ") {
-            e.preventDefault();
-            !act.completed && !completingActivityId && handleCompleteActivity(act.id);
-          }
-        }}
-      >
-        {/* Círculo / checkbox */}
-        <div className="shrink-0">
-          <div
-            className={cn(
-              "w-6 h-6 rounded-full border-2 flex items-center justify-center",
-              act.completed
-                ? "bg-success border-success text-success-foreground"
-                : "border-muted-foreground bg-transparent"
-            )}
-          >
-            {act.completed && <FaCheck className="w-4 h-4" />}
-            {completingActivityId === act.id && (
-              <Loader2 className="w-4 h-4 animate-spin text-muted-foreground" />
-            )}
-          </div>
-        </div>
+      {challengeActivities.length === 0 ? (
+        <p className="text-muted-foreground text-center py-8">
+          No activities found for this challenge.
+        </p>
+      ) : (
+        <ul role="list" className="space-y-4">
+          {challengeActivities.map((act) => (
+            <li key={act.id}>
+              <div
+                onClick={() => !act.completed && !completingActivityId && handleCompleteActivity(act.id)}
+                className={cn(
+                  "flex items-center gap-4 p-4 rounded-lg border border-border/50",
+                  "transition-all duration-200 cursor-pointer",
+                  act.completed && "bg-primary/5 opacity-90",
+                  completingActivityId === act.id && "opacity-70 animate-pulse",
+                  !act.completed && "hover:bg-primary/5 hover:border-primary/30"
+                )}
+                role="button"
+                tabIndex={0}
+                aria-label={`${act.name} - ${act.duration_minutes} minutes - ${
+                  act.completed ? "Completed" : "Mark as complete"
+                }`}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    !act.completed && !completingActivityId && handleCompleteActivity(act.id);
+                  }
+                }}
+              >
+                {/* Círculo / checkbox */}
+                <div className="shrink-0">
+                  <div
+                    className={cn(
+                      "w-7 h-7 rounded-full border-2 flex items-center justify-center transition-colors",
+                      act.completed
+                        ? "bg-primary border-primary text-primary-foreground"
+                        : "border-muted-foreground bg-transparent hover:border-primary"
+                    )}
+                  >
+                    {act.completed && <FaCheck className="w-4 h-4" />}
+                    {completingActivityId === act.id && (
+                      <Loader2 className="w-4 h-4 animate-spin text-muted-foreground" />
+                    )}
+                  </div>
+                </div>
 
-        {/* Conteúdo principal */}
-        <div className="flex-1 min-w-0">
-          <p
-            className={cn(
-              "text-base font-medium",
-              act.completed && "line-through text-muted-foreground"
-            )}
-          >
-            {act.name}
-          </p>
-        </div>
+                <div className="flex-1 min-w-0">
+                  <p
+                    className={cn(
+                      "text-base font-medium text-foreground",
+                      act.completed && "line-through text-muted-foreground"
+                    )}
+                  >
+                    {act.name}
+                  </p>
+                </div>
 
-        {/* Duração à direita */}
-        <div className="shrink-0 text-sm text-muted-foreground">
-          {act.duration_minutes} min
-        </div>
-      </div>
-    </li>
-  ))}
-</ul>
-        )}
-      </div>
-    </div>
-  );
+                <div className="shrink-0 text-sm text-muted-foreground">
+                  {act.duration_minutes} min
+                </div>
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
+  </div>
+);
 }
