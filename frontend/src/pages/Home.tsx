@@ -2,104 +2,263 @@ import { Button } from "@/components/Button/Button";
 import { useState, useEffect } from "react";
 import { api, setApiToken } from "@/lib/api";
 import { useAuth } from "@/context/useAuth";
-import type { Activity, Challenge, ActiveChallenge } from "./types";
+import type { Activity, Challenge } from "./types";
+import { cn } from "@/utils/cn";
+import { FaCheck } from "react-icons/fa";
+import { Loader2 } from "lucide-react";
 
 export default function Home() {
   const [activeChallenge, setActiveChallenge] = useState<Challenge | null>(
     null,
   );
-  const [challengeActivities, setChallengeActivities] = useState<Activity[]>([]);
-  const [progress, setProgress] = useState<string>("");
+  const [challengeActivities, setChallengeActivities] = useState<
+    (Activity & { completed?: boolean })[]
+  >([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [completingActivityId, setCompletingActivityId] = useState<
+    number | null
+  >(null);
   const [error, setError] = useState<string | null>(null);
 
   const { token, user } = useAuth();
 
   useEffect(() => {
-    // Só dispara se tiver token
-    if (!token || !user) return;
+    if (!token || !user) {
+      setError("Authentication required");
+      setIsLoading(false);
+      return;
+    }
+
     setApiToken(token);
+
     const fetchData = async () => {
+      setIsLoading(true);
+      setError(null);
+
       try {
-        // 1️⃣ Buscar active challenge
-        const { data: activeData } = await api.get("/api/active-challenge");
-
-        if (!activeData || activeData.length === 0) return;
-        setActiveChallenge(activeData);
-
-        const challengeId = activeData.id;
-
-        // 3️⃣ Buscar activities do challenge
-        const { data: challengeActivities } = await api.get(
-          `/api/challenges/${challengeId}/activities`,
+        const { data: challenge } = await api.get<Challenge>(
+          "/api/active-challenge",
         );
-          setChallengeActivities(challengeActivities);
-        console.log(challengeActivities);
-        //   // Adicionar campo `completed` se precisar para controlar localmente
-        //   const activitiesWithState = challengeActivities.map((act: any) => ({
-        //     ...act,
-        //     completed: false,
-        //   }));
 
-        //   setActivities(activitiesWithState);
-      } catch (err) {
+        if (!challenge || !challenge.id) {
+          setError("No active challenge found");
+          return;
+        }
+
+        setActiveChallenge(challenge);
+
+        const { data: activities } = await api.get<Activity[]>(
+          `/api/challenges/${challenge.id}/activities`,
+        );
+
+        setChallengeActivities(
+          activities.map((act) => ({ ...act, completed: false })),
+        );
+      } catch (err: any) {
         console.error("Error fetching home data:", err);
-        // toast.error("Failed to load challenge data");
+        setError("Failed to load challenge data");
+      } finally {
+        setIsLoading(false);
       }
     };
 
     fetchData();
-  }, [token]);
+  }, [token, user]);
 
-    const handleCompletedActivity = async (activityId: number) => {
-    
+  const handleCompleteActivity = async (activityId: number) => {
+    if (!activityId) {
+      setError("Invalid activity");
+      return;
+    }
 
-      if(!activityId){
-        setError("Please fill activity");
-        return;
-      }
+    setError(null);
+    setCompletingActivityId(activityId);
 
-      setError(null);
-      setIsLoading(true)
-    
-      try {
-        const response = await api.post("/api/progress/fulfillments", {
-          activity_id: activityId
-        });
-        console.log(response.data)
-      } catch (error){
-        console.log(error)
-      } finally {
-        setIsLoading(false)
-      };
+    try {
+      const response = await api.post("/api/progress/fulfillments", {
+        activity_id: activityId,
+      });
 
-   };
+      // Atualiza UI localmente
+      setChallengeActivities((prev) =>
+        prev.map((act) =>
+          act.id === activityId ? { ...act, completed: true } : act,
+        ),
+      );
+    } catch (err: any) {
+      console.error("Error completing activity:", err);
+      setError("Failed to complete activity. Please try again.");
+    } finally {
+      setCompletingActivityId(null);
+    }
+  };
 
-  //   const progres =
-  //   activechallenge
-  //   ? (activeChallenge.activities.filter(a => a.completed). length / activeChallenge.activties.lengt) * 100 : 0;
+  // Calcular progresso
+  const completedCount = challengeActivities.filter(
+    (act) => act.completed,
+  ).length;
+  const totalActivities = challengeActivities.length;
+  const progressPercentage =
+    totalActivities > 0
+      ? Math.round((completedCount / totalActivities) * 100)
+      : 0;
+
+  if (isLoading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <p className="text-muted-foreground text-lg">
+          Loading your challenge...
+        </p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center gap-6 p-6 text-center">
+        <h2 className="text-2xl font-semibold text-destructive">
+          Something went wrong
+        </h2>
+        <p className="text-muted-foreground max-w-md">{error}</p>
+        <Button
+          variant="secondary"
+          size="lg"
+          onClick={() => {
+            setError(null);
+            setIsLoading(true);
+            window.location.reload();
+          }}
+        >
+          Try Again
+        </Button>
+      </div>
+    );
+  }
+
+  if (!activeChallenge) {
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center gap-6 p-6 text-center">
+        <h2 className="text-3xl font-bold text-foreground">
+          No Active Challenge
+        </h2>
+        <p className="text-muted-foreground max-w-md text-lg">
+          You don't have an ongoing challenge yet. Start one now to begin your
+          progress!
+        </p>
+        <Button
+          variant="primary"
+          size="lg"
+          onClick={() => (window.location.href = "/create")}
+        >
+          Create a Challenge
+        </Button>
+      </div>
+    );
+  }
 
   return (
-  <div>
-    <h2>{activeChallenge?.name}</h2>
-    <ul>
-      {challengeActivities.map((act) => (
-        <li key={act.id}>
-         <Button 
-         type="submit"
-         variant="secondary"
-         size="lg"
-         isLoading={isLoading} 
-         className="w-full">
-          onClick={() => handleCompletedActivity(act.id)}
-      
-          {act.name} - {act.duration_minutes} min
+    <div className="container mx-auto max-w-4xl px-4 py-8">
+      <div className="mb-10 text-center">
+        <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+          {activeChallenge.name}
+        </h1>
+        {activeChallenge.description && (
+          <p className="mt-4 text-lg text-muted-foreground">
+            {activeChallenge.description}
+          </p>
+        )}
+      </div>
 
-         </Button>
-  
-        </li>
-      ))}
-    </ul>
-  </div>
-);
+      {/* Progress */}
+      <div className="mb-8">
+        <div className="flex justify-between items-center mb-2">
+          <h3 className="text-lg font-medium text-foreground">Progress</h3>
+          <span className="text-sm text-muted-foreground">
+            {completedCount} of {totalActivities} completed (
+            {progressPercentage}%)
+          </span>
+        </div>
+        <div className="h-2.5 w-full bg-primary rounded-full overflow-hidden">
+          <div
+            className="h-full bg-primary transition-all duration-500 ease-out"
+            style={{ width: `${progressPercentage}%` }}
+          />
+        </div>
+      </div>
+
+      <div className="space-y-6">
+        <h2 className="text-2xl font-semibold text-foreground">
+          Challenge Activities
+        </h2>
+
+        {challengeActivities.length === 0 ? (
+          <p className="text-muted-foreground">
+            No activities found for this challenge.
+          </p>
+        ) : (
+         <ul role="list" className="space-y-4">
+  {challengeActivities.map((act) => (
+    <li key={act.id}>
+      <div
+        onClick={() => !act.completed && !completingActivityId && handleCompleteActivity(act.id)}
+        className={cn(
+          "flex items-center gap-4 p-4 rounded-lg border border-border",
+          "transition-all duration-200 cursor-pointer",
+          act.completed && "bg-muted/50 opacity-80",
+          completingActivityId === act.id && "opacity-70 animate-pulse",
+          !act.completed && "hover:bg-accent hover:border-accent-foreground/20"
+        )}
+        role="button"
+        tabIndex={0}
+        aria-label={`${act.name} - ${act.duration_minutes} minutes - ${
+          act.completed ? "Completed" : "Mark as complete"
+        }`}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            !act.completed && !completingActivityId && handleCompleteActivity(act.id);
+          }
+        }}
+      >
+        {/* Círculo / checkbox */}
+        <div className="shrink-0">
+          <div
+            className={cn(
+              "w-6 h-6 rounded-full border-2 flex items-center justify-center",
+              act.completed
+                ? "bg-success border-success text-success-foreground"
+                : "border-muted-foreground bg-transparent"
+            )}
+          >
+            {act.completed && <FaCheck className="w-4 h-4" />}
+            {completingActivityId === act.id && (
+              <Loader2 className="w-4 h-4 animate-spin text-muted-foreground" />
+            )}
+          </div>
+        </div>
+
+        {/* Conteúdo principal */}
+        <div className="flex-1 min-w-0">
+          <p
+            className={cn(
+              "text-base font-medium",
+              act.completed && "line-through text-muted-foreground"
+            )}
+          >
+            {act.name}
+          </p>
+        </div>
+
+        {/* Duração à direita */}
+        <div className="shrink-0 text-sm text-muted-foreground">
+          {act.duration_minutes} min
+        </div>
+      </div>
+    </li>
+  ))}
+</ul>
+        )}
+      </div>
+    </div>
+  );
 }
