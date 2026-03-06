@@ -18,16 +18,23 @@ export interface Activity {
 
 export interface ActivityWithProgress extends Activity {
   completed: boolean;
+   fulfillment?: any;
 }
 
 export interface HomeActivityCardProps {
-    activity: ActivityWithProgress;
-    onComplete: (activityId: number) => void;
-    isLoading?: boolean;
+  activity: ActivityWithCompleted;
+  onActivityUpdated: (updatedActivity: ActivityWithCompleted) => void;
+
 }
+
 
 export interface ChallengeActivityCardProps {
   activity: Activity;
   onUpdate: (activity: Activity) => void;
   onDelete: (activityId: number) => void;
+}
+
+export interface ActivityWithCompleted extends Activity {
+  completed: boolean; // opcional, porque pode não estar definido inicialmente
+     fulfillment?: any;
 }
