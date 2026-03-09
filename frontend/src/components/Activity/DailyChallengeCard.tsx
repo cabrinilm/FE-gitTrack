@@ -42,8 +42,7 @@ const [activeChallenge, setActiveChallenge] = useState<Challenge | null>(null);
           return;
         }
         setActiveChallenge(challenge);
-        console.log(challenge, "<====challenge")
-        console.log(activeChallenge, "activechallenge")
+   
 
         // 2. Todas as atividades do desafio (fixas)
         const { data: allActivities } = await api.get<Activity[]>(
