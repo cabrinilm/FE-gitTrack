@@ -1,25 +1,23 @@
 import { useState, useEffect } from "react";
 import { api, setApiToken } from "@/lib/api";
 import { useAuth } from "@/context/useAuth";
-import type { Activity } from "./type";
 import { Button } from "../Button/Button";
 import { FaCheck } from "react-icons/fa";
 import { Loader2 } from "lucide-react";
 import { cn } from "@/utils/cn";
+import type { Challenge, Activity } from "@/pages/types";
 
-interface Fulfillment {
-  id: number;
-  activity_id: number;
-  // outros campos se precisar
-}
 
 export function DailyChallengeCard() {
-  const [activeChallenge, setActiveChallenge] = useState(null);
+const [activeChallenge, setActiveChallenge] = useState<Challenge | null>(null);
   const [activities, setActivities] = useState<Activity[]>([]);
   const [completedIds, setCompletedIds] = useState<Set<number>>(new Set());
   const [isLoading, setIsLoading] = useState(true);
   const [completingId, setCompletingId] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+
+
 
   const { token, user } = useAuth();
 
@@ -44,6 +42,8 @@ export function DailyChallengeCard() {
           return;
         }
         setActiveChallenge(challenge);
+        console.log(challenge, "<====challenge")
+        console.log(activeChallenge, "activechallenge")
 
         // 2. Todas as atividades do desafio (fixas)
         const { data: allActivities } = await api.get<Activity[]>(
@@ -88,8 +88,7 @@ export function DailyChallengeCard() {
 
     setCompletingId(activityId);
     setError(null);
-const payload = { activityId: activityId };
- 
+
     try {
       await api.post("/api/progress/fulfillments", { activityId: activityId });
 
@@ -103,122 +102,136 @@ const payload = { activityId: activityId };
     }
   };
 
-  return (
-    <div className="bg-card rounded-2xl border border-border shadow-lg overflow-hidden">
-      {/* Cabeçalho com nome do challenge */}
-      <div className="bg-primary/10 px-6 py-5 border-b border-border">
-        <h2 className="text-2xl font-bold text-primary">{"Daily Challenge"}</h2>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Mark the activities you completed today
-        </p>
+
+  const completedCount = completedIds.size; // número de ids únicos marcados hoje
+const totalActivities = activities.length; // total de atividades fixas do desafio
+const progressPercentage = totalActivities > 0 
+  ? Math.round((completedCount / totalActivities) * 100) 
+  : 0;
+
+return (
+  <div className="bg-card rounded-2xl border border-border shadow-lg overflow-hidden">
+    {/* Cabeçalho com nome do challenge */}
+    <div className="bg-primary/10 px-6 py-5 border-b border-border">
+      <h2 className="text-2xl font-bold text-primary">
+        {activeChallenge?.name || "Daily Challenge"}
+      </h2>
+      <p className="mt-1 text-sm text-muted-foreground">
+        Mark the activities you completed today
+      </p>
+    </div>
+
+    {/* Conteúdo principal */}
+    <div className="p-6 space-y-10">
+      {/* Container do Progresso - aqui! */}
+      <div>
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="text-lg font-medium text-foreground">Today's Progress</h3>
+          <span className="text-sm text-muted-foreground">
+            {completedCount} of {totalActivities} completed ({progressPercentage}%)
+          </span>
+        </div>
+
+        <div className="h-3 w-full bg-muted/50 rounded-full overflow-hidden border border-border/30">
+          <div
+            className="h-full bg-primary transition-all duration-600 ease-out"
+            style={{ width: `${progressPercentage}%` }}
+          />
+        </div>
       </div>
 
-      {/* Conteúdo principal */}
-      <div className="p-6">
-        {isLoading ? (
-          <div className="flex flex-col items-center justify-center py-12">
-            <Loader2 className="w-8 h-8 animate-spin text-primary mb-4" />
-            <p className="text-muted-foreground">
-              Loading today's activities...
-            </p>
-          </div>
-        ) : error ? (
-          <div className="text-center py-12">
-            <p className="text-destructive font-medium mb-4">{error}</p>
-            <Button
-              variant="secondary"
-              size="sm"
-              onClick={() => {
-                setError(null);
-                setIsLoading(true);
-                // Reexecuta fetch (pode ser função separada se preferir)
-                window.location.reload();
-              }}
-            >
-              Try Again
-            </Button>
-          </div>
-        ) : activities.length === 0 ? (
-          <div className="text-center py-12 text-muted-foreground">
-            No activities found for this challenge.
-          </div>
-        ) : (
-          <ul role="list" className="space-y-3">
-            {activities.map((act) => {
-              const isCompleted = completedIds.has(act.id);
-              const isCompleting = completingId === act.id;
+      {/* Lista de atividades */}
+      {isLoading ? (
+        <div className="flex flex-col items-center justify-center py-12">
+          <Loader2 className="w-8 h-8 animate-spin text-primary mb-4" />
+          <p className="text-muted-foreground">Loading today's activities...</p>
+        </div>
+      ) : error ? (
+        <div className="text-center py-12">
+          <p className="text-destructive font-medium mb-4">{error}</p>
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={() => {
+              setError(null);
+              setIsLoading(true);
+              window.location.reload();
+            }}
+          >
+            Try Again
+          </Button>
+        </div>
+      ) : activities.length === 0 ? (
+        <div className="text-center py-12 text-muted-foreground">
+          No activities found for this challenge.
+        </div>
+      ) : (
+        <ul role="list" className="space-y-4">
+          {activities.map((act) => {
+            const isCompleted = completedIds.has(act.id);
+            const isCompleting = completingId === act.id;
 
-              return (
-                <li key={act.id}>
-                  <div
-                    onClick={() =>
-                      !isCompleted &&
-                      !isCompleting &&
-                      handleMarkComplete(act.id)
+            return (
+              <li key={act.id}>
+                <div
+                  onClick={() => !isCompleted && !isCompleting && handleMarkComplete(act.id)}
+                  className={cn(
+                    "flex items-center gap-4 p-4 rounded-xl border border-border/60",
+                    "transition-all duration-200 cursor-pointer group",
+                    isCompleted && "bg-primary/5 border-primary/30 opacity-90",
+                    isCompleting && "opacity-70 animate-pulse bg-primary/5",
+                    !isCompleted && "hover:bg-primary/5 hover:border-primary/40 active:bg-primary/10"
+                  )}
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`${act.name} - ${act.duration_minutes} minutes - ${
+                    isCompleted ? "Completed" : "Mark as complete"
+                  }`}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      !isCompleted && !isCompleting && handleMarkComplete(act.id);
                     }
-                    className={cn(
-                      "flex items-center gap-4 p-4 rounded-xl border border-border/60",
-                      "transition-all duration-200 cursor-pointer group",
-                      isCompleted &&
-                        "bg-primary/5 border-primary/30 opacity-90",
-                      isCompleting && "opacity-70 animate-pulse bg-primary/5",
-                      !isCompleted &&
-                        "hover:bg-primary/5 hover:border-primary/40 active:bg-primary/10",
-                    )}
-                    role="button"
-                    tabIndex={0}
-                    aria-label={`${act.name} - ${act.duration_minutes} minutes - ${
-                      isCompleted ? "Completed today" : "Mark as completed"
-                    }`}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" || e.key === " ") {
-                        e.preventDefault();
-                        !isCompleted &&
-                          !isCompleting &&
-                          handleMarkComplete(act.id);
-                      }
-                    }}
-                  >
-                    {/* Círculo / bola */}
-                    <div className="shrink-0">
-                      <div
-                        className={cn(
-                          "w-8 h-8 rounded-full border-2 flex items-center justify-center transition-all duration-300",
-                          isCompleted
-                            ? "bg-primary border-primary text-primary-foreground shadow-sm"
-                            : "border-muted-foreground bg-transparent group-hover:border-primary group-hover:bg-primary/5",
-                        )}
-                      >
-                        {isCompleted && <FaCheck className="w-4.5 h-4.5" />}
-                        {isCompleting && (
-                          <Loader2 className="w-4.5 h-4.5 animate-spin text-primary" />
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Nome da atividade */}
-                    <div className="flex-1 min-w-0">
-                      <p
-                        className={cn(
-                          "text-base font-medium text-foreground",
-                          isCompleted && "line-through text-muted-foreground",
-                        )}
-                      >
-                        {act.name}
-                      </p>
-                    </div>
-
-                    {/* Duração */}
-                    <div className="shrink-0 text-sm font-medium text-primary/80">
-                      {act.duration_minutes} min
+                  }}
+                >
+                  {/* Círculo */}
+                  <div className="shrink-0">
+                    <div
+                      className={cn(
+                        "w-8 h-8 rounded-full border-2 flex items-center justify-center transition-all duration-300",
+                        isCompleted
+                          ? "bg-primary border-primary text-primary-foreground shadow-sm"
+                          : "border-muted-foreground bg-transparent group-hover:border-primary group-hover:bg-primary/5"
+                      )}
+                    >
+                      {isCompleted && <FaCheck className="w-5 h-5" />}
+                      {isCompleting && <Loader2 className="w-5 h-5 animate-spin text-primary" />}
                     </div>
                   </div>
-                </li>
-              );
-            })}
-          </ul>
-        )}
-      </div>
+
+                  {/* Nome */}
+                  <div className="flex-1 min-w-0">
+                    <p
+                      className={cn(
+                        "text-base font-medium text-foreground",
+                        isCompleted && "line-through text-muted-foreground"
+                      )}
+                    >
+                      {act.name}
+                    </p>
+                  </div>
+
+                  {/* Duração */}
+                  <div className="shrink-0 text-sm font-medium text-primary/80">
+                    {act.duration_minutes} min
+                  </div>
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+      )}
     </div>
-  );
+  </div>
+);
 }
