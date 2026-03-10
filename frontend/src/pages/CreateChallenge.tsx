@@ -1,8 +1,9 @@
+import { CreateChallengeCard } from "@/components/CreateChallengeCard";
+
 export default function CreateChallenge() {
     return (
-        <div className="p-4">
-            <h1 className="text 3x1 font-bold">Home - Challenge Active</h1>
-            <p>Soon: active challenge, activities</p>
-        </div>
-    );
+       <div className="container mx-auto max-w-4xl px-4 py-8">
+         <CreateChallengeCard />
+       </div>
+     );
 };
