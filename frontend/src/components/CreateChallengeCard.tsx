@@ -60,12 +60,17 @@ const handleSubmit = async (e: React.FormEvent) => {
 
 
 const addActivity = () => {
-    const newActivity: Activity = {
-        id: crypto.randomUUID(),
-        name: "",
-        duration: 0
-    }
-    setActivities([...activities, newActivity])
+  if (activities.length >= 4) {
+    alert("You can only add up to 4 activities per challenge")
+    return
+  }
+
+  const newActivity: Activity = {
+    id: crypto.randomUUID(),
+    name: "",
+    duration: 0
+  }
+  setActivities([...activities, newActivity])
 }
 
 const updateActivity = (
