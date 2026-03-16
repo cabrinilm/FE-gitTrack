@@ -11,54 +11,84 @@ type Activity = {
 };
 
 export function CreateChallengeCard() {
-  const [title, setTitle] = useState("");
+  const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [activities, setActivities] = useState<Activity[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [authError, setAuthError] = useState<string | null>(null);
+  const { token, user } = useAuth();
 
- const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault()
-
-  if (!title) {
-    alert("Title is required")
-    return
-  }
-
-  if (activities.length === 0) {
-    alert("Add at least one activity")
-    return
-  }
-
-  setIsSubmitting(true)
-
-  try {
-
-    const activitiesFormatted = activities.map(a => ({
-      name: a.name,
-      duration_minutes:
-        (Number(a.hours) || 0) * 60 +
-        (Number(a.minutes) || 0)
-    }))
-
-    const data = {
-      title,
-      description: description || null,
-      activities: activitiesFormatted
+  useEffect(() => {
+    if (!token || !user) {
+      setAuthError("Authentication required");
+      return;
     }
 
-    console.log("Submitting data:", data)
+    setAuthError(null);
+    setApiToken(token);
+  }, [token, user]);
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
 
-    setTitle("")
-    setDescription("")
-    setActivities([])
+    if (!token || !user) {
+      alert("Authentication required");
+      return;
+    }
 
-  } catch (error) {
-    console.error(error)
-    alert("There was an error submitting the form")
-  } finally {
-    setIsSubmitting(false)
-  }
-}
+    if (!name.trim()) {
+      alert("Title is required");
+      return;
+    }
+
+    if (activities.length === 0) {
+      alert("Add at least one activity");
+      return;
+    }
+
+    if (activities.some((a) => !a.name.trim())) {
+      alert("All activities must have a name");
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      const activitiesFormatted = activities.map((a) => ({
+        name: a.name,
+        duration_minutes:
+          (Number(a.hours) || 0) * 60 + (Number(a.minutes) || 0),
+      }));
+     console.log(name, "<-----")
+     console.log(description, "<-----description")
+      const { data: challenge } = await api.post("/api/challenges", {
+        name,
+        description: description || null,
+      });
+       
+      if (!challenge?.id) {
+        throw new Error("Challenge creation failed");
+      }
+
+      const challengeId = challenge.id;
+     console.log(challengeId)
+  
+   await Promise.all(
+  activitiesFormatted.map((activity) =>
+    api.post(`/api/challenges/${challengeId}/activities`, activity)
+  )
+)
+
+  
+      setName("");
+      setDescription("");
+      setActivities([]);
+    } catch (error) {
+      console.error(error);
+      alert("Failed to create challenge");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const addActivity = () => {
     if (activities.length >= 4) {
@@ -117,8 +147,8 @@ export function CreateChallengeCard() {
           <input
             type="text"
             className="w-full border border-border rounded-xl p-3 mt-2 focus:ring-1 focus:ring-primary focus:border-primary outline-none  bg-gray-900"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
+            value={name}
+            onChange={(e) => setName(e.target.value)}
             placeholder="Enter challenge title"
           />
         </div>
