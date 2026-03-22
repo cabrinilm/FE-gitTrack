@@ -38,13 +38,14 @@
 /* Opcional: Estilos base (ex: fundo e texto padrão do body) */
 @layer base {
   body {
-    @apply bg-background text-foreground;
+    background-color: var(--color-background); /* antes era bg-background */
+    color: var(--color-text-primary);          /* antes era text-text-primary */
+    font-family: 'Geist Variable', sans-serif;
   }
+
   * {
-    @apply border-border outline-ring/50;
-  }
-  html {
-    @apply font-sans;
+    border-color: var(--color-border);         /* substitui border-border */
+    outline: 1px solid var(--ring);            /* substitui outline-ring/50 */
   }
 }
 
@@ -52,7 +53,7 @@
 .hover\:bg-primary\/90:hover {
   background-color: color-mix(in oklab, var(--color-primary) 90%, transparent);
 }
-
+/* 
 @theme inline {
   --font-heading: var(--font-sans);
   --font-sans: 'Geist Variable', sans-serif;
@@ -163,4 +164,4 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
-}
+} */
