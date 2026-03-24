@@ -8,8 +8,8 @@ import {
 } from "./tooltip";
 
 type HeatmapDay = {
-  date: string;        // formato "YYYY-MM-DD"
-  count: number;       // quantidade de activities concluídas naquele dia
+  date: string;        // "YYYY-MM-DD"
+  count: number;       // quantidade de atividades concluídas
 };
 
 interface HeatmapProps {
@@ -19,7 +19,7 @@ interface HeatmapProps {
 }
 
 const LEVEL_COLORS = {
-  0: "bg-gray-200 dark:bg-gray-800",
+  0: "bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700",
   1: "bg-emerald-300 hover:bg-emerald-400",
   2: "bg-emerald-500 hover:bg-emerald-600",
   3: "bg-emerald-700 hover:bg-emerald-800",
@@ -33,19 +33,18 @@ function getIntensityLevel(count: number): 0 | 1 | 2 | 3 {
 }
 
 export function Heatmap({ data = [], onDayClick, className }: HeatmapProps) {
-  // Gera os últimos 12 meses (aprox 365 dias)
-  const generateLast12Months = React.useMemo(() => {
+  // Gera os últimos 12 meses (~365 dias)
+  const heatmapDays = React.useMemo(() => {
     const days: HeatmapDay[] = [];
     const today = new Date();
 
     for (let i = 364; i >= 0; i--) {
-      const date = new Date();
+      const date = new Date(today);
       date.setDate(today.getDate() - i);
-      
-      const dateStr = date.toISOString().split("T")[0]; // YYYY-MM-DD
-      
-      const dayData = data.find(d => d.date === dateStr);
-      
+      const dateStr = date.toISOString().split("T")[0];
+
+      const dayData = data.find((d) => d.date === dateStr);
+
       days.push({
         date: dateStr,
         count: dayData?.count || 0,
@@ -55,37 +54,33 @@ export function Heatmap({ data = [], onDayClick, className }: HeatmapProps) {
   }, [data]);
 
   return (
-    <div className={cn("space-y-4", className)}>
+    <div className={cn("space-y-6", className)}>
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-semibold">Seu progresso anual</h2>
-        <p className="text-sm text-muted-foreground">
-          Últimos 12 meses
-        </p>
+        <h2 className="text-2xl font-semibold">Heatmap de Progresso</h2>
+        <p className="text-sm text-muted-foreground">Últimos 12 meses</p>
       </div>
 
       <TooltipProvider>
-        <div className="grid grid-cols-53 gap-1 p-3 bg-muted/50 rounded-xl border">
-          {generateLast12Months.map((day) => {
+        <div className="grid grid-cols-53 gap-1 p-4 bg-muted/50 rounded-2xl border">
+          {heatmapDays.map((day) => {
             const level = getIntensityLevel(day.count);
-            
+
             return (
               <Tooltip key={day.date}>
                 <TooltipTrigger asChild>
                   <div
                     className={cn(
-                      "w-3 h-3 rounded-sm cursor-pointer transition-all hover:scale-125",
+                      "w-3 h-3 rounded-sm cursor-pointer transition-all active:scale-90",
                       LEVEL_COLORS[level]
                     )}
                     onClick={() => onDayClick?.(day.date)}
                   />
                 </TooltipTrigger>
-                <TooltipContent>
-                  <div className="text-center">
-                    <p className="font-medium">{day.date}</p>
-                    <p className="text-sm text-muted-foreground">
-                      {day.count} {day.count === 1 ? "atividade" : "atividades"} concluídas
-                    </p>
-                  </div>
+                <TooltipContent side="top" className="text-center">
+                  <p className="font-medium">{day.date}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {day.count} {day.count === 1 ? "atividade concluída" : "atividades concluídas"}
+                  </p>
                 </TooltipContent>
               </Tooltip>
             );
@@ -94,13 +89,13 @@ export function Heatmap({ data = [], onDayClick, className }: HeatmapProps) {
       </TooltipProvider>
 
       {/* Legenda */}
-      <div className="flex items-center justify-between text-xs text-muted-foreground">
+      <div className="flex items-center justify-between text-xs text-muted-foreground px-1">
         <span>Menos</span>
         <div className="flex gap-1">
-          {Array.from({ length: 4 }).map((_, i) => (
+          {[0, 1, 2, 3].map((level) => (
             <div
-              key={i}
-              className={cn("w-3 h-3 rounded-sm", LEVEL_COLORS[i as keyof typeof LEVEL_COLORS])}
+              key={level}
+              className={cn("w-3 h-3 rounded-sm", LEVEL_COLORS[level as keyof typeof LEVEL_COLORS])}
             />
           ))}
         </div>

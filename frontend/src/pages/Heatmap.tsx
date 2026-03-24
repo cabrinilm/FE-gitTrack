@@ -1,55 +1,28 @@
-import { useState, useEffect } from "react";
 import { Heatmap } from "@/components/ui/heatmap";
-
-type HeatmapDay = {
-  date: string;
-  count: number;
-};
+import { useState, useEffect } from "react";
 
 export default function HeatmapPage() {
-  const [heatmapData, setHeatmapData] = useState<HeatmapDay[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [data, setData] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchHeatmapData = async () => {
-      try {
-        setIsLoading(true);
-        const res = await fetch("/api/progress/heatmap");
-        
-        if (!res.ok) throw new Error("Failed to fetch heatmap data");
-        
-        const data: HeatmapDay[] = await res.json();
-        setHeatmapData(data);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "Erro ao carregar heatmap");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchHeatmapData();
+    fetch("/api/progress/heatmap")
+      .then(res => res.json())
+      .then(setData)
+      .finally(() => setLoading(false));
   }, []);
 
   const handleDayClick = (date: string) => {
     console.log("Clicou no dia:", date);
-    // Aqui depois vamos chamar o segundo endpoint: /api/progress/:date/fulfillments
+    // Aqui você vai chamar o segundo endpoint:
+    // fetch(`/api/progress/${date}/fulfillments`)
   };
 
-  if (isLoading) return <div className="p-6">Carregando heatmap...</div>;
-  if (error) return <div className="p-6 text-red-500">Erro: {error}</div>;
+  if (loading) return <div className="p-6">Carregando heatmap...</div>;
 
   return (
-    <div className="p-6 space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Heatmap de Progresso</h1>
-        <p className="text-muted-foreground">Últimos 12 meses • Atividades concluídas por dia</p>
-      </div>
-
-      <Heatmap 
-        data={heatmapData} 
-        onDayClick={handleDayClick} 
-      />
+    <div className="p-6">
+      <Heatmap data={data} onDayClick={handleDayClick} />
     </div>
   );
 }
