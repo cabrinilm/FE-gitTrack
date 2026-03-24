@@ -1,67 +1,55 @@
-import { useEffect, useState } from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { useState, useEffect } from "react";
+import { Heatmap } from "@/components/ui/heatmap";
 
-type HeatmapData = {
-  date: string
-  value: number
-}
+type HeatmapDay = {
+  date: string;
+  count: number;
+};
 
-export default function HeatMap() {
-  const [data, setData] = useState<HeatmapData[]>([])
-  const [loading, setLoading] = useState(true)
+export default function HeatmapPage() {
+  const [heatmapData, setHeatmapData] = useState<HeatmapDay[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // 🔄 Simulação de API
-    setTimeout(() => {
-      const mockData: HeatmapData[] = Array.from({ length: 30 }, (_, i) => ({
-        date: `2026-03-${i + 1}`,
-        value: Math.floor(Math.random() * 5),
-      }))
+    const fetchHeatmapData = async () => {
+      try {
+        setIsLoading(true);
+        const res = await fetch("/api/progress/heatmap");
+        
+        if (!res.ok) throw new Error("Failed to fetch heatmap data");
+        
+        const data: HeatmapDay[] = await res.json();
+        setHeatmapData(data);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Erro ao carregar heatmap");
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-      setData(mockData)
-      setLoading(false)
-    }, 1200)
-  }, [])
+    fetchHeatmapData();
+  }, []);
+
+  const handleDayClick = (date: string) => {
+    console.log("Clicou no dia:", date);
+    // Aqui depois vamos chamar o segundo endpoint: /api/progress/:date/fulfillments
+  };
+
+  if (isLoading) return <div className="p-6">Carregando heatmap...</div>;
+  if (error) return <div className="p-6 text-red-500">Erro: {error}</div>;
 
   return (
     <div className="p-6 space-y-6">
-      <h1 className="text-2xl font-bold">Heatmap</h1>
+      <div>
+        <h1 className="text-3xl font-bold">Heatmap de Progresso</h1>
+        <p className="text-muted-foreground">Últimos 12 meses • Atividades concluídas por dia</p>
+      </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Activity Overview</CardTitle>
-        </CardHeader>
-
-        <CardContent>
-          {loading && <p>Loading heatmap...</p>}
-
-          {!loading && data.length === 0 && (
-            <p>No activity found.</p>
-          )}
-
-          {!loading && data.length > 0 && (
-            <div className="grid grid-cols-6 gap-2">
-              {data.map((item, index) => (
-                <div
-                  key={index}
-                  className={`h-10 w-full rounded-md ${
-                    item.value === 0
-                      ? "bg-gray-200"
-                      : item.value === 1
-                      ? "bg-green-200"
-                      : item.value === 2
-                      ? "bg-green-400"
-                      : item.value === 3
-                      ? "bg-green-600"
-                      : "bg-green-800"
-                  }`}
-                  title={`${item.date} - ${item.value} activities`}
-                />
-              ))}
-            </div>
-          )}
-        </CardContent>
-      </Card>
+      <Heatmap 
+        data={heatmapData} 
+        onDayClick={handleDayClick} 
+      />
     </div>
-  )
+  );
 }
