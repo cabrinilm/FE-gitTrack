@@ -15,7 +15,7 @@ export default function HeatmapPage() {
   const handleDayClick = (date: string) => {
     console.log("Clicou no dia:", date);
 
-    // fetch(`/api/progress/${date}/fulfillments`)
+  
   };
 
   if (loading) return <div className="p-6">Carregando heatmap...</div>;
