@@ -14,7 +14,7 @@ export default function HeatmapPage() {
 
   const handleDayClick = (date: string) => {
     console.log("Clicou no dia:", date);
-    // Aqui você vai chamar o segundo endpoint:
+
     // fetch(`/api/progress/${date}/fulfillments`)
   };
 
