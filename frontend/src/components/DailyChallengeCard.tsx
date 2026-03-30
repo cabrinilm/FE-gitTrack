@@ -115,7 +115,6 @@ export function DailyChallengeCard() {
         </p>
       </div>
 
-      {/* Conteúdo principal */}
       <div className="p-6 space-y-10">
         {/* Container do Progresso - aqui! */}
         <div>
