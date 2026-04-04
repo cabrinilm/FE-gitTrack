@@ -8,8 +8,8 @@ import {
 } from "./tooltip";
 
 type HeatmapDay = {
-  date: string;        // "YYYY-MM-DD"
-  count: number;       // quantidade de atividades concluídas
+  date: string;       
+  count: number;       
 };
 
 interface HeatmapProps {
