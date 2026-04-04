@@ -88,7 +88,7 @@ export function Heatmap({ data = [], onDayClick, className }: HeatmapProps) {
         </div>
       </TooltipProvider>
 
-      {/* Legenda */}
+    
       <div className="flex items-center justify-between text-xs text-muted-foreground px-1">
         <span>Menos</span>
         <div className="flex gap-1">
