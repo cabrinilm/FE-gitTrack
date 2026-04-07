@@ -105,7 +105,7 @@ export function DailyChallengeCard() {
 
   return (
     <div className="bg-card rounded-2xl border border-border shadow-lg overflow-hidden">
-      {/* Cabeçalho com nome do challenge */}
+     
       <div className="bg-primary/10 px-6 py-5 border-b border-border">
         <h2 className="text-2xl font-bold text-primary">
           {activeChallenge?.name || "Daily Challenge"}
@@ -116,7 +116,7 @@ export function DailyChallengeCard() {
       </div>
 
       <div className="p-6 space-y-10">
-        {/* Container do Progresso - aqui! */}
+       
         <div>
           <div className="flex justify-between items-center mb-4">
             <h3 className="text-lg font-medium text-foreground">
