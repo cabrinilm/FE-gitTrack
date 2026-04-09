@@ -1,5 +1,5 @@
 import { Heatmap } from "@/components/ui/heatmap";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { api, setApiToken } from "@/lib/api";
 import { useAuth } from "@/context/useAuth";
 
@@ -8,18 +8,31 @@ type HeatmapDay = {
   count: number;
 };
 
+type Fulfillment = {
+  id: number;
+  progress_entry_id: number;
+  activity_id: number;
+  activity_name: string;
+  planned_duration_minutes: number;
+};
 
+type FulfillmentsResponse = {
+  fulfillments: Fulfillment[];
+};
 
 export default function HeatmapPage() {
-
-   const { token, user } = useAuth();
+  const { token, user } = useAuth();
 
   const [data, setData] = useState<HeatmapDay[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [fulfillments, setFulfillments] = useState<Fulfillment[]>([]);
+  const [detailsLoading, setDetailsLoading] = useState(false);
+  const [detailsError, setDetailsError] = useState<string | null>(null);
 
-useEffect(() => {
+  useEffect(() => {
     if (!token || !user) {
       setError("Authentication required");
       setLoading(false);
@@ -36,7 +49,6 @@ useEffect(() => {
         const { data: heatmapData } =
           await api.get<HeatmapDay[]>("/api/progress/heatmap");
 
-        console.log("heatmap response:", heatmapData);
         setData(heatmapData);
       } catch (err) {
         console.error("Failed to load heatmap:", err);
@@ -49,18 +61,70 @@ useEffect(() => {
     loadHeatmap();
   }, [token, user]);
 
-    
-  const handleDayClick = (date: string) => {
-    console.log("Clicou no dia:", date);
+  const handleDayClick = async (date: string) => {
+    setSelectedDate(date);
+    setDetailsLoading(true);
+    setDetailsError(null);
 
-  
+    try {
+      const { data: response } = await api.get<FulfillmentsResponse>(
+        `/api/progress/${date}/fulfillments`
+      );
+
+      setFulfillments(response.fulfillments || []);
+    } catch (err) {
+      console.error("Failed to load fulfillments for selected day:", err);
+      setDetailsError("Failed to load activities for this day.");
+      setFulfillments([]);
+    } finally {
+      setDetailsLoading(false);
+    }
   };
 
-  if (loading) return <div className="p-6">Carregando heatmap...</div>;
+  if (loading) return <div className="p-6">Loading heatmap...</div>;
+  if (error) return <div className="p-6 text-red-500">{error}</div>;
 
   return (
-    <div className="p-6">
+    <div className="space-y-6 p-6">
       <Heatmap data={data} onDayClick={handleDayClick} />
+
+      {selectedDate && (
+        <div className="rounded-xl border border-white/10 bg-surface/60 p-4">
+          <h3 className="text-lg font-semibold text-text-primary">
+            Activities for {selectedDate}
+          </h3>
+
+          {detailsLoading && (
+            <p className="mt-2 text-sm text-text-muted">Loading activities...</p>
+          )}
+
+          {detailsError && (
+            <p className="mt-2 text-sm text-red-400">{detailsError}</p>
+          )}
+
+          {!detailsLoading && !detailsError && fulfillments.length === 0 && (
+            <p className="mt-2 text-sm text-text-muted">
+              No completed activities for this day.
+            </p>
+          )}
+
+          {!detailsLoading && !detailsError && fulfillments.length > 0 && (
+            <ul className="mt-3 space-y-2">
+              {fulfillments.map((item) => (
+                <li
+                  key={item.id}
+                  className="flex items-center justify-between rounded-lg border border-white/10 px-3 py-2 text-sm text-text-primary"
+                >
+                  <span className="font-medium">{item.activity_name}</span>
+                  <span className="text-xs text-text-muted">
+                    {item.planned_duration_minutes} min
+                  </span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      )}
     </div>
   );
 }
