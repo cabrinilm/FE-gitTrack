@@ -8,6 +8,18 @@ import { Loader2 } from "lucide-react";
 import { cn } from "@/utils/cn";
 import type { Challenge, Activity } from "@/pages/types";
 
+type Fulfillment = {
+  id: number;
+  progress_entry_id: number;
+  activity_id: number;
+  activity_name: string;
+  planned_duration_minutes: number;
+};
+
+type FulfillmentsResponse = {
+  fulfillments: Fulfillment[];
+};
+
 export function DailyChallengeCard() {
   const [activeChallenge, setActiveChallenge] = useState<Challenge | null>(null);
   const [activities, setActivities] = useState<Activity[]>([]);
@@ -53,20 +65,15 @@ export function DailyChallengeCard() {
       setActivities(allActivities);
 
       const today = new Date().toISOString().split("T")[0];
-      const { data: response } = await api.get<any>(
-        `/api/progress/${today}/fulfillments`,
-      );
+     const { data: response } = await api.get<FulfillmentsResponse>(
+  `/api/progress/${today}/fulfillments`,
+);
 
-      const fulfillmentsArray = response?.fulfillments || [];
+const fulfillments = response.fulfillments;
 
-      const fulfillments: { activity_id: number | string }[] =
-        fulfillmentsArray;
-
-      const ids = new Set<number>(
-        fulfillments
-          .filter((f) => f.activity_id != null)
-          .map((f) => Number(f.activity_id)),
-      );
+  const ids = new Set<number>(
+  fulfillments.map((f) => f.activity_id)
+);
 
       setCompletedIds(ids);
     } catch (err: any) {
