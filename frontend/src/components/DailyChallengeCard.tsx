@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
+import { Link } from "react-router-dom";
 import { api, setApiToken } from "@/lib/api";
 import { useAuth } from "@/context/useAuth";
 import { Button } from "./Button/Button";
@@ -8,18 +9,17 @@ import { cn } from "@/utils/cn";
 import type { Challenge, Activity } from "@/pages/types";
 
 export function DailyChallengeCard() {
-  const [activeChallenge, setActiveChallenge] = useState<Challenge | null>(
-    null,
-  );
+  const [activeChallenge, setActiveChallenge] = useState<Challenge | null>(null);
   const [activities, setActivities] = useState<Activity[]>([]);
   const [completedIds, setCompletedIds] = useState<Set<number>>(new Set());
   const [isLoading, setIsLoading] = useState(true);
   const [completingId, setCompletingId] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [hasNoChallenge, setHasNoChallenge] = useState(false);
 
   const { token, user } = useAuth();
 
-  useEffect(() => {
+  const fetchDailyData = useCallback(async () => {
     if (!token || !user) {
       setError("Authentication required");
       setIsLoading(false);
@@ -28,54 +28,58 @@ export function DailyChallengeCard() {
 
     setApiToken(token);
 
-    const fetchDailyData = async () => {
-      setIsLoading(true);
-      setError(null);
+    setIsLoading(true);
+    setError(null);
+    setHasNoChallenge(false);
 
-      try {
-        // 1. Desafio ativo (objeto único)
-        const { data: challenge } = await api.get("/api/active-challenge");
-        if (!challenge?.id) {
-          setError("No active challenge found");
-          return;
-        }
-        setActiveChallenge(challenge);
+    try {
+      const { data: challenge } = await api.get<Challenge | null>(
+        "/api/active-challenge",
+      );
 
-        // 2. Todas as atividades do desafio (fixas)
-        const { data: allActivities } = await api.get<Activity[]>(
-          `/api/challenges/${challenge.id}/activities`,
-        );
-        setActivities(allActivities);
-
-        // 3. Fulfillments do dia atual (quais já foram marcadas hoje)
-        const today = new Date().toISOString().split("T")[0];
-        const { data: response } = await api.get<any>(
-          `/api/progress/${today}/fulfillments`,
-        );
-
-        const fulfillmentsArray = response?.fulfillments || [];
-
-        // Tipamos o array explicitamente
-        const fulfillments: { activity_id: number | string }[] =
-          fulfillmentsArray;
-
-        const ids = new Set<number>(
-          fulfillments
-            .filter((f) => f.activity_id != null)
-            .map((f) => Number(f.activity_id)),
-        );
-
-        setCompletedIds(ids);
-      } catch (err: any) {
-        console.error("Failed to load daily challenge data:", err);
-        setError("Failed to load today's activities");
-      } finally {
-        setIsLoading(false);
+      if (!challenge?.id) {
+        setActiveChallenge(null);
+        setActivities([]);
+        setCompletedIds(new Set());
+        setHasNoChallenge(true);
+        return;
       }
-    };
 
-    fetchDailyData();
+      setActiveChallenge(challenge);
+
+      const { data: allActivities } = await api.get<Activity[]>(
+        `/api/challenges/${challenge.id}/activities`,
+      );
+      setActivities(allActivities);
+
+      const today = new Date().toISOString().split("T")[0];
+      const { data: response } = await api.get<any>(
+        `/api/progress/${today}/fulfillments`,
+      );
+
+      const fulfillmentsArray = response?.fulfillments || [];
+
+      const fulfillments: { activity_id: number | string }[] =
+        fulfillmentsArray;
+
+      const ids = new Set<number>(
+        fulfillments
+          .filter((f) => f.activity_id != null)
+          .map((f) => Number(f.activity_id)),
+      );
+
+      setCompletedIds(ids);
+    } catch (err: any) {
+      console.error("Failed to load daily challenge data:", err);
+      setError("Failed to load today's activities");
+    } finally {
+      setIsLoading(false);
+    }
   }, [token, user]);
+
+  useEffect(() => {
+    fetchDailyData();
+  }, [fetchDailyData]);
 
   const handleMarkComplete = async (activityId: number) => {
     if (completedIds.has(activityId) || completingId !== null) return;
@@ -84,9 +88,8 @@ export function DailyChallengeCard() {
     setError(null);
 
     try {
-      await api.post("/api/progress/fulfillments", { activityId: activityId });
+      await api.post("/api/progress/fulfillments", { activityId });
 
-      // Atualização otimista
       setCompletedIds((prev) => new Set([...prev, activityId]));
     } catch (err: any) {
       console.error("Failed to complete activity:", err);
@@ -96,17 +99,16 @@ export function DailyChallengeCard() {
     }
   };
 
-  const completedCount = completedIds.size; // número de ids únicos marcados hoje
-  const totalActivities = activities.length; // total de atividades fixas do desafio
+  const completedCount = completedIds.size;
+  const totalActivities = activities.length;
   const progressPercentage =
     totalActivities > 0
       ? Math.round((completedCount / totalActivities) * 100)
       : 0;
 
   return (
-    <div className="bg-card rounded-2xl border border-border shadow-lg overflow-hidden">
-     
-      <div className="bg-primary/10 px-6 py-5 border-b border-border">
+    <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-lg">
+      <div className="border-b border-border bg-primary/10 px-6 py-5">
         <h2 className="text-2xl font-bold text-primary">
           {activeChallenge?.name || "Daily Challenge"}
         </h2>
@@ -115,52 +117,60 @@ export function DailyChallengeCard() {
         </p>
       </div>
 
-      <div className="p-6 space-y-10">
-       
-        <div>
-          <div className="flex justify-between items-center mb-4">
-            <h3 className="text-lg font-medium text-foreground">
-              Today's Progress
-            </h3>
-            <span className="text-sm text-muted-foreground">
-              {completedCount} of {totalActivities} completed (
-              {progressPercentage}%)
-            </span>
-          </div>
+      <div className="space-y-10 p-6">
+        {!isLoading && !error && !hasNoChallenge && (
+          <div>
+            <div className="mb-4 flex items-center justify-between">
+              <h3 className="text-lg font-medium text-foreground">
+                Today's Progress
+              </h3>
+              <span className="text-sm text-muted-foreground">
+                {completedCount} of {totalActivities} completed (
+                {progressPercentage}%)
+              </span>
+            </div>
 
-          <div className="h-3 w-full bg-muted/50 rounded-full overflow-hidden border border-border/30">
-            <div
-              className="h-full bg-primary transition-all duration-600 ease-out"
-              style={{ width: `${progressPercentage}%` }}
-            />
+            <div className="h-3 w-full overflow-hidden rounded-full border border-border/30 bg-muted/50">
+              <div
+                className="h-full bg-primary transition-all duration-600 ease-out"
+                style={{ width: `${progressPercentage}%` }}
+              />
+            </div>
           </div>
-        </div>
+        )}
 
-        {/* Lista de atividades */}
         {isLoading ? (
           <div className="flex flex-col items-center justify-center py-12">
-            <Loader2 className="w-8 h-8 animate-spin text-primary mb-4" />
+            <Loader2 className="mb-4 h-8 w-8 animate-spin text-primary" />
             <p className="text-muted-foreground">
               Loading today's activities...
             </p>
           </div>
         ) : error ? (
-          <div className="text-center py-12">
-            <p className="text-destructive font-medium mb-4">{error}</p>
-            <Button
-              variant="secondary"
-              size="sm"
-              onClick={() => {
-                setError(null);
-                setIsLoading(true);
-                window.location.reload();
-              }}
-            >
+          <div className="py-12 text-center">
+            <p className="mb-4 font-medium text-destructive">{error}</p>
+            <Button variant="secondary" size="sm" onClick={fetchDailyData}>
               Try Again
             </Button>
           </div>
+        ) : hasNoChallenge ? (
+          <div className="py-12 text-center">
+            <p className="text-lg font-medium text-foreground">
+              You do not have an active challenge yet.
+            </p>
+            <p className="mt-2 text-sm text-muted-foreground">
+              Create your first challenge to start tracking your daily progress.
+            </p>
+
+            <Link
+              to="/create"
+              className="mt-6 inline-flex items-center justify-center rounded-xl bg-primary px-4 py-2 text-sm font-medium text-white transition hover:opacity-90"
+            >
+              Create Challenge
+            </Link>
+          </div>
         ) : activities.length === 0 ? (
-          <div className="text-center py-12 text-muted-foreground">
+          <div className="py-12 text-center text-muted-foreground">
             No activities found for this challenge.
           </div>
         ) : (
@@ -178,13 +188,12 @@ export function DailyChallengeCard() {
                       handleMarkComplete(act.id)
                     }
                     className={cn(
-                      "flex items-center gap-4 p-4 rounded-xl border border-border/60",
-                      "transition-all duration-200 cursor-pointer group",
+                      "group flex cursor-pointer items-center gap-4 rounded-xl border border-border/60 p-4 transition-all duration-200",
                       isCompleted &&
-                        "bg-primary/5 border-primary/30 opacity-90",
-                      isCompleting && "opacity-70 animate-pulse bg-primary/5",
+                        "border-primary/30 bg-primary/5 opacity-90",
+                      isCompleting && "animate-pulse bg-primary/5 opacity-70",
                       !isCompleted &&
-                        "hover:bg-primary/5 hover:border-primary/40 active:bg-primary/10",
+                        "hover:border-primary/40 hover:bg-primary/5 active:bg-primary/10",
                     )}
                     role="button"
                     tabIndex={0}
@@ -200,25 +209,23 @@ export function DailyChallengeCard() {
                       }
                     }}
                   >
-                    {/* Círculo */}
                     <div className="shrink-0">
                       <div
                         className={cn(
-                          "w-8 h-8 rounded-full border-2 flex items-center justify-center transition-all duration-300",
+                          "flex h-8 w-8 items-center justify-center rounded-full border-2 transition-all duration-300",
                           isCompleted
-                            ? "bg-primary border-primary text-primary-foreground shadow-sm"
+                            ? "border-primary bg-primary text-primary-foreground shadow-sm"
                             : "border-muted-foreground bg-transparent group-hover:border-primary group-hover:bg-primary/5",
                         )}
                       >
-                        {isCompleted && <FaCheck className="w-5 h-5" />}
+                        {isCompleted && <FaCheck className="h-5 w-5" />}
                         {isCompleting && (
-                          <Loader2 className="w-5 h-5 animate-spin text-primary" />
+                          <Loader2 className="h-5 w-5 animate-spin text-primary" />
                         )}
                       </div>
                     </div>
 
-                    {/* Nome */}
-                    <div className="flex-1 min-w-0">
+                    <div className="min-w-0 flex-1">
                       <p
                         className={cn(
                           "text-base font-medium text-foreground",
@@ -229,7 +236,6 @@ export function DailyChallengeCard() {
                       </p>
                     </div>
 
-                    {/* Duração */}
                     <div className="shrink-0 text-sm font-medium text-primary/80">
                       {act.duration_minutes} min
                     </div>
