@@ -3,14 +3,9 @@ import { Link } from "react-router-dom";
 import { api, setApiToken } from "@/lib/api";
 import { useAuth } from "@/context/useAuth";
 import { ChallengeCard } from "./ChallengeCard";
+import type { Challenge } from "./types";
 
-type Challenge = {
-  id: string;
-  name: string;
-  description?: string;
-  created_at: string;
-  isActive?: boolean;
-};
+
 
 export function AllChallengesList() {
   const { token, user } = useAuth();

@@ -1,16 +1,6 @@
 import { FaCheckCircle, FaRegCircle, FaTrash } from "react-icons/fa";
+import type { ChallengeCardProps } from "./types";
 
-type ChallengeCardProps = {
-  challenge: {
-    id: string;
-    name: string;
-    description?: string;
-    created_at: string;
-    isActive?: boolean;
-  };
-  onRemove?: () => void;
-  onToggleActive?: () => void;
-};
 
 export function ChallengeCard({
   challenge,
