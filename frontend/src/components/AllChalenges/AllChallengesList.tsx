@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { api, setApiToken } from "@/lib/api";
 import { useAuth } from "@/context/useAuth";
 import { ChallengeCard } from "./ChallengeCard";
@@ -13,6 +13,8 @@ export function AllChallengesList() {
   const [challenges, setChallenges] = useState<Challenge[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!token || !user) {
@@ -80,6 +82,10 @@ export function AllChallengesList() {
     }
   };
 
+  const handleUpdate = async (id: string) => {
+    navigate(`/challenges/${id}/edit`)
+  }
+
   if (isLoading) return <p className="p-6">Loading challenges...</p>;
 
   if (error) return <p className="p-6 text-red-500">{error}</p>;
@@ -114,6 +120,7 @@ export function AllChallengesList() {
           challenge={challenge}
           onRemove={() => handleRemove(challenge.id)}
           onToggleActive={() => handleActivate(challenge.id)}
+          onEdit={() => handleUpdate(challenge.id)}
         />
       ))}
     </div>

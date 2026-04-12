@@ -5,9 +5,11 @@ export type ChallengeCardProps = {
     description?: string;
     created_at: string;
     isActive?: boolean;
+    
   };
   onRemove?: () => void;
   onToggleActive?: () => void;
+  onEdit?: () => void;
 };
 
 export type Challenge = {
@@ -17,3 +19,5 @@ export type Challenge = {
   created_at: string;
   isActive?: boolean;
 };
+
+

@@ -75,7 +75,7 @@ export function CreateChallengeCard() {
       }));
 
       // 1️⃣ create challenge
-      console.log("1")
+     
       const { data: challenge } = await api.post("/api/challenges", {
         name,
         description: description || null,

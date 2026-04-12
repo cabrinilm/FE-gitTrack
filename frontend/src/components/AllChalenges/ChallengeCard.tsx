@@ -1,20 +1,16 @@
-import { FaCheckCircle, FaRegCircle, FaTrash } from "react-icons/fa";
+import { FaCheckCircle, FaRegCircle, FaTrash, FaEdit } from "react-icons/fa";
 import type { ChallengeCardProps } from "./types";
-
 
 export function ChallengeCard({
   challenge,
   onRemove,
   onToggleActive,
+  onEdit,
 }: ChallengeCardProps) {
-  console.log(challenge);
-
   return (
     <div className="bg-card rounded-2xl border border-border shadow-lg overflow-hidden w-full sm:w-72 flex flex-col justify-between">
-      
       {/* Top bar */}
       <div className="flex justify-between items-center px-4 py-2">
-        
         {/* Status */}
         <span
           className={`text-xs font-semibold px-2 py-1 rounded text-white ${
@@ -25,8 +21,8 @@ export function ChallengeCard({
         </span>
 
         {/* Actions */}
+        {/* Actions */}
         <div className="flex items-center gap-3 text-lg">
-          
           {/* Activate */}
           {onToggleActive && (
             <button
@@ -35,6 +31,17 @@ export function ChallengeCard({
               title="Set as active"
             >
               {challenge.isActive ? <FaCheckCircle /> : <FaRegCircle />}
+            </button>
+          )}
+
+          {/* Edit */}
+          {onEdit && (
+            <button
+              onClick={onEdit}
+              className="text-white hover:text-blue-400 transition"
+              title="Edit challenge"
+            >
+              <FaEdit />
             </button>
           )}
 
