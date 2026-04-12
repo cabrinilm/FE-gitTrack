@@ -21,3 +21,8 @@ export type Challenge = {
 };
 
 
+export type Activity = {
+  id: string;
+  name: string;
+  duration_minutes: number;
+};

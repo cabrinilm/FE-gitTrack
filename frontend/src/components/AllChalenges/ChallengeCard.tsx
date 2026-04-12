@@ -1,4 +1,4 @@
-import { FaCheckCircle, FaRegCircle, FaTrash, FaEdit } from "react-icons/fa";
+import { FaCheckCircle, FaEdit, FaRegCircle, FaTrash } from "react-icons/fa";
 import type { ChallengeCardProps } from "./types";
 
 export function ChallengeCard({
@@ -8,49 +8,48 @@ export function ChallengeCard({
   onEdit,
 }: ChallengeCardProps) {
   return (
-    <div className="bg-card rounded-2xl border border-border shadow-lg overflow-hidden w-full sm:w-72 flex flex-col justify-between">
-      {/* Top bar */}
-      <div className="flex justify-between items-center px-4 py-2">
-        {/* Status */}
+    <div className="flex h-full w-full flex-col justify-between overflow-hidden rounded-2xl border border-border bg-card shadow-lg">
+      <div className="flex items-center justify-between px-4 py-2">
         <span
-          className={`text-xs font-semibold px-2 py-1 rounded text-white ${
+          className={`rounded px-2 py-1 text-xs font-semibold text-white ${
             challenge.isActive ? "bg-green-600" : "bg-gray-500"
           }`}
         >
           {challenge.isActive ? "Active" : "Inactive"}
         </span>
 
-        {/* Actions */}
-        {/* Actions */}
         <div className="flex items-center gap-3 text-lg">
-          {/* Activate */}
           {onToggleActive && (
             <button
+              type="button"
               onClick={onToggleActive}
-              className="text-white hover:text-green-400 transition"
+              className="text-white transition hover:text-green-400"
               title="Set as active"
+              aria-label="Set as active"
             >
               {challenge.isActive ? <FaCheckCircle /> : <FaRegCircle />}
             </button>
           )}
 
-          {/* Edit */}
           {onEdit && (
             <button
+              type="button"
               onClick={onEdit}
-              className="text-white hover:text-blue-400 transition"
+              className="text-white transition hover:text-blue-400"
               title="Edit challenge"
+              aria-label="Edit challenge"
             >
               <FaEdit />
             </button>
           )}
 
-          {/* Delete */}
           {onRemove && (
             <button
+              type="button"
               onClick={onRemove}
-              className="text-white hover:text-red-400 transition"
+              className="text-white transition hover:text-red-400"
               title="Delete challenge"
+              aria-label="Delete challenge"
             >
               <FaTrash />
             </button>
@@ -58,20 +57,18 @@ export function ChallengeCard({
         </div>
       </div>
 
-      {/* Content */}
-      <div className="p-4 flex-1 flex flex-col justify-center">
-        <h2 className="text-xl font-bold text-foreground mb-2">
+      <div className="flex flex-1 flex-col justify-center p-4">
+        <h2 className="mb-2 text-xl font-bold text-foreground">
           {challenge.name}
         </h2>
 
         {challenge.description && (
-          <p className="text-muted-foreground text-sm">
+          <p className="text-sm text-muted-foreground">
             {challenge.description}
           </p>
         )}
       </div>
 
-      {/* Footer */}
       <div className="px-4 pb-4 text-xs text-muted-foreground">
         Created: {new Date(challenge.created_at).toLocaleDateString()}
       </div>

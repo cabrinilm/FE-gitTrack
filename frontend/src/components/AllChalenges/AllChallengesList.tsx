@@ -5,8 +5,6 @@ import { useAuth } from "@/context/useAuth";
 import { ChallengeCard } from "./ChallengeCard";
 import type { Challenge } from "./types";
 
-
-
 export function AllChallengesList() {
   const { token, user } = useAuth();
 
@@ -40,8 +38,9 @@ export function AllChallengesList() {
         return;
       }
 
-      const { data: activeChallenge } =
-        await api.get<Challenge | null>("/api/active-challenge");
+      const { data: activeChallenge } = await api.get<Challenge | null>(
+        "/api/active-challenge",
+      );
 
       const challengesWithStatus = allChallenges.map((c) => ({
         ...c,
@@ -82,9 +81,9 @@ export function AllChallengesList() {
     }
   };
 
-  const handleUpdate = async (id: string) => {
-    navigate(`/challenges/${id}/edit`)
-  }
+  const handleEdit = (id: string) => {
+    navigate(`/challenges/${id}/edit`);
+  };
 
   if (isLoading) return <p className="p-6">Loading challenges...</p>;
 
@@ -120,7 +119,7 @@ export function AllChallengesList() {
           challenge={challenge}
           onRemove={() => handleRemove(challenge.id)}
           onToggleActive={() => handleActivate(challenge.id)}
-          onEdit={() => handleUpdate(challenge.id)}
+          onEdit={() => handleEdit(challenge.id)}
         />
       ))}
     </div>

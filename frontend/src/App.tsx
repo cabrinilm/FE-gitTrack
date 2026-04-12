@@ -14,7 +14,7 @@ import { ProtectedRoute } from "./components/ProtectedRoute/ProtectedRoute";
 import { AuthLayout } from "./pages/auth/AuthLayout";
 import { ResetPasswordForm } from "./pages/auth/ResetPasswordForm";
 import { ProtectedLayout } from "./components/layout/ProtectedLayout";
-
+import { EditChallengePage } from "./components/AllChalenges/EditChallengePage";
 
 export default function App() {
   return (
@@ -46,6 +46,7 @@ export default function App() {
             <Route path="/" element={<Home />} />
             <Route path="/create" element={<CreateChallenge />} />
             <Route path="/challenges" element={<AllChallenges />} />
+            <Route path="/challenges/:challengeId/edit" element={<EditChallengePage />} />
             <Route path="/heatmap" element={<HeatMap />} />
             </Route>
           </Route>
