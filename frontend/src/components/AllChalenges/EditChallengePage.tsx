@@ -1,13 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { Loader2 } from "lucide-react";
 import { api, setApiToken } from "@/lib/api";
 import { useAuth } from "@/context/useAuth";
 import type { Challenge, Activity } from "./types";
+import { BackButton } from "../ui/BackButton";
 
 export function EditChallengePage() {
   const { challengeId } = useParams();
-  const navigate = useNavigate();
   const { token, user } = useAuth();
 
   const [challenge, setChallenge] = useState<Challenge | null>(null);
@@ -265,13 +265,8 @@ export function EditChallengePage() {
     <div className="mx-auto max-w-2xl space-y-6 p-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-foreground">Edit Challenge</h1>
-        <button
-          type="button"
-          onClick={() => navigate(-1)}
-          className="rounded-xl border border-border px-4 py-2 text-sm text-foreground transition hover:bg-muted/40"
-        >
-          Back
-        </button>
+<BackButton />
+
       </div>
 
       <div className="space-y-4 rounded-2xl border border-border bg-card p-5">
