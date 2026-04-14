@@ -68,7 +68,7 @@ export function EditChallengePage() {
       try {
         setIsLoading(true);
         setError(null);
-
+   
         const { data: challengeData } = await api.get<Challenge>(
           `/api/challenges/${challengeId}`,
         );
