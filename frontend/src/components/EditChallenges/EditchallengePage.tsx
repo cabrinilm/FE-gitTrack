@@ -3,8 +3,11 @@ import { useParams } from "react-router-dom";
 import { Loader2 } from "lucide-react";
 import { api, setApiToken } from "@/lib/api";
 import { useAuth } from "@/context/useAuth";
-import type { Challenge, Activity } from "./types";
+import type { Activity, Challenge } from "./type";
+
 import { BackButton } from "../ui/BackButton";
+import { EditChallengeForm } from "./EditChallengeForm";
+import { EditActivityCard } from "./EditActivityCard";
 
 export function EditChallengePage() {
   const { challengeId } = useParams();
@@ -13,6 +16,7 @@ export function EditChallengePage() {
   const [challenge, setChallenge] = useState<Challenge | null>(null);
   const [activities, setActivities] = useState<Activity[]>([]);
   const [originalActivities, setOriginalActivities] = useState<Activity[]>([]);
+
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -38,6 +42,7 @@ export function EditChallengePage() {
   const challengeSavedTimeoutRef = useRef<number | null>(null);
   const activitySavedTimeoutRef = useRef<number | null>(null);
 
+  // Cleanup timeouts
   useEffect(() => {
     return () => {
       if (challengeSavedTimeoutRef.current) {
@@ -49,6 +54,7 @@ export function EditChallengePage() {
     };
   }, []);
 
+  // Fetch data
   useEffect(() => {
     if (!challengeId) {
       setError("Challenge ID is missing");
@@ -68,7 +74,7 @@ export function EditChallengePage() {
       try {
         setIsLoading(true);
         setError(null);
-   
+
         const { data: challengeData } = await api.get<Challenge>(
           `/api/challenges/${challengeId}`,
         );
@@ -91,6 +97,7 @@ export function EditChallengePage() {
     fetchData();
   }, [challengeId, token, user]);
 
+  // Sync challenge into local form state
   useEffect(() => {
     if (challenge) {
       const safeName = challenge.name || "";
@@ -105,12 +112,15 @@ export function EditChallengePage() {
   }, [challenge]);
 
   const isChallengeValid = challengeName.trim().length > 0;
+
   const hasChallengeChanges =
     challengeName !== originalChallengeName ||
     challengeDescription !== originalChallengeDescription;
+
   const canSaveChallenge =
     isChallengeValid && hasChallengeChanges && !isSavingChallenge;
 
+  // Activity meta
   const activityMeta = useMemo(() => {
     const originalMap = new Map(
       originalActivities.map((item) => [item.id, item]),
@@ -125,7 +135,8 @@ export function EditChallengePage() {
       const original = originalMap.get(activity.id);
 
       const isValid =
-        activity.name.trim().length > 0 && Number(activity.duration_minutes) > 0;
+        activity.name.trim().length > 0 &&
+        Number(activity.duration_minutes) > 0;
 
       const hasChanges =
         !!original &&
@@ -142,6 +153,7 @@ export function EditChallengePage() {
     return map;
   }, [activities, originalActivities, savingActivityId]);
 
+  // Save challenge
   const handleSaveChallenge = async () => {
     if (!challengeId || !canSaveChallenge) return;
 
@@ -167,6 +179,7 @@ export function EditChallengePage() {
             }
           : prev,
       );
+
       setChallengeName(trimmedName);
       setChallengeDescription(trimmedDescription);
       setOriginalChallengeName(trimmedName);
@@ -182,13 +195,21 @@ export function EditChallengePage() {
         setSavedChallenge(false);
       }, 2000);
     } catch (err) {
-      console.error("Failed to update challenge:", err);
+      console.error(err);
       setSaveChallengeError("Failed to save challenge");
     } finally {
       setIsSavingChallenge(false);
     }
   };
 
+  // Update activity locally
+  const handleActivityChange = (updated: Activity) => {
+    setActivities((prev) =>
+      prev.map((item) => (item.id === updated.id ? updated : item)),
+    );
+  };
+
+  // Save activity
   const handleSaveActivity = async (activityId: string) => {
     if (!challengeId) return;
 
@@ -204,21 +225,12 @@ export function EditChallengePage() {
 
       const trimmedName = activity.name.trim();
 
-      await api.patch(`/api/challenges/${challengeId}/activities/${activityId}`, {
-        name: trimmedName,
-        duration_minutes: activity.duration_minutes,
-      });
-
-      setActivities((prev) =>
-        prev.map((item) =>
-          item.id === activityId
-            ? {
-                ...item,
-                name: trimmedName,
-                duration_minutes: activity.duration_minutes,
-              }
-            : item,
-        ),
+      await api.patch(
+        `/api/challenges/${challengeId}/activities/${activityId}`,
+        {
+          name: trimmedName,
+          duration_minutes: activity.duration_minutes,
+        },
       );
 
       setOriginalActivities((prev) =>
@@ -240,16 +252,19 @@ export function EditChallengePage() {
       }
 
       activitySavedTimeoutRef.current = window.setTimeout(() => {
-        setSavedActivityId((current) => (current === activityId ? null : current));
+        setSavedActivityId((current) =>
+          current === activityId ? null : current,
+        );
       }, 2000);
     } catch (err) {
-      console.error("Failed to update activity:", err);
+      console.error(err);
       setSaveActivityError("Failed to save activity");
     } finally {
       setSavingActivityId(null);
     }
   };
 
+  // Loading
   if (isLoading) {
     return (
       <div className="flex items-center gap-3 p-6 text-muted-foreground">
@@ -263,166 +278,49 @@ export function EditChallengePage() {
 
   return (
     <div className="mx-auto max-w-2xl space-y-6 p-6">
-      
-       <div className="relative flex items-center">
+      {/* Header */}
+      <div className="relative flex items-center min-h-10">
         <BackButton />
-      
-    <h1 className="absolute left-1/2 -translate-x-1/2 text-2xl font-bold text-foreground">
-      Edit Challenge
-    </h1>
-  </div>
-
-      <div className="space-y-4 rounded-2xl border border-border bg-card p-5">
-        <div>
-          <label className="mb-1 block text-sm font-medium text-muted-foreground">
-            Challenge Name
-          </label>
-          <input
-            type="text"
-            value={challengeName}
-            onChange={(e) => setChallengeName(e.target.value)}
-            className="w-full rounded-lg border border-border bg-card px-3 py-2 text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
-          />
-          {challengeName.trim().length === 0 && (
-            <p className="mt-1 text-sm text-red-400">
-              Challenge name cannot be empty.
-            </p>
-          )}
-        </div>
-
-        <div>
-          <label className="mb-1 block text-sm font-medium text-muted-foreground">
-            Description
-          </label>
-          <textarea
-            value={challengeDescription}
-            onChange={(e) => setChallengeDescription(e.target.value)}
-            rows={4}
-            className="w-full rounded-lg border border-border bg-card px-3 py-2 text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
-          />
-        </div>
-
-        <div className="flex items-center gap-3">
-          <button
-            type="button"
-            onClick={handleSaveChallenge}
-            disabled={!canSaveChallenge}
-            className="inline-flex items-center justify-center rounded-xl bg-primary px-4 py-2 text-sm font-medium text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            {isSavingChallenge ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Saving...
-              </>
-            ) : (
-              "Save Challenge"
-            )}
-          </button>
-
-          {savedChallenge && <p className="text-sm text-green-400">Saved ✓</p>}
-        </div>
-
-        {saveChallengeError && (
-          <p className="text-sm text-red-400">{saveChallengeError}</p>
-        )}
+        <h1 className="absolute left-1/2 -translate-x-1/2 text-2xl font-bold text-foreground">
+          Edit Challenge
+        </h1>
       </div>
 
+      {/* Challenge Form */}
+      <EditChallengeForm
+        challengeName={challengeName}
+        challengeDescription={challengeDescription}
+        onChallengeNameChange={setChallengeName}
+        onChallengeDescriptionChange={setChallengeDescription}
+        onSave={handleSaveChallenge}
+        isSaving={isSavingChallenge}
+        canSave={canSaveChallenge}
+        saved={savedChallenge}
+        error={saveChallengeError}
+      />
+
+      {/* Activities */}
       <div>
-        <h2 className="mb-2 text-lg font-semibold text-foreground">Activities</h2>
+        <h2 className="mb-2 text-lg font-semibold text-foreground">
+          Activities
+        </h2>
 
         {saveActivityError && (
           <p className="mb-3 text-sm text-red-400">{saveActivityError}</p>
         )}
 
         <div className="space-y-4">
-          {activities.map((activity) => {
-            const isSaving = savingActivityId === activity.id;
-            const isSaved = savedActivityId === activity.id;
-            const meta = activityMeta.get(activity.id);
-            const showNameError = activity.name.trim().length === 0;
-            const showDurationError = Number(activity.duration_minutes) <= 0;
-
-            return (
-              <div
-                key={activity.id}
-                className="space-y-3 rounded-xl border border-border bg-card p-4"
-              >
-                <div>
-                  <label className="mb-1 block text-sm font-medium text-muted-foreground">
-                    Activity Name
-                  </label>
-                  <input
-                    type="text"
-                    value={activity.name}
-                    onChange={(e) =>
-                      setActivities((prev) =>
-                        prev.map((item) =>
-                          item.id === activity.id
-                            ? { ...item, name: e.target.value }
-                            : item,
-                        ),
-                      )
-                    }
-                    className="w-full rounded-lg border border-border bg-card px-3 py-2 text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
-                  />
-                  {showNameError && (
-                    <p className="mt-1 text-sm text-red-400">
-                      Activity name cannot be empty.
-                    </p>
-                  )}
-                </div>
-
-                <div>
-                  <label className="mb-1 block text-sm font-medium text-muted-foreground">
-                    Duration (minutes)
-                  </label>
-                  <input
-                    type="number"
-                    min={1}
-                    value={activity.duration_minutes}
-                    onChange={(e) =>
-                      setActivities((prev) =>
-                        prev.map((item) =>
-                          item.id === activity.id
-                            ? {
-                                ...item,
-                                duration_minutes: Number(e.target.value),
-                              }
-                            : item,
-                        ),
-                      )
-                    }
-                    className="w-full rounded-lg border border-border bg-card px-3 py-2 text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
-                  />
-                  {showDurationError && (
-                    <p className="mt-1 text-sm text-red-400">
-                      Duration must be greater than 0.
-                    </p>
-                  )}
-                </div>
-
-                <div className="flex items-center gap-3">
-                  <button
-                    type="button"
-                    onClick={() => handleSaveActivity(activity.id)}
-                    disabled={!meta?.canSave}
-                    className="inline-flex items-center justify-center rounded-xl bg-primary px-4 py-2 text-sm font-medium text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
-                  >
-                    {isSaving ? (
-                      <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Saving...
-                      </>
-                    ) : (
-                      "Save"
-                    )}
-                  </button>
-
-                  {isSaved && <p className="text-sm text-green-400">Saved ✓</p>}
-                </div>
-              </div>
-            );
-          })}
+          {activities.map((activity) => (
+            <EditActivityCard
+              key={activity.id}
+              activity={activity}
+              meta={activityMeta.get(activity.id)}
+              isSaving={savingActivityId === activity.id}
+              isSaved={savedActivityId === activity.id}
+              onChange={handleActivityChange}
+              onSave={() => handleSaveActivity(activity.id)}
+            />
+          ))}
         </div>
       </div>
     </div>
