@@ -263,11 +263,14 @@ export function EditChallengePage() {
 
   return (
     <div className="mx-auto max-w-2xl space-y-6 p-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-foreground">Edit Challenge</h1>
-<BackButton />
-
-      </div>
+      
+       <div className="relative flex items-center">
+        <BackButton />
+      
+    <h1 className="absolute left-1/2 -translate-x-1/2 text-2xl font-bold text-foreground">
+      Edit Challenge
+    </h1>
+  </div>
 
       <div className="space-y-4 rounded-2xl border border-border bg-card p-5">
         <div>

@@ -4,6 +4,7 @@ import { api, setApiToken } from "@/lib/api";
 import { useAuth } from "@/context/useAuth";
 import { ChallengeCard } from "./ChallengeCard";
 import type { Challenge } from "./types";
+import { BackButton } from "../ui/BackButton";
 
 export function AllChallengesList() {
   const { token, user } = useAuth();
@@ -85,13 +86,20 @@ export function AllChallengesList() {
     navigate(`/challenges/${id}/edit`);
   };
 
-  if (isLoading) return <p className="p-6">Loading challenges...</p>;
+   if (isLoading) return <p className="p-6">Loading challenges...</p>;
 
   if (error) return <p className="p-6 text-red-500">{error}</p>;
 
   if (challenges.length === 0) {
     return (
-      <div className="p-6">
+      <div className="mx-auto max-w-6xl space-y-6 p-6">
+        <div className="relative flex min-h-10 items-center">
+          <BackButton />
+          <h1 className="absolute left-1/2 -translate-x-1/2 text-2xl font-bold text-foreground">
+            All Challenges
+          </h1>
+        </div>
+
         <div className="rounded-2xl border border-border bg-card p-8 text-center shadow-lg">
           <h2 className="text-2xl font-bold text-foreground">
             You do not have any challenges yet
@@ -112,16 +120,25 @@ export function AllChallengesList() {
   }
 
   return (
-    <div className="grid grid-cols-1 gap-6 p-6 sm:grid-cols-2 lg:grid-cols-3">
-      {challenges.map((challenge) => (
-        <ChallengeCard
-          key={challenge.id}
-          challenge={challenge}
-          onRemove={() => handleRemove(challenge.id)}
-          onToggleActive={() => handleActivate(challenge.id)}
-          onEdit={() => handleEdit(challenge.id)}
-        />
-      ))}
+    <div className="mx-auto max-w-6xl space-y-6 p-6">
+      <div className="relative flex min-h-10 items-center">
+        <BackButton />
+        <h1 className="absolute left-1/2 -translate-x-1/2 text-2xl font-bold text-foreground">
+          All Challenges
+        </h1>
+      </div>
+
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {challenges.map((challenge) => (
+          <ChallengeCard
+            key={challenge.id}
+            challenge={challenge}
+            onRemove={() => handleRemove(challenge.id)}
+            onToggleActive={() => handleActivate(challenge.id)}
+            onEdit={() => handleEdit(challenge.id)}
+          />
+        ))}
+      </div>
     </div>
   );
 }
