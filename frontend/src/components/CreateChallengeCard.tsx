@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { api, setApiToken } from "@/lib/api";
 import { useAuth } from "@/context/useAuth";
 import { Button } from "./Button/Button";
+import { StandardCard } from "./layout/StandardCard";
 
 type Activity = {
   id: string;
@@ -145,142 +146,124 @@ export function CreateChallengeCard() {
   };
 
   return (
-    <div className="bg-card rounded-2xl border border-border shadow-lg overflow-hidden">
-      {/* Header */}
-      <div className="bg-primary/10 px-6 py-5 border-b border-border">
-        <h2 className="text-2xl font-bold text-primary">
-          Create a Challenge
-        </h2>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Fill in the details and add activities
-        </p>
+  <StandardCard
+    title="Create a Challenge"
+    description="Fill in the details and add activities"
+    contentClassName="p-0"
+  >
+    <form onSubmit={handleSubmit} className="space-y-6 p-6">
+      <div>
+        <label className="block text-sm font-medium text-foreground">
+          Title
+        </label>
+        <input
+          type="text"
+          className="mt-2 w-full rounded-xl border border-border bg-gray-900 p-3 outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="Enter challenge title"
+        />
       </div>
 
-      {/* Form */}
-      <form onSubmit={handleSubmit} className="p-6 space-y-6">
-        {/* Title */}
-        <div>
-          <label className="block text-sm font-medium text-foreground">
-            Title
-          </label>
-          <input
-            type="text"
-            className="w-full border border-border rounded-xl p-3 mt-2 focus:ring-1 focus:ring-primary focus:border-primary outline-none bg-gray-900"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Enter challenge title"
-          />
+      <div>
+        <label className="block text-sm font-medium text-foreground">
+          Description
+        </label>
+        <textarea
+          className="mt-2 w-full rounded-xl border border-border bg-gray-900 p-3 outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          placeholder="Optional description"
+        />
+      </div>
+
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <h3 className="text-lg font-medium text-foreground">Activities</h3>
+          <Button
+            type="button"
+            size="sm"
+            variant="primary"
+            onClick={addActivity}
+          >
+            + Add Activity
+          </Button>
         </div>
 
-        {/* Description */}
-        <div>
-          <label className="block text-sm font-medium text-foreground">
-            Description
-          </label>
-          <textarea
-            className="w-full border border-border rounded-xl p-3 mt-2 focus:ring-1 focus:ring-primary focus:border-primary outline-none bg-gray-900"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder="Optional description"
-          />
-        </div>
-
-        {/* Activities */}
-        <div className="space-y-4">
-          <div className="flex justify-between items-center">
-            <h3 className="text-lg font-medium text-foreground">
-              Activities
-            </h3>
-            <Button
-              type="button"
-              size="sm"
-              variant="primary"
-              onClick={addActivity}
+        <div className="space-y-3">
+          {activities.map((activity, index) => (
+            <div
+              key={activity.id}
+              className="flex flex-wrap items-center gap-3 rounded-xl border border-border/60 p-3"
             >
-              + Add Activity
-            </Button>
-          </div>
+              <input
+                type="text"
+                className="min-w-[120px] flex-1 rounded-xl border border-border bg-gray-900 p-2 outline-none focus:ring-1 focus:ring-primary"
+                placeholder="Activity name"
+                value={activity.name}
+                onChange={(e) => updateActivity(index, "name", e.target.value)}
+              />
 
-          <div className="space-y-3">
-            {activities.map((activity, index) => (
-              <div
-                key={activity.id}
-                className="flex flex-wrap gap-3 items-center border border-border/60 rounded-xl p-3"
-              >
-                {/* Name */}
+              <div className="flex w-full items-center gap-2 sm:w-auto">
                 <input
-                  type="text"
-                  className="flex-1 min-w-[120px] border border-border rounded-xl p-2 focus:ring-1 focus:ring-primary outline-none bg-gray-900"
-                  placeholder="Activity name"
-                  value={activity.name}
+                  type="number"
+                  min={0}
+                  max={23}
+                  placeholder="h"
+                  value={activity.hours}
                   onChange={(e) =>
-                    updateActivity(index, "name", e.target.value)
+                    updateActivity(
+                      index,
+                      "hours",
+                      e.target.value === "" ? "" : Number(e.target.value),
+                    )
                   }
+                  className="w-20 rounded-xl border border-border bg-gray-900 p-2 outline-none focus:ring-1 focus:ring-primary sm:w-24"
                 />
+                <span className="text-sm text-muted-foreground">h</span>
 
-                {/* Duration */}
-                <div className="flex gap-2 items-center w-full sm:w-auto">
-                  <input
-                    type="number"
-                    min={0}
-                    max={23}
-                    placeholder="h"
-                    value={activity.hours}
-                    onChange={(e) =>
-                      updateActivity(
-                        index,
-                        "hours",
-                        e.target.value === "" ? "" : Number(e.target.value),
-                      )
-                    }
-                    className="w-20 sm:w-24 border border-border rounded-xl p-2 focus:ring-1 focus:ring-primary outline-none bg-gray-900"
-                  />
-                  <span className="text-sm text-muted-foreground">h</span>
-
-                  <input
-                    type="number"
-                    min={0}
-                    max={59}
-                    placeholder="min"
-                    value={activity.minutes}
-                    onChange={(e) =>
-                      updateActivity(
-                        index,
-                        "minutes",
-                        e.target.value === "" ? "" : Number(e.target.value),
-                      )
-                    }
-                    className="w-20 sm:w-24 border border-border rounded-xl p-2 focus:ring-1 focus:ring-primary outline-none bg-gray-900"
-                  />
-                  <span className="text-sm text-muted-foreground">min</span>
-                </div>
-
-                {/* Remove */}
-                <Button
-                  type="button"
-                  size="sm"
-                  variant="destructive"
-                  className="ml-auto mt-2 sm:mt-0"
-                  onClick={() => removeActivity(index)}
-                >
-                  Remove
-                </Button>
+                <input
+                  type="number"
+                  min={0}
+                  max={59}
+                  placeholder="min"
+                  value={activity.minutes}
+                  onChange={(e) =>
+                    updateActivity(
+                      index,
+                      "minutes",
+                      e.target.value === "" ? "" : Number(e.target.value),
+                    )
+                  }
+                  className="w-20 rounded-xl border border-border bg-gray-900 p-2 outline-none focus:ring-1 focus:ring-primary sm:w-24"
+                />
+                <span className="text-sm text-muted-foreground">min</span>
               </div>
-            ))}
-          </div>
-        </div>
 
-        {/* Submit */}
-        <Button
-          type="submit"
-          size="lg"
-          variant="primary"
-          isLoading={isSubmitting}
-          disabled={isSubmitting}
-        >
-          Create Challenge
-        </Button>
-      </form>
-    </div>
-  );
+              <Button
+                type="button"
+                size="sm"
+                variant="destructive"
+                className="ml-auto mt-2 sm:mt-0"
+                onClick={() => removeActivity(index)}
+              >
+                Remove
+              </Button>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <Button
+        type="submit"
+        size="lg"
+        variant="primary"
+        isLoading={isSubmitting}
+        disabled={isSubmitting}
+      >
+        Create Challenge
+      </Button>
+    </form>
+  </StandardCard>
+);
 }

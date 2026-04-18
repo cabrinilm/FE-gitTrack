@@ -7,6 +7,7 @@ import { FaCheck } from "react-icons/fa";
 import { Loader2 } from "lucide-react";
 import { cn } from "@/utils/cn";
 import type { Challenge, Activity } from "@/pages/types";
+import { StandardCard } from "./layout/StandardCard";
 
 type Fulfillment = {
   id: number;
@@ -114,145 +115,134 @@ const fulfillments = response.fulfillments;
       : 0;
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-lg">
-      <div className="border-b border-border bg-primary/10 px-6 py-5">
-        <h2 className="text-2xl font-bold text-primary">
-          {activeChallenge?.name || "Daily Challenge"}
-        </h2>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Mark the activities you completed today
+  <StandardCard
+    title={activeChallenge?.name || "Daily Challenge"}
+    description="Mark the activities you completed today"
+  >
+    {!isLoading && !error && !hasNoChallenge && (
+      <div>
+        <div className="mb-4 flex items-center justify-between">
+          <h3 className="text-lg font-medium text-foreground">
+            Today's Progress
+          </h3>
+          <span className="text-sm text-muted-foreground">
+            {completedCount} of {totalActivities} completed ({progressPercentage}
+            %)
+          </span>
+        </div>
+
+        <div className="h-3 w-full overflow-hidden rounded-full border border-border/30 bg-muted/50">
+          <div
+            className="h-full bg-primary transition-all duration-600 ease-out"
+            style={{ width: `${progressPercentage}%` }}
+          />
+        </div>
+      </div>
+    )}
+
+    {isLoading ? (
+      <div className="flex flex-col items-center justify-center py-12">
+        <Loader2 className="mb-4 h-8 w-8 animate-spin text-primary" />
+        <p className="text-muted-foreground">Loading today's activities...</p>
+      </div>
+    ) : error ? (
+      <div className="py-12 text-center">
+        <p className="mb-4 font-medium text-destructive">{error}</p>
+        <Button variant="secondary" size="sm" onClick={fetchDailyData}>
+          Try Again
+        </Button>
+      </div>
+    ) : hasNoChallenge ? (
+      <div className="py-12 text-center">
+        <p className="text-lg font-medium text-foreground">
+          You do not have an active challenge yet.
         </p>
+        <p className="mt-2 text-sm text-muted-foreground">
+          Create your first challenge to start tracking your daily progress.
+        </p>
+
+        <Link
+          to="/create"
+          className="mt-6 inline-flex items-center justify-center rounded-xl bg-primary px-4 py-2 text-sm font-medium text-white transition hover:opacity-90"
+        >
+          Create Challenge
+        </Link>
       </div>
+    ) : activities.length === 0 ? (
+      <div className="py-12 text-center text-muted-foreground">
+        No activities found for this challenge.
+      </div>
+    ) : (
+      <ul role="list" className="space-y-4">
+        {activities.map((act) => {
+          const isCompleted = completedIds.has(act.id);
+          const isCompleting = completingId === act.id;
 
-      <div className="space-y-10 p-6">
-        {!isLoading && !error && !hasNoChallenge && (
-          <div>
-            <div className="mb-4 flex items-center justify-between">
-              <h3 className="text-lg font-medium text-foreground">
-                Today's Progress
-              </h3>
-              <span className="text-sm text-muted-foreground">
-                {completedCount} of {totalActivities} completed (
-                {progressPercentage}%)
-              </span>
-            </div>
-
-            <div className="h-3 w-full overflow-hidden rounded-full border border-border/30 bg-muted/50">
+          return (
+            <li key={act.id}>
               <div
-                className="h-full bg-primary transition-all duration-600 ease-out"
-                style={{ width: `${progressPercentage}%` }}
-              />
-            </div>
-          </div>
-        )}
-
-        {isLoading ? (
-          <div className="flex flex-col items-center justify-center py-12">
-            <Loader2 className="mb-4 h-8 w-8 animate-spin text-primary" />
-            <p className="text-muted-foreground">
-              Loading today's activities...
-            </p>
-          </div>
-        ) : error ? (
-          <div className="py-12 text-center">
-            <p className="mb-4 font-medium text-destructive">{error}</p>
-            <Button variant="secondary" size="sm" onClick={fetchDailyData}>
-              Try Again
-            </Button>
-          </div>
-        ) : hasNoChallenge ? (
-          <div className="py-12 text-center">
-            <p className="text-lg font-medium text-foreground">
-              You do not have an active challenge yet.
-            </p>
-            <p className="mt-2 text-sm text-muted-foreground">
-              Create your first challenge to start tracking your daily progress.
-            </p>
-
-            <Link
-              to="/create"
-              className="mt-6 inline-flex items-center justify-center rounded-xl bg-primary px-4 py-2 text-sm font-medium text-white transition hover:opacity-90"
-            >
-              Create Challenge
-            </Link>
-          </div>
-        ) : activities.length === 0 ? (
-          <div className="py-12 text-center text-muted-foreground">
-            No activities found for this challenge.
-          </div>
-        ) : (
-          <ul role="list" className="space-y-4">
-            {activities.map((act) => {
-              const isCompleted = completedIds.has(act.id);
-              const isCompleting = completingId === act.id;
-
-              return (
-                <li key={act.id}>
-                  <div
-                    onClick={() =>
-                      !isCompleted &&
+                onClick={() =>
+                  !isCompleted &&
+                  !isCompleting &&
+                  handleMarkComplete(act.id)
+                }
+                className={cn(
+                  "group flex cursor-pointer items-center gap-4 rounded-xl border border-border/60 p-4 transition-all duration-200",
+                  isCompleted && "border-primary/30 bg-primary/5 opacity-90",
+                  isCompleting && "animate-pulse bg-primary/5 opacity-70",
+                  !isCompleted &&
+                    "hover:border-primary/40 hover:bg-primary/5 active:bg-primary/10",
+                )}
+                role="button"
+                tabIndex={0}
+                aria-label={`${act.name} - ${act.duration_minutes} minutes - ${
+                  isCompleted ? "Completed" : "Mark as complete"
+                }`}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    !isCompleted &&
                       !isCompleting &&
-                      handleMarkComplete(act.id)
-                    }
+                      handleMarkComplete(act.id);
+                  }
+                }}
+              >
+                <div className="shrink-0">
+                  <div
                     className={cn(
-                      "group flex cursor-pointer items-center gap-4 rounded-xl border border-border/60 p-4 transition-all duration-200",
-                      isCompleted &&
-                        "border-primary/30 bg-primary/5 opacity-90",
-                      isCompleting && "animate-pulse bg-primary/5 opacity-70",
-                      !isCompleted &&
-                        "hover:border-primary/40 hover:bg-primary/5 active:bg-primary/10",
+                      "flex h-8 w-8 items-center justify-center rounded-full border-2 transition-all duration-300",
+                      isCompleted
+                        ? "border-primary bg-primary text-primary-foreground shadow-sm"
+                        : "border-muted-foreground bg-transparent group-hover:border-primary group-hover:bg-primary/5",
                     )}
-                    role="button"
-                    tabIndex={0}
-                    aria-label={`${act.name} - ${act.duration_minutes} minutes - ${
-                      isCompleted ? "Completed" : "Mark as complete"
-                    }`}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" || e.key === " ") {
-                        e.preventDefault();
-                        !isCompleted &&
-                          !isCompleting &&
-                          handleMarkComplete(act.id);
-                      }
-                    }}
                   >
-                    <div className="shrink-0">
-                      <div
-                        className={cn(
-                          "flex h-8 w-8 items-center justify-center rounded-full border-2 transition-all duration-300",
-                          isCompleted
-                            ? "border-primary bg-primary text-primary-foreground shadow-sm"
-                            : "border-muted-foreground bg-transparent group-hover:border-primary group-hover:bg-primary/5",
-                        )}
-                      >
-                        {isCompleted && <FaCheck className="h-5 w-5" />}
-                        {isCompleting && (
-                          <Loader2 className="h-5 w-5 animate-spin text-primary" />
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="min-w-0 flex-1">
-                      <p
-                        className={cn(
-                          "text-base font-medium text-foreground",
-                          isCompleted && "line-through text-muted-foreground",
-                        )}
-                      >
-                        {act.name}
-                      </p>
-                    </div>
-
-                    <div className="shrink-0 text-sm font-medium text-primary/80">
-                      {act.duration_minutes} min
-                    </div>
+                    {isCompleted && <FaCheck className="h-5 w-5" />}
+                    {isCompleting && (
+                      <Loader2 className="h-5 w-5 animate-spin text-primary" />
+                    )}
                   </div>
-                </li>
-              );
-            })}
-          </ul>
-        )}
-      </div>
-    </div>
-  );
+                </div>
+
+                <div className="min-w-0 flex-1">
+                  <p
+                    className={cn(
+                      "text-base font-medium text-foreground",
+                      isCompleted && "line-through text-muted-foreground",
+                    )}
+                  >
+                    {act.name}
+                  </p>
+                </div>
+
+                <div className="shrink-0 text-sm font-medium text-primary/80">
+                  {act.duration_minutes} min
+                </div>
+              </div>
+            </li>
+          );
+        })}
+      </ul>
+    )}
+  </StandardCard>
+);
 }
