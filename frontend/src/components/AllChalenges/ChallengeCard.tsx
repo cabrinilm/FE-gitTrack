@@ -1,4 +1,5 @@
 import { FaCheckCircle, FaEdit, FaRegCircle, FaTrash } from "react-icons/fa";
+import { cn } from "@/utils/cn";
 import type { ChallengeCardProps } from "./types";
 
 export function ChallengeCard({
@@ -8,22 +9,29 @@ export function ChallengeCard({
   onEdit,
 }: ChallengeCardProps) {
   return (
-    <div className="flex h-full w-full flex-col justify-between overflow-hidden rounded-2xl border border-border bg-card shadow-lg">
-      <div className="flex items-center justify-between px-4 py-2">
+    <div
+      className={cn(
+        "flex h-full flex-col justify-between rounded-2xl border border-border/60 bg-card transition-all duration-200",
+        "hover:border-primary/40 hover:bg-primary/5"
+      )}
+    >
+      {/* Top bar */}
+      <div className="flex items-center justify-between px-4 py-3">
         <span
-          className={`rounded px-2 py-1 text-xs font-semibold text-white ${
-            challenge.isActive ? "bg-green-600" : "bg-gray-500"
-          }`}
+          className={cn(
+            "rounded-md px-2 py-1 text-xs font-medium text-white",
+            challenge.isActive ? "bg-green-600" : "bg-muted-foreground"
+          )}
         >
           {challenge.isActive ? "Active" : "Inactive"}
         </span>
 
-        <div className="flex items-center gap-3 text-lg">
+        <div className="flex items-center gap-3 text-base">
           {onToggleActive && (
             <button
               type="button"
               onClick={onToggleActive}
-              className="text-white transition hover:text-green-400"
+              className="text-muted-foreground transition hover:text-green-400"
               title="Set as active"
               aria-label="Set as active"
             >
@@ -35,7 +43,7 @@ export function ChallengeCard({
             <button
               type="button"
               onClick={onEdit}
-              className="text-white transition hover:text-blue-400"
+              className="text-muted-foreground transition hover:text-blue-400"
               title="Edit challenge"
               aria-label="Edit challenge"
             >
@@ -47,7 +55,7 @@ export function ChallengeCard({
             <button
               type="button"
               onClick={onRemove}
-              className="text-white transition hover:text-red-400"
+              className="text-muted-foreground transition hover:text-red-400"
               title="Delete challenge"
               aria-label="Delete challenge"
             >
@@ -57,18 +65,20 @@ export function ChallengeCard({
         </div>
       </div>
 
-      <div className="flex flex-1 flex-col justify-center p-4">
-        <h2 className="mb-2 text-xl font-bold text-foreground">
+      {/* Content */}
+      <div className="flex flex-1 flex-col justify-center px-4 pb-4">
+        <h3 className="mb-1 text-lg font-semibold text-foreground">
           {challenge.name}
-        </h2>
+        </h3>
 
         {challenge.description && (
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-muted-foreground line-clamp-2">
             {challenge.description}
           </p>
         )}
       </div>
 
+      {/* Footer */}
       <div className="px-4 pb-4 text-xs text-muted-foreground">
         Created: {new Date(challenge.created_at).toLocaleDateString()}
       </div>

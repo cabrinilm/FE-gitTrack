@@ -5,6 +5,7 @@ import { useAuth } from "@/context/useAuth";
 import { ChallengeCard } from "./ChallengeCard";
 import type { Challenge } from "./types";
 import { BackButton } from "../ui/BackButton";
+import { StandardCard } from "@/components/layout/StandardCard";
 
 export function AllChallengesList() {
   const { token, user } = useAuth();
@@ -86,14 +87,35 @@ export function AllChallengesList() {
     navigate(`/challenges/${id}/edit`);
   };
 
-  if (isLoading) return <p className="p-6">Loading challenges...</p>;
-
-  if (error) return <p className="p-6 text-red-500">{error}</p>;
-
-  if (challenges.length === 0) {
+  if (isLoading) {
     return (
-      <div className="p-6">
-        <div className="rounded-2xl border border-border bg-card p-8 text-center shadow-lg">
+      <StandardCard
+        title="All Challenges"
+        description="View, edit, and manage your challenges"
+      >
+        <p className="text-muted-foreground">Loading challenges...</p>
+      </StandardCard>
+    );
+  }
+
+  if (error) {
+    return (
+      <StandardCard
+        title="All Challenges"
+        description="View, edit, and manage your challenges"
+      >
+        <p className="text-red-500">{error}</p>
+      </StandardCard>
+    );
+  }
+
+  return (
+    <StandardCard
+      title="All Challenges"
+      description="View, edit, and manage your challenges"
+    >
+      {challenges.length === 0 ? (
+        <div className="py-6 text-center">
           <h2 className="text-2xl font-bold text-foreground">
             You do not have any challenges yet
           </h2>
@@ -108,21 +130,19 @@ export function AllChallengesList() {
             Create Challenge
           </Link>
         </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="grid grid-cols-1 gap-6 p-6 sm:grid-cols-2 lg:grid-cols-3">
-      {challenges.map((challenge) => (
-        <ChallengeCard
-          key={challenge.id}
-          challenge={challenge}
-          onRemove={() => handleRemove(challenge.id)}
-          onToggleActive={() => handleActivate(challenge.id)}
-          onEdit={() => handleEdit(challenge.id)}
-        />
-      ))}
-    </div>
+      ) : (
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {challenges.map((challenge) => (
+            <ChallengeCard
+              key={challenge.id}
+              challenge={challenge}
+              onRemove={() => handleRemove(challenge.id)}
+              onToggleActive={() => handleActivate(challenge.id)}
+              onEdit={() => handleEdit(challenge.id)}
+            />
+          ))}
+        </div>
+      )}
+    </StandardCard>
   );
 }

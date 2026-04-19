@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import "./App.css";
-import AllChallenges from "@/pages/AllChallenges";
+import AllChallenges from "@/pages/AllChallengesPage";
 import CreateChallenge from "@/pages/CreateChallenge";
 import HeatMap from "@/pages/Heatmap";
 import Home from "@/pages/Home";
