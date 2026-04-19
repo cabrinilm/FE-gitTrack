@@ -7,7 +7,6 @@ import toast, { Toaster } from "react-hot-toast";
 import { navItems } from "./navItems";
 
 
-
 export function BottomNav() {
   const navigate = useNavigate();
   const location = useLocation();

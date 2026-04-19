@@ -5,7 +5,7 @@ import { useAuth } from "@/context/useAuth";
 import { ChallengeCard } from "./ChallengeCard";
 import type { Challenge } from "./types";
 import { BackButton } from "../ui/BackButton";
-import { StandardCard } from "@/components/layout/StandardCard";
+import { StandardCard } from "@/components/layout/Shell/StandardCard";
 
 export function AllChallengesSection() {
   const { token, user } = useAuth();

@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { api, setApiToken } from "@/lib/api";
 import { useAuth } from "@/context/useAuth";
 import { Button } from "./Button/Button";
-import { StandardCard } from "./layout/StandardCard";
+import { StandardCard } from "./layout/Shell/StandardCard";
 
 type Activity = {
   id: string;

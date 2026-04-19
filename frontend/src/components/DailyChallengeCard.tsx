@@ -7,7 +7,7 @@ import { FaCheck } from "react-icons/fa";
 import { Loader2 } from "lucide-react";
 import { cn } from "@/utils/cn";
 import type { Challenge, Activity } from "@/pages/types";
-import { StandardCard } from "./layout/StandardCard";
+import { StandardCard } from "./layout/Shell/StandardCard";
 
 type Fulfillment = {
   id: number;

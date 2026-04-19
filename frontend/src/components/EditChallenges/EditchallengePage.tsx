@@ -7,8 +7,8 @@ import type { Activity, Challenge } from "./type";
 
 import { EditChallengeForm } from "./EditChallengeForm";
 import { EditActivityCard } from "./EditActivityCard";
-import { StandardCard } from "../layout/StandardCard";
-import { PageShell } from "../layout/PageShell";
+import { StandardCard } from "../layout/Shell/StandardCard";
+import { PageShell } from "../layout/Shell/PageShell";
 
 export function EditChallengePage() {
   const { challengeId } = useParams();

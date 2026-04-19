@@ -1,8 +1,8 @@
 import { Outlet } from "react-router-dom";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { cn } from "@/utils/cn";
-import { BottomNav } from "./BottomNav";
-import { Sidebar } from "./Sidebar";
+import { BottomNav } from "../Navigation/BottomNav";
+import { Sidebar } from "../Navigation/Sidebar";
 
 export function ProtectedLayout() {
   const isMobile = useMediaQuery("(max-width: 767px)");

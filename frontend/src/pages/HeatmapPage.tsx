@@ -2,8 +2,8 @@ import { Heatmap } from "@/components/ui/heatmap";
 import { useEffect, useState } from "react";
 import { api, setApiToken } from "@/lib/api";
 import { useAuth } from "@/context/useAuth";
-import { StandardCard } from "@/components/layout/StandardCard";
-import { PageShell } from "@/components/layout/PageShell";
+import { StandardCard } from "@/components/layout/Shell/StandardCard";
+import { PageShell } from "@/components/layout/Shell/PageShell";
 
 type HeatmapDay = {
   date: string;
