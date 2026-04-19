@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { api, setApiToken } from "@/lib/api";
-import type { Profile, ProfileFormValues } from "@/components/Profile/type";
+import type { Profile, ProfileFormValues } from "@/components/profile/type";
 import { useAuth } from "@/context/useAuth";
 
 export function useProfile() {

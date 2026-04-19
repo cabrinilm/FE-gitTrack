@@ -1,5 +1,5 @@
 import { StandardCard } from "../layout/Shell/StandardCard";
-import { ProfileForm } from "@/components/Profile/ProfileForm";
+import { ProfileForm } from "@/components/profile/ProfileForm";
 import { useProfile } from "@/hooks/useProfile";
 
 export function ProfilePageContent() {

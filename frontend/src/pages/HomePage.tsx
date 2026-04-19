@@ -1,10 +1,10 @@
 import { PageShell } from "@/components/layout/Shell/PageShell";
-import { DailyChallengeCard } from "@/components/DailyChallengeCard";
+import { HomePageContent } from "@/components/home/HomePageContent";
 
-export default function Home() {
+export default function HomePage() {
   return (
     <PageShell>
-      <DailyChallengeCard />
+      <HomePageContent />
     </PageShell>
   );
 }

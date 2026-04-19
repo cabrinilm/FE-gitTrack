@@ -1,5 +1,5 @@
 import { Loader2 } from "lucide-react";
-import type { ProfileFormProps } from "@/components/Profile/type";
+import type { ProfileFormProps } from "@/components/profile/type";
 
 
 
