@@ -1,15 +1,5 @@
 import { cn } from "@/utils/cn";
-import type { ReactNode } from "react";
-
-type StandardCardProps = {
-  title?: string;
-  description?: string;
-  children: ReactNode;
-  className?: string;
-  contentClassName?: string;
-  headerClassName?: string;
-  actions?: ReactNode;
-};
+import type { StandardCardProps } from "./type";
 
 export function StandardCard({
   title,

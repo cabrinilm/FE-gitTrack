@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { api, setApiToken } from "@/lib/api";
 import { useAuth } from "@/context/useAuth";
 import { StandardCard } from "@/components/layout/StandardCard";
+import { PageShell } from "@/components/layout/PageShell";
 
 type HeatmapDay = {
   date: string;
@@ -47,8 +48,9 @@ export default function HeatmapPage() {
       setError(null);
 
       try {
-        const { data: heatmapData } =
-          await api.get<HeatmapDay[]>("/api/progress/heatmap");
+        const { data: heatmapData } = await api.get<HeatmapDay[]>(
+          "/api/progress/heatmap",
+        );
 
         setData(heatmapData);
       } catch (err) {
@@ -69,7 +71,7 @@ export default function HeatmapPage() {
 
     try {
       const { data: response } = await api.get<FulfillmentsResponse>(
-        `/api/progress/${date}/fulfillments`
+        `/api/progress/${date}/fulfillments`,
       );
 
       setFulfillments(response.fulfillments || []);
@@ -81,12 +83,24 @@ export default function HeatmapPage() {
       setDetailsLoading(false);
     }
   };
+  if (loading) {
+    return (
+      <PageShell>
+        <p>Loading heatmap...</p>
+      </PageShell>
+    );
+  }
 
-  if (loading) return <div className="p-6">Loading heatmap...</div>;
-  if (error) return <div className="p-6 text-red-500">{error}</div>;
+  if (error) {
+    return (
+      <PageShell>
+        <p className="text-red-500">{error}</p>
+      </PageShell>
+    );
+  }
 
   return (
-    <div className="p-6">
+    <PageShell>
       <StandardCard
         title="Progress Heatmap"
         description="View your activity history and daily completions"
@@ -134,6 +148,6 @@ export default function HeatmapPage() {
           </div>
         )}
       </StandardCard>
-    </div>
+    </PageShell>
   );
 }

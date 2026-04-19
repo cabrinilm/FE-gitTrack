@@ -7,7 +7,7 @@ import type { Challenge } from "./types";
 import { BackButton } from "../ui/BackButton";
 import { StandardCard } from "@/components/layout/StandardCard";
 
-export function AllChallengesList() {
+export function AllChallengesSection() {
   const { token, user } = useAuth();
 
   const [challenges, setChallenges] = useState<Challenge[]>([]);

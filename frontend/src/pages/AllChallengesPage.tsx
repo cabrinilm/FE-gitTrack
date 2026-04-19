@@ -1,9 +1,10 @@
-import { AllChallengesList } from "@/components/AllChalenges/AllChallengesSection";
+import { PageShell } from "@/components/layout/PageShell";
+import { AllChallengesSection } from "@/components/AllChalenges/AllChallengesSection";
 
 export default function AllChallengesPage() {
   return (
-    <div className="p-6">
-      <AllChallengesList />
-    </div>
+    <PageShell>
+   <AllChallengesSection />
+    </PageShell>
   );
 }

@@ -5,11 +5,10 @@ import { api, setApiToken } from "@/lib/api";
 import { useAuth } from "@/context/useAuth";
 import type { Activity, Challenge } from "./type";
 
-
 import { EditChallengeForm } from "./EditChallengeForm";
 import { EditActivityCard } from "./EditActivityCard";
 import { StandardCard } from "../layout/StandardCard";
-
+import { PageShell } from "../layout/PageShell";
 
 export function EditChallengePage() {
   const { challengeId } = useParams();
@@ -44,7 +43,6 @@ export function EditChallengePage() {
   const challengeSavedTimeoutRef = useRef<number | null>(null);
   const activitySavedTimeoutRef = useRef<number | null>(null);
 
-  // Cleanup timeouts
   useEffect(() => {
     return () => {
       if (challengeSavedTimeoutRef.current) {
@@ -56,7 +54,6 @@ export function EditChallengePage() {
     };
   }, []);
 
-  // Fetch data
   useEffect(() => {
     if (!challengeId) {
       setError("Challenge ID is missing");
@@ -99,7 +96,6 @@ export function EditChallengePage() {
     fetchData();
   }, [challengeId, token, user]);
 
-  // Sync challenge into local form state
   useEffect(() => {
     if (challenge) {
       const safeName = challenge.name || "";
@@ -122,7 +118,6 @@ export function EditChallengePage() {
   const canSaveChallenge =
     isChallengeValid && hasChallengeChanges && !isSavingChallenge;
 
-  // Activity meta
   const activityMeta = useMemo(() => {
     const originalMap = new Map(
       originalActivities.map((item) => [item.id, item]),
@@ -155,7 +150,6 @@ export function EditChallengePage() {
     return map;
   }, [activities, originalActivities, savingActivityId]);
 
-  // Save challenge
   const handleSaveChallenge = async () => {
     if (!challengeId || !canSaveChallenge) return;
 
@@ -204,14 +198,12 @@ export function EditChallengePage() {
     }
   };
 
-  // Update activity locally
   const handleActivityChange = (updated: Activity) => {
     setActivities((prev) =>
       prev.map((item) => (item.id === updated.id ? updated : item)),
     );
   };
 
-  // Save activity
   const handleSaveActivity = async (activityId: string) => {
     if (!challengeId) return;
 
@@ -227,13 +219,10 @@ export function EditChallengePage() {
 
       const trimmedName = activity.name.trim();
 
-      await api.patch(
-        `/api/challenges/${challengeId}/activities/${activityId}`,
-        {
-          name: trimmedName,
-          duration_minutes: activity.duration_minutes,
-        },
-      );
+      await api.patch(`/api/challenges/${challengeId}/activities/${activityId}`, {
+        name: trimmedName,
+        duration_minutes: activity.duration_minutes,
+      });
 
       setOriginalActivities((prev) =>
         prev.map((item) =>
@@ -266,61 +255,68 @@ export function EditChallengePage() {
     }
   };
 
-  // Loading
   if (isLoading) {
     return (
-      <div className="flex items-center gap-3 p-6 text-muted-foreground">
-        <Loader2 className="h-5 w-5 animate-spin" />
-        <span>Loading challenge...</span>
-      </div>
+      <PageShell contentClassName="max-w-2xl space-y-6">
+        <div className="flex items-center gap-3 text-muted-foreground">
+          <Loader2 className="h-5 w-5 animate-spin" />
+          <span>Loading challenge...</span>
+        </div>
+      </PageShell>
     );
   }
 
-  if (error) return <div className="p-6 text-red-500">{error}</div>;
+  if (error) {
+    return (
+      <PageShell contentClassName="max-w-2xl space-y-6">
+        <p className="text-red-500">{error}</p>
+      </PageShell>
+    );
+  }
 
   return (
-  <div className="mx-auto max-w-2xl p-6">
-    <StandardCard
-      title="Edit Challenge"
-      description="Update the challenge details and activities"
-      contentClassName="space-y-6 p-6"
-    >
-      <EditChallengeForm
-        challengeName={challengeName}
-        challengeDescription={challengeDescription}
-        onChallengeNameChange={setChallengeName}
-        onChallengeDescriptionChange={setChallengeDescription}
-        onSave={handleSaveChallenge}
-        isSaving={isSavingChallenge}
-        canSave={canSaveChallenge}
-        saved={savedChallenge}
-        error={saveChallengeError}
-      />
+    <PageShell contentClassName="max-w-2xl space-y-6">
+      <StandardCard
+        title="Edit Challenge"
+        description="Update the challenge details and activities"
+        contentClassName="space-y-6 p-6"
+      >
+        <EditChallengeForm
+          challengeName={challengeName}
+          challengeDescription={challengeDescription}
+          onChallengeNameChange={setChallengeName}
+          onChallengeDescriptionChange={setChallengeDescription}
+          onSave={handleSaveChallenge}
+          isSaving={isSavingChallenge}
+          canSave={canSaveChallenge}
+          saved={savedChallenge}
+          error={saveChallengeError}
+        />
 
-      <div>
-        <h2 className="mb-2 text-lg font-semibold text-foreground">
-          Activities
-        </h2>
+        <div>
+          <h2 className="mb-2 text-lg font-semibold text-foreground">
+            Activities
+          </h2>
 
-        {saveActivityError && (
-          <p className="mb-3 text-sm text-red-400">{saveActivityError}</p>
-        )}
+          {saveActivityError && (
+            <p className="mb-3 text-sm text-red-400">{saveActivityError}</p>
+          )}
 
-        <div className="space-y-4">
-          {activities.map((activity) => (
-            <EditActivityCard
-              key={activity.id}
-              activity={activity}
-              meta={activityMeta.get(activity.id)}
-              isSaving={savingActivityId === activity.id}
-              isSaved={savedActivityId === activity.id}
-              onChange={handleActivityChange}
-              onSave={() => handleSaveActivity(activity.id)}
-            />
-          ))}
+          <div className="space-y-4">
+            {activities.map((activity) => (
+              <EditActivityCard
+                key={activity.id}
+                activity={activity}
+                meta={activityMeta.get(activity.id)}
+                isSaving={savingActivityId === activity.id}
+                isSaved={savedActivityId === activity.id}
+                onChange={handleActivityChange}
+                onSave={() => handleSaveActivity(activity.id)}
+              />
+            ))}
+          </div>
         </div>
-      </div>
-    </StandardCard>
-  </div>
-);
+      </StandardCard>
+    </PageShell>
+  );
 }
