@@ -1,9 +1,9 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import "./App.css";
 import AllChallenges from "@/pages/AllChallengesPage";
-import CreateChallenge from "@/pages/CreateChallenge";
-import HeatMap from "@/pages/Heatmap";
-import Home from "@/pages/Home";
+import CreateChallenge from "@/pages/CreateChallengePage";
+import HeatMap from "@/pages/HeatmapPage";
+import Home from "@/pages/HomePage";
 import LoginForm from "@/pages/auth/LoginForm";
 import { SignupForm } from "@/pages/auth/SignupForm";
 import { ForgotPasswordForm } from "@/pages/auth/ForgotPasswordForm";

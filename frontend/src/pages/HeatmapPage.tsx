@@ -2,6 +2,7 @@ import { Heatmap } from "@/components/ui/heatmap";
 import { useEffect, useState } from "react";
 import { api, setApiToken } from "@/lib/api";
 import { useAuth } from "@/context/useAuth";
+import { StandardCard } from "@/components/layout/StandardCard";
 
 type HeatmapDay = {
   date: string;
@@ -85,46 +86,54 @@ export default function HeatmapPage() {
   if (error) return <div className="p-6 text-red-500">{error}</div>;
 
   return (
-    <div className="space-y-6 p-6">
-      <Heatmap data={data} onDayClick={handleDayClick} />
+    <div className="p-6">
+      <StandardCard
+        title="Progress Heatmap"
+        description="View your activity history and daily completions"
+        contentClassName="space-y-6 p-6"
+      >
+        <Heatmap data={data} onDayClick={handleDayClick} />
 
-      {selectedDate && (
-        <div className="rounded-xl border border-white/10 bg-surface/60 p-4">
-          <h3 className="text-lg font-semibold text-text-primary">
-            Activities for {selectedDate}
-          </h3>
+        {selectedDate && (
+          <div className="rounded-xl border border-border/60 bg-card p-4">
+            <h3 className="text-lg font-semibold text-foreground">
+              Activities for {selectedDate}
+            </h3>
 
-          {detailsLoading && (
-            <p className="mt-2 text-sm text-text-muted">Loading activities...</p>
-          )}
+            {detailsLoading && (
+              <p className="mt-2 text-sm text-muted-foreground">
+                Loading activities...
+              </p>
+            )}
 
-          {detailsError && (
-            <p className="mt-2 text-sm text-red-400">{detailsError}</p>
-          )}
+            {detailsError && (
+              <p className="mt-2 text-sm text-red-400">{detailsError}</p>
+            )}
 
-          {!detailsLoading && !detailsError && fulfillments.length === 0 && (
-            <p className="mt-2 text-sm text-text-muted">
-              No completed activities for this day.
-            </p>
-          )}
+            {!detailsLoading && !detailsError && fulfillments.length === 0 && (
+              <p className="mt-2 text-sm text-muted-foreground">
+                No completed activities for this day.
+              </p>
+            )}
 
-          {!detailsLoading && !detailsError && fulfillments.length > 0 && (
-            <ul className="mt-3 space-y-2">
-              {fulfillments.map((item) => (
-                <li
-                  key={item.id}
-                  className="flex items-center justify-between rounded-lg border border-white/10 px-3 py-2 text-sm text-text-primary"
-                >
-                  <span className="font-medium">{item.activity_name}</span>
-                  <span className="text-xs text-text-muted">
-                    {item.planned_duration_minutes} min
-                  </span>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-      )}
+            {!detailsLoading && !detailsError && fulfillments.length > 0 && (
+              <ul className="mt-3 space-y-2">
+                {fulfillments.map((item) => (
+                  <li
+                    key={item.id}
+                    className="flex items-center justify-between rounded-lg border border-border/60 px-3 py-2 text-sm text-foreground"
+                  >
+                    <span className="font-medium">{item.activity_name}</span>
+                    <span className="text-xs text-muted-foreground">
+                      {item.planned_duration_minutes} min
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        )}
+      </StandardCard>
     </div>
   );
 }

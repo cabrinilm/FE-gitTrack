@@ -19,12 +19,11 @@ interface HeatmapProps {
 }
 
 const LEVEL_COLORS = {
-    0: "bg-zinc-600/60 hover:bg-zinc-700/80",
+  0: "bg-zinc-600/60 hover:bg-zinc-700/80",
   1: "bg-emerald-300 hover:bg-emerald-400",
   2: "bg-emerald-500 hover:bg-emerald-600",
   3: "bg-emerald-700 hover:bg-emerald-800",
 } as const;
-
 
 const WEEKDAY_LABELS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const MONTH_LABELS = [
@@ -141,15 +140,12 @@ export function Heatmap({ data = [], onDayClick, className }: HeatmapProps) {
 
   return (
     <div className={cn("space-y-4", className)}>
-      <div className="flex items-center justify-between">
-        <h2 className="text-xl font-semibold text-text-primary">
-          Progress Heatmap
-        </h2>
-        <p className="text-sm text-text-muted">Last 12 months</p>
+      <div className="flex justify-end">
+        <p className="text-sm text-muted-foreground">Last 12 months</p>
       </div>
 
       <TooltipProvider>
-        <div className="overflow-x-auto rounded-xl border border-white/10 bg-surface/60 p-4">
+        <div className="overflow-x-auto rounded-xl border border-border/60 bg-card p-4">
           <div className="min-w-max">
             <div className="mb-2 flex">
               <div className="w-8 shrink-0" />
@@ -157,7 +153,7 @@ export function Heatmap({ data = [], onDayClick, className }: HeatmapProps) {
                 {monthLabels.map((item, index) => (
                   <div
                     key={index}
-                    className="text-[11px] leading-3 text-text-muted"
+                    className="text-[11px] leading-3 text-muted-foreground"
                     style={{ width: "12px" }}
                   >
                     {item ? item.label : ""}
@@ -167,7 +163,7 @@ export function Heatmap({ data = [], onDayClick, className }: HeatmapProps) {
             </div>
 
             <div className="flex gap-2">
-              <div className="flex flex-col gap-1 text-[10px] leading-3 text-text-muted">
+              <div className="flex flex-col gap-1 text-[10px] leading-3 text-muted-foreground">
                 {WEEKDAY_LABELS.map((dayLabel, index) => (
                   <div key={dayLabel} className="flex h-2.5 items-center">
                     {index === 1 || index === 3 || index === 5 ? dayLabel : ""}
@@ -189,7 +185,7 @@ export function Heatmap({ data = [], onDayClick, className }: HeatmapProps) {
                               aria-label={`${day.date}: ${day.count} completed activities`}
                               className={cn(
                                 "h-2.5 w-2.5 rounded-[2px] border border-white/5 transition-colors focus:outline-none focus:ring-1 focus:ring-white/20",
-                                LEVEL_COLORS[level]
+                                LEVEL_COLORS[level],
                               )}
                               onClick={() => onDayClick?.(day.date)}
                             />
@@ -214,7 +210,7 @@ export function Heatmap({ data = [], onDayClick, className }: HeatmapProps) {
         </div>
       </TooltipProvider>
 
-      <div className="flex items-center justify-end gap-2 text-xs text-text-muted">
+      <div className="flex items-center justify-end gap-2 text-xs text-muted-foreground">
         <span>Less</span>
         <div className="flex gap-1">
           {[0, 1, 2, 3].map((level) => (
@@ -222,7 +218,7 @@ export function Heatmap({ data = [], onDayClick, className }: HeatmapProps) {
               key={level}
               className={cn(
                 "h-2.5 w-2.5 rounded-[2px] border border-white/5",
-                LEVEL_COLORS[level as keyof typeof LEVEL_COLORS]
+                LEVEL_COLORS[level as keyof typeof LEVEL_COLORS],
               )}
             />
           ))}
