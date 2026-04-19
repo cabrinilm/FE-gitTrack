@@ -5,9 +5,11 @@ import { api, setApiToken } from "@/lib/api";
 import { useAuth } from "@/context/useAuth";
 import type { Activity, Challenge } from "./type";
 
-import { BackButton } from "../ui/BackButton";
+
 import { EditChallengeForm } from "./EditChallengeForm";
 import { EditActivityCard } from "./EditActivityCard";
+import { StandardCard } from "../layout/StandardCard";
+
 
 export function EditChallengePage() {
   const { challengeId } = useParams();
@@ -277,16 +279,12 @@ export function EditChallengePage() {
   if (error) return <div className="p-6 text-red-500">{error}</div>;
 
   return (
-    <div className="mx-auto max-w-2xl space-y-6 p-6">
-      {/* Header */}
-      <div className="relative flex items-center min-h-10">
-        <BackButton />
-        <h1 className="absolute left-1/2 -translate-x-1/2 text-2xl font-bold text-foreground">
-          Edit Challenge
-        </h1>
-      </div>
-
-      {/* Challenge Form */}
+  <div className="mx-auto max-w-2xl p-6">
+    <StandardCard
+      title="Edit Challenge"
+      description="Update the challenge details and activities"
+      contentClassName="space-y-6 p-6"
+    >
       <EditChallengeForm
         challengeName={challengeName}
         challengeDescription={challengeDescription}
@@ -299,7 +297,6 @@ export function EditChallengePage() {
         error={saveChallengeError}
       />
 
-      {/* Activities */}
       <div>
         <h2 className="mb-2 text-lg font-semibold text-foreground">
           Activities
@@ -323,6 +320,7 @@ export function EditChallengePage() {
           ))}
         </div>
       </div>
-    </div>
-  );
+    </StandardCard>
+  </div>
+);
 }

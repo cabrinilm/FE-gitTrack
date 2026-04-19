@@ -1,6 +1,5 @@
 import { Loader2 } from "lucide-react";
-import type { ActivityMeta, EditActivityCardProps  } from "./type";
-
+import type { EditActivityCardProps } from "./type";
 
 export function EditActivityCard({
   activity,
@@ -14,7 +13,7 @@ export function EditActivityCard({
   const showDurationError = Number(activity.duration_minutes) <= 0;
 
   return (
-    <div className="space-y-3 rounded-xl border border-border bg-card p-4">
+    <div className="space-y-4 rounded-xl border border-border/60 bg-card p-4 transition-all duration-200 hover:border-primary/40 hover:bg-primary/5">
       <div>
         <label className="mb-1 block text-sm font-medium text-muted-foreground">
           Activity Name
@@ -22,9 +21,7 @@ export function EditActivityCard({
         <input
           type="text"
           value={activity.name}
-          onChange={(e) =>
-            onChange({ ...activity, name: e.target.value })
-          }
+          onChange={(e) => onChange({ ...activity, name: e.target.value })}
           className="w-full rounded-lg border border-border bg-card px-3 py-2 text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
         />
         {showNameError && (
