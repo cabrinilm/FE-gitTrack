@@ -1,6 +1,6 @@
 import { Heatmap } from "@/components/ui/heatmap";
 import { HeatmapDetails } from "@/components/heatmap/HeatmapDetails";
-import { StandardCard } from "@/components/layout/Shell/StandardCard";
+import { StandardCard } from "@/components/layout/shell/StandardCard";
 import { useHeatmap } from "@/hooks/useHeatmap";
 
 export function HeatmapPageContent() {

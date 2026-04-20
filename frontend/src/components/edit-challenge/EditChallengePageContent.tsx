@@ -1,7 +1,7 @@
 import { Loader2 } from "lucide-react";
 import { EditActivityCard } from "@/components/edit-challenge/EditActivityCard";
 import { EditChallengeForm } from "@/components/edit-challenge/EditChallengeForm";
-import { StandardCard } from "@/components/layout/Shell/StandardCard";
+import { StandardCard } from "@/components/layout/shell/StandardCard";
 import { useEditChallenge } from "@/hooks/useEditChallenge";
 
 export function EditChallengePageContent() {

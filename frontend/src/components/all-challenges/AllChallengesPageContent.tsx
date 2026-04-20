@@ -1,5 +1,5 @@
 import { AllChallengesList } from "@/components/all-challenges/AllChallengesList";
-import { StandardCard } from "@/components/layout/Shell/StandardCard";
+import { StandardCard } from "@/components/layout/shell/StandardCard";
 import { useAllChallenges } from "@/hooks/useAllChallenges";
 
 export function AllChallengesPageContent() {

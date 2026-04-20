@@ -1,5 +1,5 @@
 import { CreateChallengeForm } from "@/components/create-challenge/CreateChallengeForm";
-import { StandardCard } from "@/components/layout/Shell/StandardCard";
+import { StandardCard } from "@/components/layout/shell/StandardCard";
 import { useCreateChallenge } from "@/hooks/useCreateChallenge";
 
 export function CreateChallengePageContent() {

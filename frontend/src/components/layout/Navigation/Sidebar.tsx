@@ -5,7 +5,7 @@ import { useAuth } from "@/context/useAuth";
 import { cn } from "@/utils/cn";
 import { navItems } from "./navItems";
 import { useHeader } from "@/hooks/useHeader";
-import { DesktopHeaderContent } from "@/components/layout/Header/DesktopHeaderContent";
+import { DesktopHeaderContent } from "@/components/layout/header/DesktopHeaderContent";
 
 export const Sidebar = () => {
   const navigate = useNavigate();

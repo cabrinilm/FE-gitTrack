@@ -1,4 +1,4 @@
-import { PageShell } from "@/components/layout/Shell/PageShell";
+import { PageShell } from "@/components/layout/shell/PageShell";
 import { EditChallengePageContent } from "@/components/edit-challenge/EditChallengePageContent";
 
 export default function EditChallengePage() {

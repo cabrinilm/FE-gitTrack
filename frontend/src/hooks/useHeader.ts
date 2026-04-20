@@ -1,5 +1,5 @@
 import { useAuth } from "@/context/useAuth";
-import { HEADER_CONFIG } from "@/components/layout/Header/header.config";
+import { HEADER_CONFIG } from "@/components/layout/header/header.config";
 
 
 export function useHeader() {

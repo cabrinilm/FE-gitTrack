@@ -1,4 +1,4 @@
-import { PageShell } from "@/components/layout/Shell/PageShell";
+import { PageShell } from "@/components/layout/shell/PageShell";
 import { HomePageContent } from "@/components/home/HomePageContent";
 
 export default function HomePage() {

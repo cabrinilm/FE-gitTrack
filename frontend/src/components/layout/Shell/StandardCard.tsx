@@ -1,5 +1,5 @@
 import { cn } from "@/utils/cn";
-import type { StandardCardProps } from "./type";
+import type { StandardCardProps } from "./types";
 
 export function StandardCard({
   title,
@@ -11,6 +11,7 @@ export function StandardCard({
   actions,
 }: StandardCardProps) {
   const hasHeader = title || description || actions;
+  const isCentered = !actions; // 👈 key logic
 
   return (
     <div
@@ -22,13 +23,18 @@ export function StandardCard({
       {hasHeader && (
         <div
           className={cn(
-            "flex items-start justify-between gap-4 border-b border-border bg-primary/10 px-6 py-5",
+            "border-b border-border bg-primary/10 px-6 py-5",
+            isCentered
+              ? "flex flex-col items-center text-center"
+              : "flex items-start justify-between gap-4",
             headerClassName,
           )}
         >
-          <div className="min-w-0">
+          <div className={cn("min-w-0", isCentered && "text-center")}>
             {title && (
-              <h2 className="text-2xl font-bold text-primary">{title}</h2>
+              <h2 className="text-2xl font-bold text-primary">
+                {title}
+              </h2>
             )}
 
             {description && (
@@ -42,7 +48,9 @@ export function StandardCard({
         </div>
       )}
 
-      <div className={cn("space-y-10 p-6", contentClassName)}>{children}</div>
+      <div className={cn("space-y-10 p-6", contentClassName)}>
+        {children}
+      </div>
     </div>
   );
 }

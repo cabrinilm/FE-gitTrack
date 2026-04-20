@@ -1,5 +1,5 @@
 import { DailyChallengeCard } from "@/components/home/DailyChallengeCard";
-import { StandardCard } from "@/components/layout/Shell/StandardCard";
+import { StandardCard } from "@/components/layout/shell/StandardCard";
 import { useDailyChallenge } from "@/hooks/useDailyChallenge";
 
 export function HomePageContent() {

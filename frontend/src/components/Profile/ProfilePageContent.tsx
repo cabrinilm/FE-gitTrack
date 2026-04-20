@@ -1,4 +1,4 @@
-import { StandardCard } from "../layout/Shell/StandardCard";
+import { StandardCard } from "../layout/shell/StandardCard";
 import { ProfileForm } from "@/components/profile/ProfileForm";
 import { useProfile } from "@/hooks/useProfile";
 
