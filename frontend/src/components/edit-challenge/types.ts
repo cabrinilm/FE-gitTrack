@@ -34,6 +34,24 @@ export type EditActivityCardProps = {
   meta?: ActivityMeta;
   isSaving: boolean;
   isSaved: boolean;
+  isDeleting: boolean;
   onChange: (updated: Activity) => void;
   onSave: () => void;
+  onDelete: () => void;
+};
+
+export type AddActivityFormProps = {
+  activityCount: number;
+  maxActivities: number;
+  name: string;
+  durationMinutes: string;
+  isAdding: boolean;
+  added: boolean;
+  error: string | null;
+  canAdd: boolean;
+  hasReachedLimit: boolean;
+  onNameChange: (value: string) => void;
+  onDurationChange: (value: string) => void;
+  onAdd: () => void;
+  onCancel: () => void;
 };

@@ -2,7 +2,23 @@ import { useEffect, useMemo, useRef, useState, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { api, setApiToken } from "@/lib/api";
 import { useAuth } from "@/context/useAuth";
-import type { Activity, ActivityMeta, Challenge } from "@/components/edit-challenge/types";
+import type {
+  Activity,
+  ActivityMeta,
+  Challenge,
+} from "@/components/edit-challenge/types";
+
+const MAX_ACTIVITIES = 4;
+
+function sanitizeDurationInput(value: string): string {
+  if (value === "") return "";
+
+  const digitsOnly = value.replace(/\D/g, "");
+
+  if (digitsOnly === "") return "";
+
+  return String(Number(digitsOnly));
+}
 
 export function useEditChallenge() {
   const { challengeId } = useParams();
@@ -18,19 +34,34 @@ export function useEditChallenge() {
   const [challengeName, setChallengeName] = useState("");
   const [challengeDescription, setChallengeDescription] = useState("");
   const [originalChallengeName, setOriginalChallengeName] = useState("");
-  const [originalChallengeDescription, setOriginalChallengeDescription] = useState("");
+  const [originalChallengeDescription, setOriginalChallengeDescription] =
+    useState("");
+
+  const [newActivityName, setNewActivityName] = useState("");
+  const [newActivityDuration, setNewActivityDuration] = useState("");
 
   const [isSavingChallenge, setIsSavingChallenge] = useState(false);
+  const [isAddingActivity, setIsAddingActivity] = useState(false);
   const [savingActivityId, setSavingActivityId] = useState<string | null>(null);
+  const [deletingActivityId, setDeletingActivityId] = useState<string | null>(
+    null,
+  );
 
   const [savedChallenge, setSavedChallenge] = useState(false);
   const [savedActivityId, setSavedActivityId] = useState<string | null>(null);
+  const [addedActivity, setAddedActivity] = useState(false);
 
-  const [saveChallengeError, setSaveChallengeError] = useState<string | null>(null);
-  const [saveActivityError, setSaveActivityError] = useState<string | null>(null);
+  const [saveChallengeError, setSaveChallengeError] = useState<string | null>(
+    null,
+  );
+  const [saveActivityError, setSaveActivityError] = useState<string | null>(
+    null,
+  );
+  const [addActivityError, setAddActivityError] = useState<string | null>(null);
 
   const challengeSavedTimeoutRef = useRef<number | null>(null);
   const activitySavedTimeoutRef = useRef<number | null>(null);
+  const addedActivityTimeoutRef = useRef<number | null>(null);
 
   useEffect(() => {
     return () => {
@@ -39,6 +70,9 @@ export function useEditChallenge() {
       }
       if (activitySavedTimeoutRef.current) {
         window.clearTimeout(activitySavedTimeoutRef.current);
+      }
+      if (addedActivityTimeoutRef.current) {
+        window.clearTimeout(addedActivityTimeoutRef.current);
       }
     };
   }, []);
@@ -118,8 +152,28 @@ export function useEditChallenge() {
     return isChallengeValid && hasChallengeChanges && !isSavingChallenge;
   }, [isChallengeValid, hasChallengeChanges, isSavingChallenge]);
 
+  const hasReachedActivityLimit = useMemo(() => {
+    return activities.length >= MAX_ACTIVITIES;
+  }, [activities.length]);
+
+  const canAddActivity = useMemo(() => {
+    return (
+      newActivityName.trim().length > 0 &&
+      Number(newActivityDuration) > 0 &&
+      !isAddingActivity &&
+      !hasReachedActivityLimit
+    );
+  }, [
+    newActivityName,
+    newActivityDuration,
+    isAddingActivity,
+    hasReachedActivityLimit,
+  ]);
+
   const activityMeta = useMemo(() => {
-    const originalMap = new Map(originalActivities.map((item) => [item.id, item]));
+    const originalMap = new Map(
+      originalActivities.map((item) => [item.id, item]),
+    );
 
     const map = new Map<string, ActivityMeta>();
 
@@ -138,12 +192,16 @@ export function useEditChallenge() {
       map.set(activity.id, {
         isValid,
         hasChanges,
-        canSave: isValid && hasChanges && savingActivityId !== activity.id,
+        canSave:
+          isValid &&
+          hasChanges &&
+          savingActivityId !== activity.id &&
+          deletingActivityId !== activity.id,
       });
     }
 
     return map;
-  }, [activities, originalActivities, savingActivityId]);
+  }, [activities, originalActivities, savingActivityId, deletingActivityId]);
 
   const handleSaveChallenge = useCallback(async () => {
     if (!challengeId || !canSaveChallenge) return;
@@ -217,10 +275,13 @@ export function useEditChallenge() {
 
         const trimmedName = activity.name.trim();
 
-        await api.patch(`/api/challenges/${challengeId}/activities/${activityId}`, {
-          name: trimmedName,
-          duration_minutes: activity.duration_minutes,
-        });
+        await api.patch(
+          `/api/challenges/${challengeId}/activities/${activityId}`,
+          {
+            name: trimmedName,
+            duration_minutes: activity.duration_minutes,
+          },
+        );
 
         setActivities((prev) =>
           prev.map((item) =>
@@ -253,7 +314,9 @@ export function useEditChallenge() {
         }
 
         activitySavedTimeoutRef.current = window.setTimeout(() => {
-          setSavedActivityId((current) => (current === activityId ? null : current));
+          setSavedActivityId((current) =>
+            current === activityId ? null : current,
+          );
         }, 2000);
       } catch (err) {
         console.error("Failed to save activity:", err);
@@ -265,6 +328,105 @@ export function useEditChallenge() {
     [challengeId, activities, activityMeta],
   );
 
+  const handleDeleteActivity = useCallback(
+    async (activityId: string) => {
+      if (!challengeId) return;
+
+      const confirmed = window.confirm(
+        "Are you sure you want to delete this activity?",
+      );
+
+      if (!confirmed) return;
+
+      try {
+        setDeletingActivityId(activityId);
+        setSaveActivityError(null);
+        setSavedActivityId(null);
+        setAddActivityError(null);
+
+        await api.delete(
+          `/api/challenges/${challengeId}/activities/${activityId}`,
+        );
+
+        setActivities((prev) => prev.filter((item) => item.id !== activityId));
+        setOriginalActivities((prev) =>
+          prev.filter((item) => item.id !== activityId),
+        );
+      } catch (err) {
+        console.error("Failed to delete activity:", err);
+        setSaveActivityError("Failed to delete activity");
+      } finally {
+        setDeletingActivityId(null);
+      }
+    },
+    [challengeId],
+  );
+
+  const handleAddActivity = useCallback(async () => {
+    if (!challengeId) return;
+
+    if (activities.length >= MAX_ACTIVITIES) {
+      setAddActivityError("You can add up to 4 activities per challenge.");
+      return;
+    }
+
+    const trimmedName = newActivityName.trim();
+    const duration = Number(newActivityDuration);
+
+    if (!trimmedName || duration <= 0 || isAddingActivity) return;
+
+    try {
+      setIsAddingActivity(true);
+      setAddActivityError(null);
+      setAddedActivity(false);
+
+      const { data } = await api.post<Activity>(
+        `/api/challenges/${challengeId}/activities`,
+        {
+          name: trimmedName,
+          duration_minutes: duration,
+        },
+      );
+
+      setActivities((prev) => [...prev, data]);
+      setOriginalActivities((prev) => [...prev, data]);
+
+      setNewActivityName("");
+      setNewActivityDuration("");
+      setAddedActivity(true);
+
+      if (addedActivityTimeoutRef.current) {
+        window.clearTimeout(addedActivityTimeoutRef.current);
+      }
+
+      addedActivityTimeoutRef.current = window.setTimeout(() => {
+        setAddedActivity(false);
+      }, 2500);
+    } catch (err) {
+      console.error("Failed to add activity:", err);
+      setAddActivityError("Failed to add activity");
+    } finally {
+      setIsAddingActivity(false);
+    }
+  }, [
+    challengeId,
+    activities.length,
+    newActivityName,
+    newActivityDuration,
+    isAddingActivity,
+  ]);
+
+  const resetAddActivityForm = useCallback(() => {
+    setNewActivityName("");
+    setNewActivityDuration("");
+    setAddActivityError(null);
+    setAddedActivity(false);
+  }, []);
+
+  const handleNewActivityDurationChange = useCallback((value: string) => {
+    setNewActivityDuration(sanitizeDurationInput(value));
+  }, []);
+
   return {
     challengeName,
     challengeDescription,
@@ -273,17 +435,31 @@ export function useEditChallenge() {
     isLoading,
     error,
     isSavingChallenge,
+    isAddingActivity,
     savingActivityId,
+    deletingActivityId,
     savedChallenge,
     savedActivityId,
+    addedActivity,
     saveChallengeError,
     saveActivityError,
+    addActivityError,
     canSaveChallenge,
+    canAddActivity,
+    hasReachedActivityLimit,
+    maxActivities: MAX_ACTIVITIES,
+    newActivityName,
+    newActivityDuration,
     setChallengeName,
     setChallengeDescription,
+    setNewActivityName,
+    setNewActivityDuration: handleNewActivityDurationChange,
     handleActivityChange,
     handleSaveChallenge,
     handleSaveActivity,
+    handleDeleteActivity,
+    handleAddActivity,
+    resetAddActivityForm,
     reloadEditChallenge: loadEditChallenge,
   };
 }

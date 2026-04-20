@@ -6,8 +6,10 @@ export function EditActivityCard({
   meta,
   isSaving,
   isSaved,
+  isDeleting,
   onChange,
   onSave,
+  onDelete,
 }: EditActivityCardProps) {
   const showNameError = activity.name.trim().length === 0;
   const showDurationError = Number(activity.duration_minutes) <= 0;
@@ -58,7 +60,7 @@ export function EditActivityCard({
         <button
           type="button"
           onClick={onSave}
-          disabled={!meta?.canSave}
+          disabled={!meta?.canSave || isDeleting}
           className="inline-flex items-center justify-center rounded-xl bg-primary px-4 py-2 text-sm font-medium text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
         >
           {isSaving ? (
@@ -68,6 +70,22 @@ export function EditActivityCard({
             </>
           ) : (
             "Save"
+          )}
+        </button>
+
+        <button
+          type="button"
+          onClick={onDelete}
+          disabled={isSaving || isDeleting}
+          className="inline-flex items-center justify-center rounded-xl border border-red-500/40 px-4 py-2 text-sm font-medium text-red-400 transition hover:bg-red-500/10 disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          {isDeleting ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Deleting...
+            </>
+          ) : (
+            "Delete"
           )}
         </button>
 
