@@ -184,7 +184,7 @@ export function Heatmap({ data = [], onDayClick, className }: HeatmapProps) {
                               type="button"
                               aria-label={`${day.date}: ${day.count} completed activities`}
                               className={cn(
-                                "h-2.5 w-2.5 rounded-[2px] border border-white/5 transition-colors focus:outline-none focus:ring-1 focus:ring-white/20",
+                                "h-2.5 w-2.5 rounded-xs border border-white/5 transition-colors focus:outline-none focus:ring-1 focus:ring-white/20",
                                 LEVEL_COLORS[level],
                               )}
                               onClick={() => onDayClick?.(day.date)}
@@ -217,7 +217,7 @@ export function Heatmap({ data = [], onDayClick, className }: HeatmapProps) {
             <div
               key={level}
               className={cn(
-                "h-2.5 w-2.5 rounded-[2px] border border-white/5",
+                "h-2.5 w-2.5 rounded-xs border border-white/5",
                 LEVEL_COLORS[level as keyof typeof LEVEL_COLORS],
               )}
             />

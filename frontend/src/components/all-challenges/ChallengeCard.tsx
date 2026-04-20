@@ -1,4 +1,9 @@
-import { FaCheckCircle, FaEdit, FaRegCircle, FaTrash } from "react-icons/fa";
+import {
+  FaCheckCircle,
+  FaEdit,
+  FaRegCircle,
+  FaTrash,
+} from "react-icons/fa";
 import { cn } from "@/utils/cn";
 import type { ChallengeCardProps } from "./types";
 
@@ -72,7 +77,7 @@ export function ChallengeCard({
         </h3>
 
         {challenge.description && (
-          <p className="text-sm text-muted-foreground line-clamp-2">
+          <p className="line-clamp-2 text-sm text-muted-foreground">
             {challenge.description}
           </p>
         )}
@@ -80,7 +85,8 @@ export function ChallengeCard({
 
       {/* Footer */}
       <div className="px-4 pb-4 text-xs text-muted-foreground">
-        Created: {new Date(challenge.created_at).toLocaleDateString()}
+        Created:{" "}
+        {new Date(challenge.created_at).toLocaleDateString()}
       </div>
     </div>
   );
