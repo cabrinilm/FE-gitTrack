@@ -1,10 +1,10 @@
 import { PageShell } from "@/components/layout/Shell/PageShell";
-import { CreateChallengeCard } from "@/components/CreateChallengeCard";
+import { CreateChallengePageContent } from "@/components/create-challenge/CreateChallengePageContent";
 
-export default function CreateChallenge() {
+export default function CreateChallengePage() {
   return (
     <PageShell>
-      <CreateChallengeCard />
+      <CreateChallengePageContent />
     </PageShell>
   );
 }
