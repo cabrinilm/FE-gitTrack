@@ -14,6 +14,8 @@ export function HomePageContent() {
     completedCount,
     totalActivities,
     progressPercentage,
+    streak,
+    completedToday,
     reloadDailyChallenge,
     handleMarkComplete,
   } = useDailyChallenge();
@@ -33,6 +35,8 @@ export function HomePageContent() {
         completedCount={completedCount}
         totalActivities={totalActivities}
         progressPercentage={progressPercentage}
+        streak={streak}
+        completedToday={completedToday}
         onRetry={reloadDailyChallenge}
         onMarkComplete={handleMarkComplete}
       />

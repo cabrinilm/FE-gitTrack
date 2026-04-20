@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { FaCheck } from "react-icons/fa";
+import { FaCheck, FaFire } from "react-icons/fa";
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/Button/Button";
 import { cn } from "@/utils/cn";
@@ -15,11 +15,34 @@ export function DailyChallengeCard({
   completedCount,
   totalActivities,
   progressPercentage,
+  streak,
+  completedToday,
   onRetry,
   onMarkComplete,
 }: DailyChallengeCardProps) {
   return (
     <div className="space-y-6">
+      {!isLoading && !error && streak >= 1 && (
+        <div className="flex items-center justify-between rounded-xl border border-orange-500/20 bg-orange-500/10 px-4 py-3">
+          <div className="flex items-center gap-3">
+            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-orange-500/15 text-orange-400">
+              <FaFire className="h-4 w-4" />
+            </div>
+
+            <div>
+              <p className="text-sm font-semibold text-foreground">
+                {streak} day{streak > 1 ? "s" : ""} streak
+              </p>
+              <p className="text-xs text-muted-foreground">
+                {completedToday
+                  ? "You’ve already kept it going today."
+                  : "Complete one activity today to keep it alive."}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
       {!isLoading && !error && !hasNoChallenge && (
         <div>
           <div className="mb-4 flex items-center justify-between">

@@ -1,11 +1,24 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { api, setApiToken } from "@/lib/api";
 import { useAuth } from "@/context/useAuth";
-import type {
-  Activity,
-  Challenge,
-  FulfillmentsResponse,
-} from "@/components/home/type";
+import type { Challenge, Activity } from "@/pages/types";
+
+type Fulfillment = {
+  id: number;
+  progress_entry_id: number;
+  activity_id: number;
+  activity_name: string;
+  planned_duration_minutes: number;
+};
+
+type FulfillmentsResponse = {
+  fulfillments: Fulfillment[];
+};
+
+type StreakResponse = {
+  streak: number;
+  completedToday: boolean;
+};
 
 export function useDailyChallenge() {
   const { token, user } = useAuth();
@@ -13,10 +26,14 @@ export function useDailyChallenge() {
   const [activeChallenge, setActiveChallenge] = useState<Challenge | null>(null);
   const [activities, setActivities] = useState<Activity[]>([]);
   const [completedIds, setCompletedIds] = useState<Set<number>>(new Set());
+
   const [isLoading, setIsLoading] = useState(true);
-  const [completingId, setCompletingId] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [hasNoChallenge, setHasNoChallenge] = useState(false);
+  const [completingId, setCompletingId] = useState<number | null>(null);
+
+  const [streak, setStreak] = useState(0);
+  const [completedToday, setCompletedToday] = useState(false);
 
   const loadDailyChallenge = useCallback(async () => {
     if (!token || !user) {
@@ -26,16 +43,32 @@ export function useDailyChallenge() {
     }
 
     setApiToken(token);
-    setIsLoading(true);
-    setError(null);
-    setHasNoChallenge(false);
 
     try {
+      setIsLoading(true);
+      setError(null);
+      setHasNoChallenge(false);
+
+      const today = new Date().toISOString().split("T")[0];
+
+      try {
+        const { data: streakData } = await api.get<StreakResponse>(
+          "/api/progress/streak",
+        );
+
+        setStreak(streakData?.streak ?? 0);
+        setCompletedToday(streakData?.completedToday ?? false);
+      } catch (streakError) {
+        console.error("Failed to load streak:", streakError);
+        setStreak(0);
+        setCompletedToday(false);
+      }
+
       const { data: challenge } = await api.get<Challenge | null>(
         "/api/active-challenge",
       );
 
-      if (!challenge?.id) {
+      if (!challenge) {
         setActiveChallenge(null);
         setActivities([]);
         setCompletedIds(new Set());
@@ -45,27 +78,24 @@ export function useDailyChallenge() {
 
       setActiveChallenge(challenge);
 
-      const { data: challengeActivities } = await api.get<Activity[]>(
+      const { data: activitiesData } = await api.get<Activity[]>(
         `/api/challenges/${challenge.id}/activities`,
       );
-      setActivities(challengeActivities ?? []);
 
-      const today = new Date().toISOString().split("T")[0];
-
-      const { data: response } = await api.get<FulfillmentsResponse>(
+      const { data: fulfillmentsData } = await api.get<FulfillmentsResponse>(
         `/api/progress/${today}/fulfillments`,
       );
 
-      const fulfillments = response?.fulfillments ?? [];
-      const ids = new Set<number>(fulfillments.map((item) => item.activity_id));
+      const safeActivities = activitiesData ?? [];
+      const safeFulfillments = fulfillmentsData?.fulfillments ?? [];
 
-      setCompletedIds(ids);
+      setActivities(safeActivities);
+      setCompletedIds(
+        new Set(safeFulfillments.map((fulfillment) => fulfillment.activity_id)),
+      );
     } catch (err) {
-      console.error("Failed to load daily challenge data:", err);
-      setError("Failed to load today's activities");
-      setActiveChallenge(null);
-      setActivities([]);
-      setCompletedIds(new Set());
+      console.error("Failed to load daily challenge:", err);
+      setError("Failed to load daily challenge");
     } finally {
       setIsLoading(false);
     }
@@ -77,34 +107,45 @@ export function useDailyChallenge() {
 
   const handleMarkComplete = useCallback(
     async (activityId: number) => {
-      if (completedIds.has(activityId) || completingId !== null) return;
-
-      if (!token || !user) {
-        setError("Authentication required");
-        return;
-      }
-
-      setApiToken(token);
-      setCompletingId(activityId);
-      setError(null);
+      if (completedIds.has(activityId)) return;
 
       try {
-        await api.post("/api/progress/fulfillments", { activityId });
+        setCompletingId(activityId);
+        setError(null);
 
-        setCompletedIds((prev) => new Set([...prev, activityId]));
+        await api.post("/api/progress/fulfillments", {
+          activityId,
+        });
+
+        setCompletedIds((prev) => new Set(prev).add(activityId));
+
+        try {
+          const { data: streakData } = await api.get<StreakResponse>(
+            "/api/progress/streak",
+          );
+
+          setStreak(streakData?.streak ?? 0);
+          setCompletedToday(streakData?.completedToday ?? false);
+        } catch (streakError) {
+          console.error("Failed to refresh streak:", streakError);
+        }
       } catch (err) {
-        console.error("Failed to complete activity:", err);
-        setError("Could not mark activity as completed");
+        console.error("Failed to mark activity as complete:", err);
+        setError("Failed to mark activity as complete");
       } finally {
         setCompletingId(null);
       }
     },
-    [completedIds, completingId, token, user],
+    [completedIds],
   );
 
-  const completedCount = useMemo(() => completedIds.size, [completedIds]);
+  const completedCount = useMemo(() => {
+    return completedIds.size;
+  }, [completedIds]);
 
-  const totalActivities = useMemo(() => activities.length, [activities]);
+  const totalActivities = useMemo(() => {
+    return activities.length;
+  }, [activities]);
 
   const progressPercentage = useMemo(() => {
     if (totalActivities === 0) return 0;
@@ -122,6 +163,8 @@ export function useDailyChallenge() {
     completedCount,
     totalActivities,
     progressPercentage,
+    streak,
+    completedToday,
     reloadDailyChallenge: loadDailyChallenge,
     handleMarkComplete,
   };

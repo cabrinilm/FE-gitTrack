@@ -32,6 +32,7 @@ export type FulfillmentsResponse = {
   fulfillments: Fulfillment[];
 };
 
+
 export type DailyChallengeCardProps = {
   activities: Activity[];
   completedIds: Set<number>;
@@ -42,6 +43,13 @@ export type DailyChallengeCardProps = {
   completedCount: number;
   totalActivities: number;
   progressPercentage: number;
+  streak: number;
+  completedToday: boolean;
   onRetry: () => void;
   onMarkComplete: (activityId: number) => void;
+};
+
+export type StreakResponse = {
+  streak: number;
+  completedToday: boolean;
 };
