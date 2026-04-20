@@ -1,5 +1,5 @@
 import { Loader2 } from "lucide-react";
-import type { EditActivityCardProps } from "./type";
+import type { EditActivityCardProps } from "@/components/edit-challenge/types";
 
 export function EditActivityCard({
   activity,

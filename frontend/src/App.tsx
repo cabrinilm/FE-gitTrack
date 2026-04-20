@@ -15,7 +15,7 @@ import { ProtectedRoute } from "./components/ProtectedRoute/ProtectedRoute";
 import { AuthLayout } from "./pages/auth/AuthLayout";
 import { ResetPasswordForm } from "./pages/auth/ResetPasswordForm";
 import { ProtectedLayout } from "./components/layout/Layouts/ProtectedLayout";
-import { EditChallengePage } from "./components/EditChallenges/EditChallengePage";
+import { EditChallengePage } from "./components/edit-challenge/EditActivityCard";
 import { ProfilePage } from "./pages/ProfilePage";
 
 export default function App() {
