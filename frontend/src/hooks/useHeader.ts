@@ -6,7 +6,7 @@ export function useHeader() {
     const {user} = useAuth();
 
 
-//const isAuthenticated = user ? true : false;
+
     const isAuthenticated = !!user;
 
     return {
