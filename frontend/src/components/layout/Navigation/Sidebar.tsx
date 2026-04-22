@@ -65,7 +65,7 @@ export const Sidebar = () => {
               key={item.label}
               onClick={handleClick}
               className={cn(
-                "flex w-full items-center gap-3 rounded-md px-4 py-3 text-left transition-colors duration-200",
+                "flex w-full cursor-pointer items-center gap-3 rounded-md px-4 py-3 text-left transition-colors duration-200",
                 isActive
                   ? "border-l-4 border-primary bg-accent pl-3 font-medium text-accent-foreground"
                   : "text-muted-foreground hover:bg-muted hover:text-foreground",
