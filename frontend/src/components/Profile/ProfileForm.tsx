@@ -1,7 +1,5 @@
-import { Loader2 } from "lucide-react";
+import { Button } from "@/components/Button/Button";
 import type { ProfileFormProps } from "@/components/profile/type";
-
-
 
 export function ProfileForm({
   profile,
@@ -63,21 +61,17 @@ export function ProfileForm({
       )}
 
       <div className="flex justify-end">
-        <button
+        <Button
           type="button"
           onClick={handleSave}
-          disabled={!canSave || isLoading || isSaving}
-          className="inline-flex items-center justify-center rounded-xl border border-border px-4 py-2 text-sm font-medium text-foreground transition hover:bg-accent disabled:cursor-not-allowed disabled:opacity-60"
+          disabled={!canSave || isLoading}
+          isLoading={isSaving}
+          size="sm"
+          variant="outline"
+          className="rounded-xl"
         >
-          {isSaving ? (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Saving...
-            </>
-          ) : (
-            "Save changes"
-          )}
-        </button>
+          Save changes
+        </Button>
       </div>
     </div>
   );

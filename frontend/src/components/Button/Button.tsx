@@ -14,9 +14,12 @@ export const Button = ({
   const baseClasses = "rounded-lg font-semibold transition";
 
 const variantClasses = {
-  primary: "bg-primary hover:bg-primary/90 text-text-primary",   
+  primary: "bg-primary hover:bg-primary/90 text-text-primary",
   secondary: "bg-secondary hover:bg-secondary/80 text-white",
   destructive: "bg-error hover:bg-error/90 text-white",
+
+  outline:
+    "border border-border bg-transparent text-foreground hover:bg-accent",
 }[variant];
 
 
