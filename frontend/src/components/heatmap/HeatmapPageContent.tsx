@@ -1,4 +1,4 @@
-import { Heatmap } from "@/components/ui/heatmap";
+import { Heatmap } from "../ui/heatmap";
 import { HeatmapDetails } from "@/components/heatmap/HeatmapDetails";
 import { StandardCard } from "@/components/layout/shell/StandardCard";
 import { useHeatmap } from "@/hooks/useHeatmap";
