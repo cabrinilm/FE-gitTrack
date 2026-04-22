@@ -4,9 +4,9 @@ import AllChallenges from "@/pages/AllChallengesPage";
 import CreateChallenge from "@/pages/CreateChallengePage";
 import HeatMap from "@/pages/HeatmapPage";
 import Home from "@/pages/HomePage";
-import LoginForm from "@/pages/auth/LoginForm";
+import { LoginPage } from "./pages/auth/LoginPage";
 import { SignupForm } from "@/pages/auth/SignupForm";
-import { ForgotPasswordForm } from "@/pages/auth/ForgotPasswordForm";
+import { ForgotPasswordPage } from "@/pages/auth/ForgotPasswordPage";
 
 
 import { AuthProvider } from "@/context/AuthProvider";
@@ -38,9 +38,9 @@ export default function App() {
          
 
           <Route path="/auth" element={<AuthLayout />}>
-            <Route path="login" element={<LoginForm />} />
+            <Route path="login" element={<LoginPage />} />
             <Route path="signup" element={<SignupForm />} />
-            <Route path="forgot" element={<ForgotPasswordForm />} />
+            <Route path="forgot" element={<ForgotPasswordPage />} />
              <Route path="reset-password" element={<ResetPasswordForm />} />
           </Route>
           <Route element={<ProtectedRoute />}>
