@@ -36,13 +36,12 @@ export const SignupForm = () => {
       return;
     }
 
-    // Validação extra: senha mínima 6 caracteres
     if (password.length < 6) {
       setError("Password must be at least 6 characters long");
       return;
     }
 
-    // Validação simples de email (regex básica)
+
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       setError("Please enter a valid email address");

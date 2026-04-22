@@ -11,9 +11,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [isRecoveryMode, setIsRecoveryMode] = useState(false);
   const [token, setToken] = useState<string | null>(null);
 
-  // =========================
-  // Funções de autenticação
-  // =========================
+
   const signIn = async (
     email: string,
     password: string,
@@ -63,9 +61,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     return { user: data?.user ?? null, session: null, error: error ?? null };
   };
 
-  // =========================
-  // Checagem inicial de sessão
-  // =========================
+
   useEffect(() => {
     const hash = window.location.hash;
     if (hash.includes("type=recovery")) setIsRecoveryMode(true);
@@ -97,9 +93,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     return () => authListener.subscription.unsubscribe();
   }, []);
 
-  // =========================
-  // Provider
-  // =========================
+
   return (
     <AuthContext.Provider
       value={{

@@ -40,7 +40,7 @@ export default function LoginForm() {
 
   return (
     <>
-      {/* Header */}
+
       <div className="text-center mb-8">
         <h1 className="text-3xl font-bold text-text-primary">Welcome Back</h1>
         <p className="text-text-secondary mt-2">Sign in to your account</p>
@@ -78,7 +78,7 @@ export default function LoginForm() {
         </Button>
       </form>
 
-      {/* Links below */}
+
       <div className="mt-6 text-center text-sm text-text-secondary">
         <Link to="/auth/forgot" className="text-primary-400 hover:underline">
           Forgot password?

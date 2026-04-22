@@ -56,7 +56,7 @@ export const ForgotPasswordForm = () => {
 
   return (
     <>
-      {/* Header */}
+   
       <div className="text-center mb-8">
         <h1 className="text-3xl font-bold text-text-primary">
           Recover Your Password
@@ -64,7 +64,7 @@ export const ForgotPasswordForm = () => {
         <p className="text-text-secondary mt-2">Enter your email to reset your password</p>
       </div>
 
-      {/* Form */}
+     
       <form onSubmit={handleSubmit} className="space-y-6">
         <Input
           label="Email"
@@ -92,7 +92,7 @@ export const ForgotPasswordForm = () => {
         </Button>
       </form>
 
-      {/* Footer links */}
+   
       <div className="mt-6 text-center text-sm text-text-secondary">
         <span>Remembered your password?</span>{" "}
         <Link to="/auth/login" className="text-primary-400 hover:underline">
