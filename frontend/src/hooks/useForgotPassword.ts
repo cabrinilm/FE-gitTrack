@@ -2,7 +2,7 @@ import { useCallback, useMemo, useRef, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/useAuth";
 import { mapAuthError } from "@/utils/authErrors";
-import type { ForgotPasswordFormValues } from "@/components/auth/types";
+import type { ForgotPasswordFormValues } from "@/components/auth/forgot-password/types";
 
 export function useForgotPassword() {
   const navigate = useNavigate();

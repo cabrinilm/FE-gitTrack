@@ -13,7 +13,7 @@ import { AuthProvider } from "@/context/AuthProvider";
 
 import { ProtectedRoute } from "./components/ProtectedRoute/ProtectedRoute";
 import { AuthLayout } from "./pages/auth/AuthLayout";
-import { ResetPasswordForm } from "./pages/auth/ResetPasswordForm";
+import { ResetPasswordPage } from "./pages/auth/ResetPasswordPage";
 import { ProtectedLayout } from "./components/layout/layouts/ProtectedLayout";
 import EditChallengePage from "./pages/EditChallengePage";
 import { ProfilePage } from "./pages/ProfilePage";
@@ -41,7 +41,7 @@ export default function App() {
             <Route path="login" element={<LoginPage />} />
             <Route path="signup" element={<SignupPage />} />
             <Route path="forgot" element={<ForgotPasswordPage />} />
-             <Route path="reset-password" element={<ResetPasswordForm />} />
+             <Route path="reset-password" element={<ResetPasswordPage />} />
           </Route>
           <Route element={<ProtectedRoute />}>
           <Route element={<ProtectedLayout />}>

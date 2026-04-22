@@ -1,7 +1,7 @@
 import { Input } from "@/components/Input/Input";
 import { Button } from "@/components/Button/Button";
 import { Link } from "react-router-dom";
-import type { ForgotPasswordFormProps } from "@/components/auth/types";
+import type { ForgotPasswordFormProps } from "@/components/auth/forgot-password/types";
 
 export const ForgotPasswordForm = ({
   formValues,
