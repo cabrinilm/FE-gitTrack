@@ -31,11 +31,14 @@ const features: LandingFeatureItem[] = [
   },
 ];
 
-const accentStyles: Record<NonNullable<LandingFeatureItem["accent"]>, string> = {
+const accentStyles: Record<
+  NonNullable<LandingFeatureItem["accent"]>,
+  string
+> = {
   primary: "bg-primary/10 text-primary",
   secondary: "bg-secondary/10 text-secondary",
-  success: "bg-green-500/10 text-green-400",
-  muted: "bg-background text-muted-foreground",
+  success: "bg-emerald-500/10 text-emerald-600",
+  muted: "bg-background text-text-secondary border border-border/70",
 };
 
 export function FeaturesSection() {
@@ -47,13 +50,13 @@ export function FeaturesSection() {
             Core features
           </span>
 
-          <h2 className="mb-5 text-3xl font-bold leading-tight text-foreground sm:text-4xl lg:text-5xl">
+          <h2 className="mb-5 text-3xl font-bold leading-tight text-text-primary sm:text-4xl lg:text-5xl">
             Built to help you
             <br />
             follow through
           </h2>
 
-          <p className="text-base leading-7 text-muted-foreground sm:text-lg">
+          <p className="text-base leading-7 text-text-secondary sm:text-lg">
             GitTrack gives you a simple structure for tracking challenges,
             completing activities, and making progress visible.
           </p>
@@ -63,21 +66,19 @@ export function FeaturesSection() {
           {features.map((feature) => (
             <article
               key={feature.title}
-              className="rounded-3xl border border-border bg-surface p-6 shadow-lg transition hover:-translate-y-1"
+              className="group rounded-3xl border border-border/80 bg-surface p-6 shadow-[0_10px_30px_rgba(15,23,42,0.06)] transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_16px_40px_rgba(15,23,42,0.10)]"
             >
               <div
-                className={`mb-5 inline-flex rounded-2xl px-3 py-2 text-sm font-semibold ${
-                  accentStyles[feature.accent ?? "muted"]
-                }`}
+                className={`mb-5 inline-flex rounded-2xl px-3 py-2 text-sm font-semibold ${accentStyles[feature.accent ?? "muted"]}`}
               >
                 {feature.tag}
               </div>
 
-              <h3 className="mb-3 text-xl font-semibold text-foreground">
+              <h3 className="mb-3 text-xl font-semibold text-text-primary">
                 {feature.title}
               </h3>
 
-              <p className="text-sm leading-7 text-muted-foreground">
+              <p className="text-sm leading-7 text-text-secondary">
                 {feature.description}
               </p>
             </article>

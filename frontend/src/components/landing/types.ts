@@ -23,3 +23,15 @@ export type LandingFooterLinkGroup = {
     href: string;
   }[];
 };
+
+export type DemoActivity = {
+  name: string;
+  status: "completed" | "pending";
+};
+
+export type DemoDayDetail = {
+  date: string;
+  completed: number;
+  total: number;
+  activities: DemoActivity[];
+};

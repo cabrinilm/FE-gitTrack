@@ -7,7 +7,7 @@ import { HeatmapShowcaseSection } from "./HeatmapShowcaseSection";
 
 export function LandingPageContent() {
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="landing-theme min-h-screen bg-background text-text-primary">
       <LandingNavbar />
       <main>
         <HeroSection />

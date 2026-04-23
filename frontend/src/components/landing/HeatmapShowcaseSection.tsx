@@ -2,8 +2,9 @@ import * as React from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/Button/Button";
 import { cn } from "@/lib/utils";
+import type { DemoDayDetail } from "./types";
 
-const MONTH_LABELS = ["Jan", "Feb", "Mar"];
+const MONTH_LABELS = ["Jan", "Feb", "Mar", "Apr", "May"];
 
 const demoWeeks = [
   [0, 1, 0, 2, 3, 1, 0],
@@ -18,6 +19,12 @@ const demoWeeks = [
   [1, 0, 1, 2, 3, 2, 1],
   [0, 1, 2, 3, 4, 3, 2],
   [1, 2, 1, 2, 3, 4, 3],
+  [2, 3, 2, 4, 4, 3, 2],
+  [1, 2, 3, 3, 2, 1, 0],
+  [0, 1, 2, 4, 3, 2, 1],
+  [1, 3, 4, 4, 3, 2, 1],
+  [2, 2, 3, 4, 2, 1, 0],
+  [1, 2, 3, 4, 4, 3, 2],
 ] as const;
 
 const LEVEL_STYLES = {
@@ -28,17 +35,7 @@ const LEVEL_STYLES = {
   4: { backgroundColor: "var(--color-primary)" },
 } as const;
 
-type DemoActivity = {
-  name: string;
-  status: "completed" | "pending";
-};
 
-type DemoDayDetail = {
-  date: string;
-  completed: number;
-  total: number;
-  activities: DemoActivity[];
-};
 
 const demoDayDetails: Record<string, DemoDayDetail> = {
   "5-4": {
@@ -87,7 +84,11 @@ const demoDayDetails: Record<string, DemoDayDetail> = {
   },
 };
 
-function getFallbackDetail(weekIndex: number, dayIndex: number, level: number): DemoDayDetail {
+function getFallbackDetail(
+  weekIndex: number,
+  dayIndex: number,
+  level: number,
+): DemoDayDetail {
   const total = 4;
   const completed = Math.min(level, total);
 
@@ -133,7 +134,7 @@ export function HeatmapShowcaseSection() {
         <div className="absolute left-1/2 top-1/2 h-96 w-96 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/10 blur-3xl" />
       </div>
 
-      <div className="relative mx-auto grid max-w-7xl gap-12 px-4 sm:px-6 lg:grid-cols-[1fr_1.1fr] lg:items-center lg:px-8">
+      <div className="relative mx-auto grid max-w-7xl gap-12 px-4 sm:px-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] lg:items-center lg:px-8">
         <div>
           <span className="mb-4 inline-block text-xs font-semibold uppercase tracking-[0.16em] text-primary">
             Signature feature
@@ -146,7 +147,8 @@ export function HeatmapShowcaseSection() {
 
           <p className="mb-8 max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg">
             GitTrack turns daily effort into a visual pattern. Click a day to
-            preview how activity tracking becomes easier to understand over time.
+            preview how activity tracking becomes easier to understand over
+            time.
           </p>
 
           <div className="flex flex-col gap-4 sm:flex-row">
@@ -164,7 +166,7 @@ export function HeatmapShowcaseSection() {
           </div>
         </div>
 
-        <div className="rounded-3xl border border-border bg-surface p-5 shadow-lg sm:p-6">
+        <div className="min-w-0 rounded-3xl border border-border/80 bg-surface p-4 shadow-[0_10px_30px_rgba(15,23,42,0.08)] sm:p-6">
           <div className="mb-5 flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-foreground">
@@ -180,16 +182,15 @@ export function HeatmapShowcaseSection() {
             </span>
           </div>
 
-          <div className="overflow-x-auto">
-            <div className="min-w-max">
+          <div className="-mx-1 overflow-x-auto pb-2">
+            <div className="min-w-max px-1">
               <div className="mb-2 flex">
                 <div className="w-8 shrink-0" />
                 <div className="flex gap-1">
                   {MONTH_LABELS.map((label) => (
                     <div
                       key={label}
-                      className="text-[11px] leading-3 text-muted-foreground"
-                      style={{ width: "52px" }}
+                      className="w-12 text-[11px] leading-3 text-text-secondary sm:w-16"
                     >
                       {label}
                     </div>
@@ -225,9 +226,11 @@ export function HeatmapShowcaseSection() {
                               "h-3 w-3 rounded-xs border border-white/5 transition-all",
                               "hover:scale-110 hover:opacity-90",
                               isSelected &&
-                                "scale-110 ring-2 ring-white/40 ring-offset-2 ring-offset-surface",
+                                "scale-110 ring-2 ring-primary/40 ring-offset-2 ring-offset-surface",
                             )}
-                            style={LEVEL_STYLES[level as keyof typeof LEVEL_STYLES]}
+                            style={
+                              LEVEL_STYLES[level as keyof typeof LEVEL_STYLES]
+                            }
                           />
                         );
                       })}
@@ -259,7 +262,8 @@ export function HeatmapShowcaseSection() {
                   {selectedDetail.date}
                 </p>
                 <p className="text-xs text-muted-foreground">
-                  {selectedDetail.completed}/{selectedDetail.total} activities completed
+                  {selectedDetail.completed}/{selectedDetail.total} activities
+                  completed
                 </p>
               </div>
 
@@ -272,9 +276,11 @@ export function HeatmapShowcaseSection() {
               {selectedDetail.activities.map((activity) => (
                 <div
                   key={activity.name}
-                  className="flex items-center justify-between rounded-xl border border-border/60 bg-surface px-3 py-2"
+                  className="flex items-start justify-between gap-3 rounded-xl border border-border/60 bg-surface px-3 py-2"
                 >
-                  <span className="text-sm text-foreground">{activity.name}</span>
+                  <span className="min-w-0 text-sm text-text-primary">
+                    {activity.name}
+                  </span>
 
                   <span
                     className={cn(
