@@ -113,7 +113,7 @@ export function useAllChallenges() {
 
   const handleEdit = useCallback(
     (id: string) => {
-      navigate(`/challenges/${id}/edit`);
+      navigate(`/app/challenges/${id}/edit`);
     },
     [navigate],
   );

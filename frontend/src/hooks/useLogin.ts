@@ -60,7 +60,7 @@ export function useLogin() {
           return;
         }
 
-        navigate("/");
+        navigate("/app");
       } finally {
         setIsLoading(false);
       }

@@ -1,4 +1,4 @@
 export const HEADER_CONFIG = {
     appName: "GitTrack",
-    profileHref: "/profile",
+    profileHref: "/app/profile",
 } as const ; 

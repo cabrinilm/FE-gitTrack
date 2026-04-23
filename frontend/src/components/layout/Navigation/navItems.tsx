@@ -4,25 +4,25 @@
   export  const navItems = [
     {
       label: "Home",
-      path: "/",
+      path: "/app",
       icon: <FaHome className="text-2xl" />,
       isLogout: false,
     },
     {
       label: "Create",
-      path: "/create",
+      path: "/app/create",
       icon: <FaPlusCircle className="text-2xl" />,
       isLogout: false,
     },
     {
       label: "Challenges",
-      path: "/challenges",
+      path: "/app/challenges",
       icon: <FaListAlt className="text-2xl" />,
       isLogout: false,
     },
     {
       label: "Heatmap",
-      path: "/heatmap",
+      path: "/app/heatmap",
       icon: <FaChartLine className="text-2xl" />,
       isLogout: false,
     },

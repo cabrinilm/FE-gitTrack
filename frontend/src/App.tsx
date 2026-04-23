@@ -4,10 +4,10 @@ import AllChallenges from "@/pages/AllChallengesPage";
 import CreateChallenge from "@/pages/CreateChallengePage";
 import HeatMap from "@/pages/HeatmapPage";
 import Home from "@/pages/HomePage";
+import { LandingPage } from "./pages/LandingPage";
 import { LoginPage } from "./pages/auth/LoginPage";
 import { SignupPage } from "./pages/auth/SignupPage";
 import { ForgotPasswordPage } from "@/pages/auth/ForgotPasswordPage";
-
 
 import { AuthProvider } from "@/context/AuthProvider";
 
@@ -23,34 +23,30 @@ export default function App() {
     <BrowserRouter>
       <AuthProvider>
         <Routes>
-          <Route
-            path="/login"
-            element={<Navigate to="/auth/login" replace />}
-          />
-          <Route
-            path="/signup"
-            element={<Navigate to="/auth/signup" replace />}
-          />
-          <Route
-            path="/forgot"
-            element={<Navigate to="/auth/forgot" replace />}
-          />
-         
+          <Route path="/login" element={<Navigate to="/auth/login" replace />} />
+          <Route path="/signup" element={<Navigate to="/auth/signup" replace />} />
+          <Route path="/forgot" element={<Navigate to="/auth/forgot" replace />} />
+
+          <Route path="/" element={<LandingPage />} />
 
           <Route path="/auth" element={<AuthLayout />}>
             <Route path="login" element={<LoginPage />} />
             <Route path="signup" element={<SignupPage />} />
             <Route path="forgot" element={<ForgotPasswordPage />} />
-             <Route path="reset-password" element={<ResetPasswordPage />} />
+            <Route path="reset-password" element={<ResetPasswordPage />} />
           </Route>
+
           <Route element={<ProtectedRoute />}>
-          <Route element={<ProtectedLayout />}>
-            <Route path="/" element={<Home />} />
-            <Route path="/create" element={<CreateChallenge />} />
-            <Route path="/challenges" element={<AllChallenges />} />
-            <Route path="/challenges/:challengeId/edit" element={<EditChallengePage />} />
-            <Route path="/heatmap" element={<HeatMap />} />
-            <Route path="/profile" element={<ProfilePage />} />
+            <Route element={<ProtectedLayout />}>
+              <Route path="/app" element={<Home />} />
+              <Route path="/app/create" element={<CreateChallenge />} />
+              <Route path="/app/challenges" element={<AllChallenges />} />
+              <Route
+                path="/app/challenges/:challengeId/edit"
+                element={<EditChallengePage />}
+              />
+              <Route path="/app/heatmap" element={<HeatMap />} />
+              <Route path="/app/profile" element={<ProfilePage />} />
             </Route>
           </Route>
         </Routes>
