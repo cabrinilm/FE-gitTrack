@@ -47,7 +47,7 @@ function getIntensityLevel(count: number) {
   if (count === 1) return 1;
   if (count === 2) return 2;
   if (count === 3) return 3;
-  return 4; // 4 or more = max intensity
+  return 4;
 }
 
 function formatDateToLocalISO(date: Date): string {
@@ -75,11 +75,14 @@ function endOfWeek(date: Date) {
 }
 
 export function Heatmap({ data = [], onDayClick, className }: HeatmapProps) {
+  const today = React.useMemo(() => {
+    const result = new Date();
+    result.setHours(0, 0, 0, 0);
+    return result;
+  }, []);
+
   const weeks = React.useMemo(() => {
     const dataMap = new Map(data.map((item) => [item.date, item.count]));
-
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
 
     const rangeStart = new Date(today);
     rangeStart.setDate(today.getDate() - 364);
@@ -108,7 +111,7 @@ export function Heatmap({ data = [], onDayClick, className }: HeatmapProps) {
     }
 
     return groupedWeeks;
-  }, [data]);
+  }, [data, today]);
 
   const monthLabels = React.useMemo(() => {
     return weeks.map((week, weekIndex) => {
@@ -116,6 +119,8 @@ export function Heatmap({ data = [], onDayClick, className }: HeatmapProps) {
       if (!firstDay) return null;
 
       const date = new Date(`${firstDay.date}T00:00:00`);
+      if (date > today) return null;
+
       const month = date.getMonth();
 
       const previousWeek = weeks[weekIndex - 1];
@@ -138,7 +143,7 @@ export function Heatmap({ data = [], onDayClick, className }: HeatmapProps) {
 
       return null;
     });
-  }, [weeks]);
+  }, [weeks, today]);
 
   return (
     <div className={cn("space-y-4", className)}>
@@ -178,6 +183,8 @@ export function Heatmap({ data = [], onDayClick, className }: HeatmapProps) {
                   <div key={weekIndex} className="flex flex-col gap-1">
                     {week.map((day) => {
                       const level = getIntensityLevel(day.count);
+                      const dayDate = new Date(`${day.date}T00:00:00`);
+                      const isFutureDay = dayDate > today;
 
                       return (
                         <Tooltip key={day.date}>
@@ -186,14 +193,26 @@ export function Heatmap({ data = [], onDayClick, className }: HeatmapProps) {
                               type="button"
                               aria-label={`${day.date}: ${day.count} completed activities`}
                               className={cn(
-                                "h-2.5 w-2.5 rounded-xs border border-white/5 transition-all hover:scale-110 hover:opacity-90 focus:outline-none focus:ring-1 focus:ring-white/20",
+                                "h-2.5 w-2.5 rounded-xs border border-white/5 transition-all focus:outline-none focus:ring-1 focus:ring-white/20",
+                                !isFutureDay &&
+                                  "hover:scale-110 hover:opacity-90",
+                                isFutureDay && "cursor-default opacity-30",
                               )}
-                              style={LEVEL_STYLES[level]}
-                              onClick={() => onDayClick?.(day.date)}
+                              style={
+                                isFutureDay
+                                  ? { backgroundColor: "transparent" }
+                                  : LEVEL_STYLES[level]
+                              }
+                              onClick={() => {
+                                if (!isFutureDay) onDayClick?.(day.date);
+                              }}
+                              disabled={isFutureDay}
                             />
                           </TooltipTrigger>
                           <TooltipContent side="top" className="text-center">
-                            <p className="font-medium">{day.date}</p>
+                            <p className="font-medium text-foreground">
+                              {day.date}
+                            </p>
                             <p className="text-sm text-muted-foreground">
                               {day.count}{" "}
                               {day.count === 1
