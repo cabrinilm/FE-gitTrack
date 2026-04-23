@@ -3,7 +3,6 @@ import type { LandingStatItem } from "@/components/landing/types";
 const stats: LandingStatItem[] = [
   { label: "Current streak", value: "7 days", trend: "up" },
   { label: "Completed today", value: "3/5", trend: "up" },
-  { label: "Weekly consistency", value: "82%", trend: "up" },
   { label: "Active challenges", value: "2", trend: "neutral" },
   { label: "Total completions", value: "148", trend: "up" },
 ];

@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/Button/Button";
+import { FaFire } from "react-icons/fa";
 
 export function HeroSection() {
   return (
@@ -74,28 +75,33 @@ export function HeroSection() {
               </div>
             </div>
 
-            <div className="rounded-3xl border border-border bg-surface p-5 shadow-lg sm:translate-y-8">
-              <div className="mb-4 text-sm font-medium text-muted-foreground">
-                Weekly Consistency
+            <div className="rounded-3xl border border-orange-500/20 bg-orange-500/10 p-5 shadow-lg sm:translate-y-8">
+              <div className="mb-4 flex items-center justify-between">
+                <span className="text-sm font-medium text-orange-200/90">
+                  Current Streak
+                </span>
+
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-orange-500/15 text-orange-400">
+                  <span className="text-lg"><FaFire className="h-4 w-4" /></span>
+                </div>
               </div>
 
-              <div className="mb-4 text-3xl font-bold text-foreground">
-                82%
+              <div className="mb-2 text-3xl font-bold text-foreground">
+                7 days
               </div>
 
-              <div className="grid grid-cols-7 gap-2">
-                <div className="h-10 rounded-lg bg-primary/20" />
-                <div className="h-10 rounded-lg bg-primary/40" />
-                <div className="h-10 rounded-lg bg-primary/60" />
-                <div className="h-10 rounded-lg bg-primary/80" />
-                <div className="h-10 rounded-lg bg-primary" />
-                <div className="h-10 rounded-lg bg-primary/50" />
-                <div className="h-10 rounded-lg bg-background border border-border" />
-              </div>
-
-              <p className="mt-4 text-sm text-muted-foreground">
-                A simple snapshot of how consistently you’ve shown up this week.
+              <p className="mb-4 text-sm text-muted-foreground">
+                Keep your momentum going by completing at least one activity
+                today.
               </p>
+
+              <div className="flex gap-2">
+                <div className="h-9 flex-1 rounded-lg bg-orange-500/30" />
+                <div className="h-9 flex-1 rounded-lg bg-orange-500/45" />
+                <div className="h-9 flex-1 rounded-lg bg-orange-500/60" />
+                <div className="h-9 flex-1 rounded-lg bg-orange-500/75" />
+                <div className="h-9 flex-1 rounded-lg bg-orange-500" />
+              </div>
             </div>
           </div>
         </div>
