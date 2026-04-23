@@ -5,7 +5,7 @@ import {
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "./tooltip"
+} from "./Tooltip";
 
 type HeatmapDay = {
   date: string;
@@ -18,11 +18,12 @@ interface HeatmapProps {
   className?: string;
 }
 
-const LEVEL_COLORS = {
-  0: "bg-zinc-600/60 hover:bg-zinc-700/80",
-  1: "bg-emerald-300 hover:bg-emerald-400",
-  2: "bg-emerald-500 hover:bg-emerald-600",
-  3: "bg-emerald-700 hover:bg-emerald-800",
+const LEVEL_STYLES = {
+  0: { backgroundColor: "rgba(255,255,255,0.04)" },
+  1: { backgroundColor: "rgba(2, 127, 233, 0.45)" },
+  2: { backgroundColor: "rgba(2, 127, 233, 0.65)" },
+  3: { backgroundColor: "rgba(2, 127, 233, 0.85)" },
+  4: { backgroundColor: "var(--color-primary)" },
 } as const;
 
 const WEEKDAY_LABELS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -41,11 +42,12 @@ const MONTH_LABELS = [
   "Dec",
 ];
 
-function getIntensityLevel(count: number): 0 | 1 | 2 | 3 {
-  if (count === 0) return 0;
+function getIntensityLevel(count: number) {
+  if (count <= 0) return 0;
   if (count === 1) return 1;
-  if (count <= 3) return 2;
-  return 3;
+  if (count === 2) return 2;
+  if (count === 3) return 3;
+  return 4; // 4 or more = max intensity
 }
 
 function formatDateToLocalISO(date: Date): string {
@@ -184,9 +186,9 @@ export function Heatmap({ data = [], onDayClick, className }: HeatmapProps) {
                               type="button"
                               aria-label={`${day.date}: ${day.count} completed activities`}
                               className={cn(
-                                "h-2.5 w-2.5 rounded-xs border border-white/5 transition-colors focus:outline-none focus:ring-1 focus:ring-white/20",
-                                LEVEL_COLORS[level],
+                                "h-2.5 w-2.5 rounded-xs border border-white/5 transition-all hover:scale-110 hover:opacity-90 focus:outline-none focus:ring-1 focus:ring-white/20",
                               )}
+                              style={LEVEL_STYLES[level]}
                               onClick={() => onDayClick?.(day.date)}
                             />
                           </TooltipTrigger>
@@ -213,13 +215,11 @@ export function Heatmap({ data = [], onDayClick, className }: HeatmapProps) {
       <div className="flex items-center justify-end gap-2 text-xs text-muted-foreground">
         <span>Less</span>
         <div className="flex gap-1">
-          {[0, 1, 2, 3].map((level) => (
+          {[0, 1, 2, 3, 4].map((level) => (
             <div
               key={level}
-              className={cn(
-                "h-2.5 w-2.5 rounded-xs border border-white/5",
-                LEVEL_COLORS[level as keyof typeof LEVEL_COLORS],
-              )}
+              className="h-2.5 w-2.5 rounded-xs border border-white/5"
+              style={LEVEL_STYLES[level as keyof typeof LEVEL_STYLES]}
             />
           ))}
         </div>
