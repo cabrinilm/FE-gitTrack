@@ -11,7 +11,7 @@ export function StandardCard({
   actions,
 }: StandardCardProps) {
   const hasHeader = title || description || actions;
-  const isCentered = !actions; // 👈 key logic
+  const isCentered = !actions;
 
   return (
     <div
