@@ -6,7 +6,6 @@ import { cn } from "@/utils/cn";
 import toast, { Toaster } from "react-hot-toast";
 import { navItems } from "./navItems";
 
-
 export function BottomNav() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -14,7 +13,6 @@ export function BottomNav() {
 
   return (
     <>
-   
       <Toaster
         containerStyle={{
           top: "50%",
@@ -60,11 +58,13 @@ export function BottomNav() {
               className={cn(
                 "flex flex-col items-center justify-center gap-1",
                 "w-full h-full transition-colors duration-200",
+
                 isActive
                   ? "text-primary font-semibold"
-                  : "text-muted-foreground hover:text-foreground active:text-primary",
+                  : "text-text-muted hover:text-text-primary active:text-primary",
+
                 isLogoutItem &&
-                  "text-destructive hover:text-destructive/90 active:text-destructive/70",
+                  "text-error hover:text-error/90 active:text-error/70",
               )}
               aria-label={item.label}
             >

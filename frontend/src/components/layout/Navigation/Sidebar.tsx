@@ -16,9 +16,9 @@ export const Sidebar = () => {
   return (
     <aside
       className="
-        hidden md:flex md:flex-col
         fixed inset-y-0 left-0 z-40
-        w-64 bg-background border-r border-border shadow-sm
+        hidden w-64 border-r border-border bg-background shadow-sm
+        md:flex md:flex-col
       "
     >
       <div className="border-b border-border">
@@ -67,10 +67,10 @@ export const Sidebar = () => {
               className={cn(
                 "flex w-full cursor-pointer items-center gap-3 rounded-md px-4 py-3 text-left transition-colors duration-200",
                 isActive
-                  ? "border-l-4 border-primary bg-accent pl-3 font-medium text-accent-foreground"
-                  : "text-muted-foreground hover:bg-muted hover:text-foreground",
+                  ? "border-l-4 border-primary bg-primary/10 pl-3 font-medium text-primary"
+                  : "text-text-muted hover:bg-surface-elevated hover:text-text-primary",
                 isLogoutItem &&
-                  "text-destructive hover:bg-destructive/10 hover:text-destructive",
+                  "text-error hover:bg-error/10 hover:text-error",
               )}
               aria-label={item.label}
             >
