@@ -31,13 +31,13 @@ export function StatsBar() {
               )}
 
               {stat.trend === "down" && (
-                <span className="rounded-full bg-red-500/10 px-2 py-1 text-xs font-semibold text-red-500">
+                <span className="rounded-full bg-error/10 px-2 py-1 text-xs font-semibold text-error">
                   ↓
                 </span>
               )}
 
               {stat.trend === "neutral" && (
-                <span className="rounded-full bg-background/60 px-2 py-1 text-xs font-semibold text-text-secondary">
+                <span className="rounded-full bg-surface-elevated/60 px-2 py-1 text-xs font-semibold text-text-secondary">
                   —
                 </span>
               )}
