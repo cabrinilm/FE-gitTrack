@@ -3,9 +3,11 @@ import type { CreateChallengeFormProps } from "@/components/create-challenge/typ
 import { FormField } from "@/components/ui/FormField";
 import { FormSection } from "@/components/ui/FormSection";
 import { Input } from "@/components/ui/Input";
+import { ListItemCard } from "@/components/ui/ListItemCard";
 import { StatusMessage } from "@/components/ui/StatusMessage";
 import { Textarea } from "@/components/ui/Textarea";
-import { ListItemCard } from "@/components/ui/ListItemCard";
+
+
 
 export function CreateChallengeForm({
   formValues,
