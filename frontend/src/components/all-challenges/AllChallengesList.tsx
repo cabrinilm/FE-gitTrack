@@ -1,5 +1,8 @@
 import { Link } from "react-router-dom";
+import { Button } from "@/components/Button/Button";
 import { ChallengeCard } from "@/components/all-challenges/ChallengeCard";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { LoadingState } from "@/components/ui/LoadingState";
 import type { AllChallengesListProps } from "./types";
 
 export function AllChallengesList({
@@ -13,41 +16,37 @@ export function AllChallengesList({
   onEdit,
 }: AllChallengesListProps) {
   if (isLoading) {
-    return <p className="text-muted-foreground">Loading challenges...</p>;
+    return <LoadingState message="Loading challenges..." />;
   }
 
   if (error) {
     return (
-      <div className="space-y-4">
-        <p className="text-red-500">{error}</p>
-        <button
-          type="button"
-          onClick={onRetry}
-          className="inline-flex items-center justify-center rounded-xl bg-primary px-4 py-2 text-sm font-medium text-white transition hover:opacity-90"
-        >
-          Try Again
-        </button>
-      </div>
+      <EmptyState
+        title="Something went wrong"
+        description={error}
+        action={
+          <Button type="button" variant="primary" size="sm" onClick={onRetry}>
+            Try Again
+          </Button>
+        }
+      />
     );
   }
 
   if (hasNoChallenges) {
     return (
-      <div className="py-6 text-center">
-        <h2 className="text-2xl font-bold text-foreground">
-          You do not have any challenges yet
-        </h2>
-        <p className="mt-2 text-sm text-muted-foreground">
-          Create your first challenge to start tracking your progress.
-        </p>
-
-        <Link
-          to="/app/create"
-          className="mt-6 inline-flex items-center justify-center rounded-xl bg-primary px-4 py-2 text-sm font-medium text-white transition hover:opacity-90"
-        >
-          Create Challenge
-        </Link>
-      </div>
+      <EmptyState
+        title="You do not have any challenges yet"
+        description="Create your first challenge to start tracking your progress."
+        action={
+          <Link
+            to="/app/create"
+            className="inline-flex items-center justify-center rounded-xl bg-primary px-4 py-2 text-sm font-medium text-white transition hover:opacity-90"
+          >
+            Create Challenge
+          </Link>
+        }
+      />
     );
   }
 
