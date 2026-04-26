@@ -1,13 +1,10 @@
-import type { ReactNode } from "react";
+import type { ComponentPropsWithoutRef } from "react";
 import { cn } from "@/utils/cn";
 
-type ListItemCardProps = {
-  children: ReactNode;
-  className?: string;
+type ListItemCardProps = ComponentPropsWithoutRef<"div"> & {
   interactive?: boolean;
   isActive?: boolean;
   isLoading?: boolean;
-  onClick?: () => void;
 };
 
 export function ListItemCard({
@@ -16,11 +13,10 @@ export function ListItemCard({
   interactive = false,
   isActive = false,
   isLoading = false,
-  onClick,
+  ...props
 }: ListItemCardProps) {
   return (
     <div
-      onClick={onClick}
       className={cn(
         "rounded-xl border border-border/60 bg-surface p-4 transition-all duration-200",
         interactive &&
@@ -29,6 +25,7 @@ export function ListItemCard({
         isLoading && "animate-pulse opacity-70",
         className,
       )}
+      {...props}
     >
       {children}
     </div>

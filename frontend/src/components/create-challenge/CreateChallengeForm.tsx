@@ -1,10 +1,11 @@
 import { Button } from "@/components/Button/Button";
 import type { CreateChallengeFormProps } from "@/components/create-challenge/type";
+import { FormField } from "@/components/ui/FormField";
+import { FormSection } from "@/components/ui/FormSection";
 import { Input } from "@/components/ui/Input";
-import { Textarea } from "../ui/Textarea";
-import { FormField } from "../ui/FormField";
-import { StatusMessage } from "../ui/StatusMessage";
-
+import { StatusMessage } from "@/components/ui/StatusMessage";
+import { Textarea } from "@/components/ui/Textarea";
+import { ListItemCard } from "@/components/ui/ListItemCard";
 
 export function CreateChallengeForm({
   formValues,
@@ -27,32 +28,28 @@ export function CreateChallengeForm({
       }}
       className="space-y-6 p-6"
     >
-      <div>
-        <FormField label="Title">
-          <Input
-            type="text"
-            value={formValues.name}
-            onChange={(e) => updateField("name", e.target.value)}
-            placeholder="Enter challenge title"
-            disabled={isSubmitting}
-          />
-        </FormField>
-      </div>
+      <FormField label="Title">
+        <Input
+          type="text"
+          value={formValues.name}
+          onChange={(e) => updateField("name", e.target.value)}
+          placeholder="Enter challenge title"
+          disabled={isSubmitting}
+        />
+      </FormField>
 
-      <div>
-        <FormField label="Description">
-          <Textarea
-            value={formValues.description}
-            onChange={(e) => updateField("description", e.target.value)}
-            placeholder="Optional description"
-            disabled={isSubmitting}
-          />
-        </FormField>
-      </div>
+      <FormField label="Description">
+        <Textarea
+          value={formValues.description}
+          onChange={(e) => updateField("description", e.target.value)}
+          placeholder="Optional description"
+          disabled={isSubmitting}
+        />
+      </FormField>
 
-      <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h3 className="text-lg font-medium text-foreground">Activities</h3>
+      <FormSection
+        title="Activities"
+        action={
           <Button
             type="button"
             size="sm"
@@ -62,75 +59,74 @@ export function CreateChallengeForm({
           >
             + Add Activity
           </Button>
-        </div>
+        }
+      >
+        {activities.map((activity, index) => (
+          <ListItemCard
+            key={activity.id}
+            className="flex flex-wrap items-center gap-3 p-3"
+          >
+            <Input
+              type="text"
+              className="min-w-30 flex-1"
+              placeholder="Activity name"
+              value={activity.name}
+              onChange={(e) => updateActivity(index, "name", e.target.value)}
+              disabled={isSubmitting}
+            />
 
-        <div className="space-y-3">
-          {activities.map((activity, index) => (
-            <div
-              key={activity.id}
-              className="flex flex-wrap items-center gap-3 rounded-xl border border-border/60 p-3"
-            >
+            <div className="flex w-full items-center gap-2 sm:w-auto">
               <Input
-                type="text"
-                className="min-w-30 flex-1"
-                placeholder="Activity name"
-                value={activity.name}
-                onChange={(e) => updateActivity(index, "name", e.target.value)}
+                type="number"
+                min={0}
+                max={23}
+                className="w-20 sm:w-24"
+                placeholder="h"
+                value={activity.hours}
+                onChange={(e) =>
+                  updateActivity(
+                    index,
+                    "hours",
+                    e.target.value === "" ? "" : Number(e.target.value),
+                  )
+                }
                 disabled={isSubmitting}
               />
+              <span className="text-sm text-text-muted">h</span>
 
-              <div className="flex w-full items-center gap-2 sm:w-auto">
-                <Input
-                  type="number"
-                  min={0}
-                  max={23}
-                  className="w-20 sm:w-24"
-                  placeholder="h"
-                  value={activity.hours}
-                  onChange={(e) =>
-                    updateActivity(
-                      index,
-                      "hours",
-                      e.target.value === "" ? "" : Number(e.target.value),
-                    )
-                  }
-                  disabled={isSubmitting}
-                />
-                <span className="text-sm text-muted-foreground">h</span>
-
-                <Input
-                  type="number"
-                  min={0}
-                  max={59}
-                  className="w-20 sm:w-24"
-                  placeholder="min"
-                  value={activity.minutes}
-                  onChange={(e) =>
-                    updateActivity(
-                      index,
-                      "minutes",
-                      e.target.value === "" ? "" : Number(e.target.value),
-                    )
-                  }
-                  disabled={isSubmitting}
-                />
-                <span className="text-sm text-muted-foreground">min</span>
-              </div>
-
-              <Button
-                type="button"
-                size="sm"
-                variant="destructive"
-                className="ml-auto mt-2 sm:mt-0"
-                onClick={() => removeActivity(index)}
+              <Input
+                type="number"
+                min={0}
+                max={59}
+                className="w-20 sm:w-24"
+                placeholder="min"
+                value={activity.minutes}
+                onChange={(e) =>
+                  updateActivity(
+                    index,
+                    "minutes",
+                    e.target.value === "" ? "" : Number(e.target.value),
+                  )
+                }
                 disabled={isSubmitting}
-              >
-                Remove
-              </Button>
+              />
+              <span className="text-sm text-text-muted">min</span>
             </div>
-          ))}
-        </div>
-      </div>
+
+            <Button
+              type="button"
+              size="sm"
+              variant="destructive"
+              className="ml-auto mt-2 sm:mt-0"
+              onClick={() => removeActivity(index)}
+              disabled={isSubmitting}
+            >
+              Remove
+            </Button>
+          </ListItemCard>
+        ))}
+      </FormSection>
+
       {error && <StatusMessage type="error" message={error} />}
 
       {success && !error && (
@@ -139,6 +135,7 @@ export function CreateChallengeForm({
           message="Challenge created successfully."
         />
       )}
+
       <Button
         type="submit"
         size="lg"
