@@ -16,14 +16,14 @@ export function StandardCard({
   return (
     <div
       className={cn(
-        "overflow-hidden rounded-2xl border border-border bg-card shadow-lg",
+        "overflow-hidden rounded-2xl border border-border bg-surface shadow-lg",
         className,
       )}
     >
       {hasHeader && (
         <div
           className={cn(
-            "border-b border-border bg-primary/10 px-6 py-5",
+            "border-b border-border px-6 py-5",
             isCentered
               ? "flex flex-col items-center text-center"
               : "flex items-start justify-between gap-4",
@@ -32,13 +32,13 @@ export function StandardCard({
         >
           <div className={cn("min-w-0", isCentered && "text-center")}>
             {title && (
-              <h2 className="text-2xl font-bold text-primary">
+              <h2 className="text-2xl font-bold text-text-primary">
                 {title}
               </h2>
             )}
 
             {description && (
-              <p className="mt-1 text-sm text-muted-foreground">
+              <p className="mt-1 text-sm text-text-muted">
                 {description}
               </p>
             )}

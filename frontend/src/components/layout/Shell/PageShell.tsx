@@ -2,14 +2,13 @@ import { cn } from "@/utils/cn";
 import type { PageShellProps } from "./types";
 import { AppHeader } from "../header/AppHeader";
 
-
 export function PageShell({
   children,
   className,
   contentClassName,
 }: PageShellProps) {
   return (
-    <div className={cn("min-h-screen bg-background", className)}>
+    <div className={cn("min-h-screen", className)}>
       <AppHeader />
 
       <main className="w-full px-4 py-6 md:px-6 md:py-8">
