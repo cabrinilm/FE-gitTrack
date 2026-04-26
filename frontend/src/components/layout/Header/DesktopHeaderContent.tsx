@@ -14,7 +14,7 @@ export function DesktopHeaderContent({
 }: DesktopHeaderContentProps) {
   return (
     <div className="hidden h-16 items-center justify-between px-6 md:flex">
-      <div className="text-lg font-semibold text-foreground">
+      <div className="text-lg font-semibold text-text-primary">
         {appName}
       </div>
 
@@ -23,7 +23,7 @@ export function DesktopHeaderContent({
           <Link
             to={profileHref}
             aria-label="Go to profile"
-            className="inline-flex h-10 w-10 items-center justify-center rounded-full text-foreground transition hover:bg-muted"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-full text-text-primary transition hover:bg-surface-elevated"
           >
             <FaUser className="h-4 w-4" />
           </Link>

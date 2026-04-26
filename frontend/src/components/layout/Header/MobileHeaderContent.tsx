@@ -16,7 +16,7 @@ export function MobileHeaderContent({
     <div className="flex h-16 items-center justify-between px-4 md:hidden">
       <div className="w-10" />
 
-      <div className="text-base font-semibold text-foreground">
+      <div className="text-base font-semibold text-text-primary">
         {appName}
       </div>
 
@@ -25,9 +25,9 @@ export function MobileHeaderContent({
           <Link
             to={profileHref}
             aria-label="Go to profile"
-            className="inline-flex h-10 w-10 items-center justify-center rounded-full text-foreground transition hover:bg-muted"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-full text-text-primary transition hover:bg-surface-elevated"
           >
-          <FaUser className="h-5 w-5" />
+            <FaUser className="h-5 w-5" />
           </Link>
         )}
       </div>
