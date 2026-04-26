@@ -1,4 +1,6 @@
-import { Input } from "@/components/Input/Input";
+import { Input } from "@/components/ui/Input";
+import { FormField } from "@/components/ui/FormField";
+import { StatusMessage } from "@/components/ui/StatusMessage";
 import { Button } from "@/components/Button/Button";
 import { Link } from "react-router-dom";
 import type { LoginFormProps } from "./types";
@@ -19,25 +21,25 @@ export default function LoginForm({
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        <Input
-          label="Email"
-          type="email"
-          value={formValues.email}
-          onChange={(value) => updateField("email", value)}
-          placeholder="your@email.com"
-        />
+        <FormField label="Email">
+          <Input
+            type="email"
+            value={formValues.email}
+            onChange={(e) => updateField("email", e.target.value)}
+            placeholder="your@email.com"
+          />
+        </FormField>
 
-        <Input
-          label="Password"
-          type="password"
-          value={formValues.password}
-          onChange={(value) => updateField("password", value)}
-          placeholder="••••••••"
-        />
+        <FormField label="Password">
+          <Input
+            type="password"
+            value={formValues.password}
+            onChange={(e) => updateField("password", e.target.value)}
+            placeholder="••••••••"
+          />
+        </FormField>
 
-        {error && (
-          <p className="mt-2 text-center text-sm text-error">{error}</p>
-        )}
+        {error && <StatusMessage type="error" message={error} />}
 
         <Button
           type="submit"

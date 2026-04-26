@@ -1,5 +1,7 @@
-import { Input } from "@/components/Input/Input";
 import { Button } from "@/components/Button/Button";
+import { FormField } from "@/components/ui/FormField";
+import { Input } from "@/components/ui/Input";
+import { StatusMessage } from "@/components/ui/StatusMessage";
 import { Link } from "react-router-dom";
 import type { ForgotPasswordFormProps } from "@/components/auth/forgot-password/types";
 
@@ -24,22 +26,19 @@ export const ForgotPasswordForm = ({
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        <Input
-          label="Email"
-          type="email"
-          value={formValues.email}
-          onChange={(value) => updateField("email", value)}
-          placeholder="your@email.com"
-        />
+        <FormField label="Email">
+          <Input
+            type="email"
+            value={formValues.email}
+            onChange={(e) => updateField("email", e.target.value)}
+            placeholder="your@email.com"
+          />
+        </FormField>
 
-        {error && (
-          <p className="mt-2 text-center text-sm text-error">{error}</p>
-        )}
+        {error && <StatusMessage type="error" message={error} />}
 
         {successMessage && (
-          <p className="mt-2 text-center text-sm text-success">
-            {successMessage}
-          </p>
+          <StatusMessage type="success" message={successMessage} />
         )}
 
         <Button

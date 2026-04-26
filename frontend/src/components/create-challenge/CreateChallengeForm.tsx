@@ -2,7 +2,9 @@ import { Button } from "@/components/Button/Button";
 import type { CreateChallengeFormProps } from "@/components/create-challenge/type";
 import { Input } from "@/components/ui/Input";
 import { Textarea } from "../ui/Textarea";
-import { FormField } from "../ui/FormFiel";
+import { FormField } from "../ui/FormField";
+import { StatusMessage } from "../ui/StatusMessage";
+
 
 export function CreateChallengeForm({
   formValues,
@@ -129,19 +131,14 @@ export function CreateChallengeForm({
           ))}
         </div>
       </div>
-
-      {error && (
-        <p className="text-sm font-medium text-destructive" role="alert">
-          {error}
-        </p>
-      )}
+      {error && <StatusMessage type="error" message={error} />}
 
       {success && !error && (
-        <p className="text-sm font-medium text-green-600" role="status">
-          Challenge created successfully.
-        </p>
+        <StatusMessage
+          type="success"
+          message="Challenge created successfully."
+        />
       )}
-
       <Button
         type="submit"
         size="lg"

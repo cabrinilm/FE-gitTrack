@@ -1,5 +1,7 @@
-import { Input } from "@/components/Input/Input";
 import { Button } from "@/components/Button/Button";
+import { FormField } from "@/components/ui/FormField";
+import { Input } from "@/components/ui/Input";
+import { StatusMessage } from "@/components/ui/StatusMessage";
 import type { ResetPasswordFormProps } from "./types";
 
 export const ResetPasswordForm = ({
@@ -23,26 +25,30 @@ export const ResetPasswordForm = ({
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        <Input
-          label="New Password"
-          type="password"
-          value={formValues.newPassword}
-          onChange={(value) => updateField("newPassword", value)}
-          placeholder="Enter new password"
-        />
+        <FormField label="New Password">
+          <Input
+            type="password"
+            value={formValues.newPassword}
+            onChange={(e) => updateField("newPassword", e.target.value)}
+            placeholder="Enter new password"
+          />
+        </FormField>
 
-        <Input
-          label="Confirm Password"
-          type="password"
-          value={formValues.confirmPassword}
-          onChange={(value) => updateField("confirmPassword", value)}
-          placeholder="Confirm new password"
-        />
+        <FormField label="Confirm Password">
+          <Input
+            type="password"
+            value={formValues.confirmPassword}
+            onChange={(e) =>
+              updateField("confirmPassword", e.target.value)
+            }
+            placeholder="Confirm new password"
+          />
+        </FormField>
 
-        {error && <p className="text-center text-sm text-error">{error}</p>}
+        {error && <StatusMessage type="error" message={error} />}
 
         {successMessage && (
-          <p className="text-center text-sm text-success">{successMessage}</p>
+          <StatusMessage type="success" message={successMessage} />
         )}
 
         <Button

@@ -1,5 +1,7 @@
-import { Input } from "@/components/Input/Input";
 import { Button } from "@/components/Button/Button";
+import { FormField } from "@/components/ui/FormField";
+import { Input } from "@/components/ui/Input";
+import { StatusMessage } from "@/components/ui/StatusMessage";
 import { Link } from "react-router-dom";
 import type { SignupFormProps } from "./types";
 
@@ -22,46 +24,46 @@ export const SignupForm = ({
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        <Input
-          label="Email"
-          type="email"
-          value={formValues.email}
-          onChange={(value) => updateField("email", value)}
-          placeholder="your@email.com"
-        />
+        <FormField label="Email">
+          <Input
+            type="email"
+            value={formValues.email}
+            onChange={(e) => updateField("email", e.target.value)}
+            placeholder="your@email.com"
+          />
+        </FormField>
 
-        <Input
-          label="Username"
-          type="text"
-          value={formValues.username}
-          onChange={(value) => updateField("username", value)}
-          placeholder="yourusername"
-        />
+        <FormField label="Username">
+          <Input
+            type="text"
+            value={formValues.username}
+            onChange={(e) => updateField("username", e.target.value)}
+            placeholder="yourusername"
+          />
+        </FormField>
 
-        <Input
-          label="Password"
-          type="password"
-          value={formValues.password}
-          onChange={(value) => updateField("password", value)}
-          placeholder="••••••••"
-        />
+        <FormField label="Password">
+          <Input
+            type="password"
+            value={formValues.password}
+            onChange={(e) => updateField("password", e.target.value)}
+            placeholder="••••••••"
+          />
+        </FormField>
 
-        <Input
-          label="Confirm Password"
-          type="password"
-          value={formValues.confirmPassword}
-          onChange={(value) => updateField("confirmPassword", value)}
-          placeholder="••••••••"
-        />
+        <FormField label="Confirm Password">
+          <Input
+            type="password"
+            value={formValues.confirmPassword}
+            onChange={(e) => updateField("confirmPassword", e.target.value)}
+            placeholder="••••••••"
+          />
+        </FormField>
 
-        {error && (
-          <p className="mt-2 text-center text-sm text-error">{error}</p>
-        )}
+        {error && <StatusMessage type="error" message={error} />}
 
         {successMessage && (
-          <p className="mt-2 text-center text-sm text-success">
-            {successMessage}
-          </p>
+          <StatusMessage type="success" message={successMessage} />
         )}
 
         <Button
