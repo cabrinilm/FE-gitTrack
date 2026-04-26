@@ -6,7 +6,7 @@ import { EmptyState } from "@/components/ui/EmptyState";
 import { ListItemCard } from "@/components/ui/ListItemCard";
 import { LoadingState } from "@/components/ui/LoadingState";
 import { NoticeCard } from "@/components/ui/NoticeCard";
-import { ProgressBar } from "../ui/ProgressBar";
+import { ProgressBar } from "@/components/ui/ProgressBar";
 import { cn } from "@/utils/cn";
 import type { DailyChallengeCardProps } from "@/components/home/type";
 

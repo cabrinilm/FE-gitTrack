@@ -37,13 +37,13 @@ const accentStyles: Record<
 > = {
   primary: "bg-primary/10 text-primary",
   secondary: "bg-secondary/10 text-secondary",
-  success: "bg-emerald-500/10 text-emerald-600",
-  muted: "bg-background text-text-secondary border border-border/70",
+  success: "bg-success/10 text-success",
+  muted: "bg-surface text-text-secondary border border-border/70",
 };
 
 export function FeaturesSection() {
   return (
-    <section id="features" className="bg-background py-20 sm:py-24">
+    <section id="features" className="py-20 sm:py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mx-auto mb-12 max-w-3xl text-center sm:mb-16">
           <span className="mb-4 inline-block text-xs font-semibold uppercase tracking-[0.16em] text-primary">
