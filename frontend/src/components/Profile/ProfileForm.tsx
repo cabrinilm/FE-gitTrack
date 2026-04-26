@@ -1,4 +1,7 @@
 import { Button } from "@/components/Button/Button";
+import { Input } from "@/components/ui/Input";
+import { FormField } from "@/components/ui/FormField";
+import { StatusMessage } from "@/components/ui/StatusMessage";
 import type { ProfileFormProps } from "@/components/profile/type";
 
 export function ProfileForm({
@@ -14,50 +17,31 @@ export function ProfileForm({
 }: ProfileFormProps) {
   return (
     <div className="space-y-6">
-      <div className="space-y-2">
-        <label
-          htmlFor="name"
-          className="text-sm font-medium text-foreground"
-        >
-          Name
-        </label>
-        <input
-          id="name"
+      <FormField label="Name">
+        <Input
           type="text"
           value={formValues.name}
           onChange={(e) => updateField("name", e.target.value)}
           placeholder="Enter your name"
           disabled={isLoading || isSaving}
-          className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm text-foreground outline-none transition focus:border-primary disabled:cursor-not-allowed disabled:opacity-60"
         />
-      </div>
+      </FormField>
 
-      <div className="space-y-2">
-        <label
-          htmlFor="email"
-          className="text-sm font-medium text-foreground"
-        >
-          Email
-        </label>
-        <input
-          id="email"
+      <FormField label="Email">
+        <Input
           type="email"
           value={profile?.email ?? ""}
           disabled
-          className="w-full rounded-xl border border-border bg-muted px-4 py-3 text-sm text-muted-foreground outline-none disabled:cursor-not-allowed"
         />
-      </div>
+      </FormField>
 
-      {error && (
-        <p className="text-sm text-red-500" role="alert">
-          {error}
-        </p>
-      )}
+      {error && <StatusMessage type="error" message={error} />}
 
       {saved && !error && (
-        <p className="text-sm text-green-600" role="status">
-          Profile updated successfully.
-        </p>
+        <StatusMessage
+          type="success"
+          message="Profile updated successfully."
+        />
       )}
 
       <div className="flex justify-end">
@@ -68,7 +52,6 @@ export function ProfileForm({
           isLoading={isSaving}
           size="sm"
           variant="outline"
-          className="rounded-xl"
         >
           Save changes
         </Button>
