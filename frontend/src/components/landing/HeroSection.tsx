@@ -4,7 +4,7 @@ import { FaFire } from "react-icons/fa";
 
 export function HeroSection() {
   return (
-    <section className="relative overflow-hidden border-b border-border/70 bg-background">
+    <section className="relative overflow-hidden border-b border-border/70">
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute -left-20 top-20 h-72 w-72 rounded-full bg-primary/10 blur-3xl" />
         <div className="absolute bottom-0 right-0 h-80 w-80 rounded-full bg-secondary/8 blur-3xl" />

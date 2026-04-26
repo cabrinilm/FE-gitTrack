@@ -126,178 +126,177 @@ export function HeatmapShowcaseSection() {
   }, [selectedKey]);
 
   return (
-    <section
-      id="heatmap-showcase"
-      className="relative overflow-hidden border-t border-border/60 bg-background py-20 sm:py-24"
-    >
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute left-1/2 top-1/2 h-96 w-96 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/10 blur-3xl" />
+   <section
+  id="heatmap-showcase"
+  className="relative overflow-hidden border-t border-border/60 py-20 sm:py-24"
+>
+  <div className="pointer-events-none absolute inset-0">
+    <div className="absolute left-1/2 top-1/2 h-96 w-96 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/10 blur-3xl" />
+  </div>
+
+  <div className="relative mx-auto grid max-w-7xl gap-12 px-4 sm:px-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] lg:items-center lg:px-8">
+    <div>
+      <span className="mb-4 inline-block text-xs font-semibold uppercase tracking-[0.16em] text-primary">
+        Signature feature
+      </span>
+
+      <h2 className="mb-5 text-3xl font-bold leading-tight text-text-primary sm:text-4xl lg:text-5xl">
+        See your progress
+        <span className="text-primary"> in one glance</span>
+      </h2>
+
+      <p className="mb-8 max-w-2xl text-base leading-7 text-text-secondary sm:text-lg">
+        GitTrack turns daily effort into a visual pattern. Click a day to
+        preview how activity tracking becomes easier to understand over time.
+      </p>
+
+      <div className="flex flex-col gap-4 sm:flex-row">
+        <Link to="/auth/signup">
+          <Button variant="secondary" size="lg">
+            Get started free
+          </Button>
+        </Link>
+
+        <Link to="/auth/login">
+          <Button variant="outline" size="lg">
+            Log in
+          </Button>
+        </Link>
       </div>
+    </div>
 
-      <div className="relative mx-auto grid max-w-7xl gap-12 px-4 sm:px-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] lg:items-center lg:px-8">
+    <div className="min-w-0 rounded-3xl border border-border/80 bg-surface p-4 shadow-[0_10px_30px_rgba(15,23,42,0.08)] sm:p-6">
+      <div className="mb-5 flex items-center justify-between">
         <div>
-          <span className="mb-4 inline-block text-xs font-semibold uppercase tracking-[0.16em] text-primary">
-            Signature feature
-          </span>
-
-          <h2 className="mb-5 text-3xl font-bold leading-tight text-foreground sm:text-4xl lg:text-5xl">
-            See your progress
-            <span className="text-primary"> in one glance</span>
-          </h2>
-
-          <p className="mb-8 max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg">
-            GitTrack turns daily effort into a visual pattern. Click a day to
-            preview how activity tracking becomes easier to understand over
-            time.
+          <p className="text-sm font-medium text-text-primary">
+            Activity Heatmap
           </p>
-
-          <div className="flex flex-col gap-4 sm:flex-row">
-            <Link to="/auth/signup">
-              <Button variant="secondary" size="lg">
-                Get started free
-              </Button>
-            </Link>
-
-            <Link to="/auth/login">
-              <Button variant="outline" size="lg">
-                Log in
-              </Button>
-            </Link>
-          </div>
+          <p className="text-xs text-text-muted">
+            Click a day to preview tracked activities
+          </p>
         </div>
 
-        <div className="min-w-0 rounded-3xl border border-border/80 bg-surface p-4 shadow-[0_10px_30px_rgba(15,23,42,0.08)] sm:p-6">
-          <div className="mb-5 flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-foreground">
-                Activity Heatmap
-              </p>
-              <p className="text-xs text-muted-foreground">
-                Click a day to preview tracked activities
-              </p>
-            </div>
+        <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
+          Demo
+        </span>
+      </div>
 
-            <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
-              Demo
-            </span>
-          </div>
-
-          <div className="-mx-1 overflow-x-auto pb-2">
-            <div className="min-w-max px-1">
-              <div className="mb-2 flex">
-                <div className="w-8 shrink-0" />
-                <div className="flex gap-1">
-                  {MONTH_LABELS.map((label) => (
-                    <div
-                      key={label}
-                      className="w-12 text-[11px] leading-3 text-text-secondary sm:w-16"
-                    >
-                      {label}
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="flex gap-2">
-                <div className="flex flex-col gap-1 text-[10px] leading-3 text-muted-foreground">
-                  <div className="flex h-3 items-center" />
-                  <div className="flex h-3 items-center">Mon</div>
-                  <div className="flex h-3 items-center" />
-                  <div className="flex h-3 items-center">Wed</div>
-                  <div className="flex h-3 items-center" />
-                  <div className="flex h-3 items-center">Fri</div>
-                  <div className="flex h-3 items-center" />
-                </div>
-
-                <div className="flex gap-1">
-                  {demoWeeks.map((week, weekIndex) => (
-                    <div key={weekIndex} className="flex flex-col gap-1">
-                      {week.map((level, dayIndex) => {
-                        const key = `${weekIndex}-${dayIndex}`;
-                        const isSelected = selectedKey === key;
-
-                        return (
-                          <button
-                            key={key}
-                            type="button"
-                            aria-label={`Preview activities for ${key}`}
-                            onClick={() => setSelectedKey(key)}
-                            className={cn(
-                              "h-3 w-3 rounded-xs border border-white/5 transition-all",
-                              "hover:scale-110 hover:opacity-90",
-                              isSelected &&
-                                "scale-110 ring-2 ring-primary/40 ring-offset-2 ring-offset-surface",
-                            )}
-                            style={
-                              LEVEL_STYLES[level as keyof typeof LEVEL_STYLES]
-                            }
-                          />
-                        );
-                      })}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-5 flex items-center justify-end gap-2 text-xs text-muted-foreground">
-            <span>Less</span>
+      <div className="-mx-1 overflow-x-auto pb-2">
+        <div className="min-w-max px-1">
+          <div className="mb-2 flex">
+            <div className="w-8 shrink-0" />
             <div className="flex gap-1">
-              {[0, 1, 2, 3, 4].map((level) => (
+              {MONTH_LABELS.map((label) => (
                 <div
-                  key={level}
-                  className="h-3 w-3 rounded-xs border border-white/5"
-                  style={LEVEL_STYLES[level as keyof typeof LEVEL_STYLES]}
-                />
+                  key={label}
+                  className="w-12 text-[11px] leading-3 text-text-secondary sm:w-16"
+                >
+                  {label}
+                </div>
               ))}
             </div>
-            <span>More</span>
           </div>
 
-          <div className="mt-6 rounded-2xl border border-border/70 bg-background/60 p-4">
-            <div className="mb-3 flex items-center justify-between gap-3">
-              <div>
-                <p className="text-sm font-semibold text-foreground">
-                  {selectedDetail.date}
-                </p>
-                <p className="text-xs text-muted-foreground">
-                  {selectedDetail.completed}/{selectedDetail.total} activities
-                  completed
-                </p>
-              </div>
+          <div className="flex gap-2">
+            <div className="flex flex-col gap-1 text-[10px] leading-3 text-text-muted">
+              <div className="flex h-3 items-center" />
+              <div className="flex h-3 items-center">Mon</div>
+              <div className="flex h-3 items-center" />
+              <div className="flex h-3 items-center">Wed</div>
+              <div className="flex h-3 items-center" />
+              <div className="flex h-3 items-center">Fri</div>
+              <div className="flex h-3 items-center" />
+            </div>
 
-              <span className="rounded-full bg-primary/10 px-2.5 py-1 text-xs font-semibold text-primary">
-                Selected day
+            <div className="flex gap-1">
+              {demoWeeks.map((week, weekIndex) => (
+                <div key={weekIndex} className="flex flex-col gap-1">
+                  {week.map((level, dayIndex) => {
+                    const key = `${weekIndex}-${dayIndex}`;
+                    const isSelected = selectedKey === key;
+
+                    return (
+                      <button
+                        key={key}
+                        type="button"
+                        aria-label={`Preview activities for ${key}`}
+                        onClick={() => setSelectedKey(key)}
+                        className={cn(
+                          "h-3 w-3 rounded-xs border border-white/5 transition-all",
+                          "hover:scale-110 hover:opacity-90",
+                          isSelected &&
+                            "scale-110 ring-2 ring-primary/40 ring-offset-2 ring-offset-surface",
+                        )}
+                        style={
+                          LEVEL_STYLES[level as keyof typeof LEVEL_STYLES]
+                        }
+                      />
+                    );
+                  })}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-5 flex items-center justify-end gap-2 text-xs text-text-muted">
+        <span>Less</span>
+        <div className="flex gap-1">
+          {[0, 1, 2, 3, 4].map((level) => (
+            <div
+              key={level}
+              className="h-3 w-3 rounded-xs border border-white/5"
+              style={LEVEL_STYLES[level as keyof typeof LEVEL_STYLES]}
+            />
+          ))}
+        </div>
+        <span>More</span>
+      </div>
+
+      <div className="mt-6 rounded-2xl border border-border/70 bg-surface-elevated/60 p-4">
+        <div className="mb-3 flex items-center justify-between gap-3">
+          <div>
+            <p className="text-sm font-semibold text-text-primary">
+              {selectedDetail.date}
+            </p>
+            <p className="text-xs text-text-muted">
+              {selectedDetail.completed}/{selectedDetail.total} activities
+              completed
+            </p>
+          </div>
+
+          <span className="rounded-full bg-primary/10 px-2.5 py-1 text-xs font-semibold text-primary">
+            Selected day
+          </span>
+        </div>
+
+        <div className="space-y-2">
+          {selectedDetail.activities.map((activity) => (
+            <div
+              key={activity.name}
+              className="flex items-start justify-between gap-3 rounded-xl border border-border/60 bg-surface px-3 py-2"
+            >
+              <span className="min-w-0 text-sm text-text-primary">
+                {activity.name}
+              </span>
+
+              <span
+                className={cn(
+                  "rounded-full px-2 py-1 text-xs font-medium",
+                  activity.status === "completed"
+                    ? "bg-primary/10 text-primary"
+                    : "bg-surface-elevated text-text-muted",
+                )}
+              >
+                {activity.status === "completed" ? "Completed" : "Pending"}
               </span>
             </div>
-
-            <div className="space-y-2">
-              {selectedDetail.activities.map((activity) => (
-                <div
-                  key={activity.name}
-                  className="flex items-start justify-between gap-3 rounded-xl border border-border/60 bg-surface px-3 py-2"
-                >
-                  <span className="min-w-0 text-sm text-text-primary">
-                    {activity.name}
-                  </span>
-
-                  <span
-                    className={cn(
-                      "rounded-full px-2 py-1 text-xs font-medium",
-                      activity.status === "completed"
-                        ? "bg-primary/10 text-primary"
-                        : "bg-background text-muted-foreground",
-                    )}
-                  >
-                    {activity.status === "completed" ? "Completed" : "Pending"}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
+          ))}
         </div>
       </div>
-    </section>
+    </div>
+  </div>
+</section>
   );
 }

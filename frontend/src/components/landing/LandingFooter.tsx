@@ -21,7 +21,7 @@ const footerLinks: LandingFooterLinkGroup[] = [
 
 export function LandingFooter() {
   return (
-    <footer className="border-t border-border/70 bg-surface/80 backdrop-blur-sm">
+  <footer className="border-t border-border/70 backdrop-blur-sm">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         <div className="space-y-10 md:grid md:grid-cols-[1.5fr_1fr_1fr] md:gap-8 md:space-y-0">
           <div className="max-w-sm">
