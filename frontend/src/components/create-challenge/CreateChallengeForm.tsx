@@ -1,5 +1,8 @@
 import { Button } from "@/components/Button/Button";
 import type { CreateChallengeFormProps } from "@/components/create-challenge/type";
+import { Input } from "@/components/ui/Input";
+import { Textarea } from "../ui/Textarea";
+import { FormField } from "../ui/FormFiel";
 
 export function CreateChallengeForm({
   formValues,
@@ -23,30 +26,26 @@ export function CreateChallengeForm({
       className="space-y-6 p-6"
     >
       <div>
-        <label className="block text-sm font-medium text-foreground">
-          Title
-        </label>
-        <input
-          type="text"
-          className="mt-2 w-full rounded-xl border border-border bg-gray-900 p-3 outline-none focus:border-primary focus:ring-1 focus:ring-primary"
-          value={formValues.name}
-          onChange={(e) => updateField("name", e.target.value)}
-          placeholder="Enter challenge title"
-          disabled={isSubmitting}
-        />
+        <FormField label="Title">
+          <Input
+            type="text"
+            value={formValues.name}
+            onChange={(e) => updateField("name", e.target.value)}
+            placeholder="Enter challenge title"
+            disabled={isSubmitting}
+          />
+        </FormField>
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-foreground">
-          Description
-        </label>
-        <textarea
-          className="mt-2 w-full rounded-xl border border-border bg-gray-900 p-3 outline-none focus:border-primary focus:ring-1 focus:ring-primary"
-          value={formValues.description}
-          onChange={(e) => updateField("description", e.target.value)}
-          placeholder="Optional description"
-          disabled={isSubmitting}
-        />
+        <FormField label="Description">
+          <Textarea
+            value={formValues.description}
+            onChange={(e) => updateField("description", e.target.value)}
+            placeholder="Optional description"
+            disabled={isSubmitting}
+          />
+        </FormField>
       </div>
 
       <div className="space-y-4">
@@ -69,9 +68,9 @@ export function CreateChallengeForm({
               key={activity.id}
               className="flex flex-wrap items-center gap-3 rounded-xl border border-border/60 p-3"
             >
-              <input
+              <Input
                 type="text"
-                className="min-w-30 flex-1 rounded-xl border border-border bg-gray-900 p-2 outline-none focus:ring-1 focus:ring-primary"
+                className="min-w-30 flex-1"
                 placeholder="Activity name"
                 value={activity.name}
                 onChange={(e) => updateActivity(index, "name", e.target.value)}
@@ -79,10 +78,11 @@ export function CreateChallengeForm({
               />
 
               <div className="flex w-full items-center gap-2 sm:w-auto">
-                <input
+                <Input
                   type="number"
                   min={0}
                   max={23}
+                  className="w-20 sm:w-24"
                   placeholder="h"
                   value={activity.hours}
                   onChange={(e) =>
@@ -92,15 +92,15 @@ export function CreateChallengeForm({
                       e.target.value === "" ? "" : Number(e.target.value),
                     )
                   }
-                  className="w-20 rounded-xl border border-border bg-gray-900 p-2 outline-none focus:ring-1 focus:ring-primary sm:w-24"
                   disabled={isSubmitting}
                 />
                 <span className="text-sm text-muted-foreground">h</span>
 
-                <input
+                <Input
                   type="number"
                   min={0}
                   max={59}
+                  className="w-20 sm:w-24"
                   placeholder="min"
                   value={activity.minutes}
                   onChange={(e) =>
@@ -110,7 +110,6 @@ export function CreateChallengeForm({
                       e.target.value === "" ? "" : Number(e.target.value),
                     )
                   }
-                  className="w-20 rounded-xl border border-border bg-gray-900 p-2 outline-none focus:ring-1 focus:ring-primary sm:w-24"
                   disabled={isSubmitting}
                 />
                 <span className="text-sm text-muted-foreground">min</span>
