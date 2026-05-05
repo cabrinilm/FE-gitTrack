@@ -6,29 +6,25 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-  /* Default app theme */
-  --color-background: #0b0b0f;
-  --color-surface: #11111a;
-  --color-border: #23233a;
+  /* Default light theme */
+  --color-background: #f8fafc;
+  --color-surface: #ffffff;
+  --color-border: #e2e8f0;
 
-  /* Primary color */
   --color-primary: #027fe9;
   --color-primary-400: #2e1be6;
   --color-primary-500: #1e08a8;
   --color-primary-600: #150578;
   --color-primary-700: #0f035a;
 
-  /* Secondary color */
   --color-secondary: #22c55e;
   --color-secondary-500: #22c55e;
   --color-secondary-600: #16a34a;
 
-  /* Text colors */
-  --color-text-primary: #f1f5f9;
-  --color-text-secondary: #94a3b8;
+  --color-text-primary: #0f172a;
+  --color-text-secondary: #475569;
   --color-text-muted: #64748b;
 
-  /* Status colors */
   --color-success: #22c55e;
   --color-error: #ef4444;
   --color-warning: #f59e0b;
