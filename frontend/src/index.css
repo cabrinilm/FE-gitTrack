@@ -36,8 +36,15 @@
 
 @layer base {
   body {
+    margin: 0;
+    background-color: var(--color-background);
     color: var(--color-text-primary);
     font-family: "Geist Variable", sans-serif;
+  }
+
+  body.landing-body {
+    background-color: #f8fafc;
+    color: #0f172a;
   }
 
   * {
