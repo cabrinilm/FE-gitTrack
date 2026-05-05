@@ -19,7 +19,7 @@ interface HeatmapProps {
 }
 
 const LEVEL_STYLES = {
-  0: { backgroundColor: "rgba(255,255,255,0.04)" },
+  0: { backgroundColor: "var(--color-surface-elevated)" },
   1: { backgroundColor: "rgba(2, 127, 233, 0.45)" },
   2: { backgroundColor: "rgba(2, 127, 233, 0.65)" },
   3: { backgroundColor: "rgba(2, 127, 233, 0.85)" },
