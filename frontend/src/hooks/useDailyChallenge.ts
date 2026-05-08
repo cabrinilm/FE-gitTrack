@@ -1,24 +1,9 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { api, setApiToken } from "@/lib/api";
 import { useAuth } from "@/context/useAuth";
-import type { Challenge, Activity } from "@/pages/types";
+import type { FulfillmentsResponse, StreakResponse, Challenge, Activity } from "@/components/home/type";
 
-type Fulfillment = {
-  id: number;
-  progress_entry_id: number;
-  activity_id: number;
-  activity_name: string;
-  planned_duration_minutes: number;
-};
 
-type FulfillmentsResponse = {
-  fulfillments: Fulfillment[];
-};
-
-type StreakResponse = {
-  streak: number;
-  completedToday: boolean;
-};
 
 export function useDailyChallenge() {
   const { token, user } = useAuth();

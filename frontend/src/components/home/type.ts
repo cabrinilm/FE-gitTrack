@@ -53,3 +53,4 @@ export type StreakResponse = {
   streak: number;
   completedToday: boolean;
 };
+
