@@ -11,7 +11,7 @@ import { ForgotPasswordPage } from "@/pages/auth/ForgotPasswordPage";
 
 import { AuthProvider } from "@/context/AuthProvider";
 
-import { ProtectedRoute } from "./components/ProtectedRoute/ProtectedRoute";
+import { ProtectedRoute } from "./components/protectedRoute/ProtectedRoute";
 import { AuthLayout } from "./pages/auth/AuthLayout";
 import { ResetPasswordPage } from "./pages/auth/ResetPasswordPage";
 import { ProtectedLayout } from "./components/layout/layouts/ProtectedLayout";
