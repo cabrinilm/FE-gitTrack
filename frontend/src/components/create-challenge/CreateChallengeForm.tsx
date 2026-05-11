@@ -1,4 +1,4 @@
-import { Button } from "@/components/Button/Button";
+import { Button } from "@/components/button/Button";
 import type { CreateChallengeFormProps } from "@/components/create-challenge/type";
 import { FormField } from "@/components/ui/FormField";
 import { FormSection } from "@/components/ui/FormSection";

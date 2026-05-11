@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Button } from "@/components/Button/Button";
+import { Button } from "@/components/button/Button";
 import { FaFire } from "react-icons/fa";
 
 export function HeroSection() {

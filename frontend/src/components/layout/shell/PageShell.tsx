@@ -1,6 +1,6 @@
 import { cn } from "@/utils/cn";
 import type { PageShellProps } from "./types";
-import { AppHeader } from "../header/AppHeader";
+import { AppHeader } from "@/components/layout/header/AppHeader";
 
 export function PageShell({
   children,

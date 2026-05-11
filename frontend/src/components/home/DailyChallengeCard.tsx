@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { FaCheck, FaFire } from "react-icons/fa";
 import { Loader2 } from "lucide-react";
-import { Button } from "@/components/Button/Button";
+import { Button } from "@/components/button/Button";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { ListItemCard } from "@/components/ui/ListItemCard";
 import { LoadingState } from "@/components/ui/LoadingState";

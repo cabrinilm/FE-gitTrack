@@ -1,7 +1,7 @@
 import { Input } from "@/components/ui/Input";
 import { FormField } from "@/components/ui/FormField";
 import { StatusMessage } from "@/components/ui/StatusMessage";
-import { Button } from "@/components/Button/Button";
+import { Button } from "@/components/button/Button";
 import { Link } from "react-router-dom";
 import type { LoginFormProps } from "./types";
 
