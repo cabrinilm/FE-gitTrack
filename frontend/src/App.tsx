@@ -1,22 +1,25 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import "./App.css";
+import "@/App.css";
+
 import AllChallenges from "@/pages/AllChallengesPage";
 import CreateChallenge from "@/pages/CreateChallengePage";
 import HeatMap from "@/pages/HeatmapPage";
 import Home from "@/pages/HomePage";
-import { LandingPage } from "./pages/LandingPage";
-import { LoginPage } from "./pages/auth/LoginPage";
-import { SignupPage } from "./pages/auth/SignupPage";
+import { LandingPage } from "@/pages/LandingPage";
+
+import { LoginPage } from "@/pages/auth/LoginPage";
+import { SignupPage } from "@/pages/auth/SignupPage";
 import { ForgotPasswordPage } from "@/pages/auth/ForgotPasswordPage";
+import { ResetPasswordPage } from "@/pages/auth/ResetPasswordPage";
 
 import { AuthProvider } from "@/context/AuthProvider";
 
-import { ProtectedRoute } from "./components/protectedRoute/ProtectedRoute";
-import { AuthLayout } from "./pages/auth/AuthLayout";
-import { ResetPasswordPage } from "./pages/auth/ResetPasswordPage";
-import { ProtectedLayout } from "./components/layout/layouts/ProtectedLayout";
-import EditChallengePage from "./pages/EditChallengePage";
-import { ProfilePage } from "./pages/ProfilePage";
+import { ProtectedRoute } from "@/components/protectedRoute/ProtectedRoute";
+import { AuthLayout } from "@/pages/auth/AuthLayout";
+import { ProtectedLayout } from "@/components/layout/layouts/ProtectedLayout";
+
+import EditChallengePage from "@/pages/EditChallengePage";
+import { ProfilePage } from "@/pages/ProfilePage";
 
 export default function App() {
   return (
