@@ -2,7 +2,7 @@ import { Button } from "@/components/button/Button";
 import { Input } from "@/components/ui/Input";
 import { FormField } from "@/components/ui/FormField";
 import { StatusMessage } from "@/components/ui/StatusMessage";
-import type { ProfileFormProps } from "@/components/profile/type";
+import type { ProfileFormProps } from "./types";
 
 export function ProfileForm({
   profile,

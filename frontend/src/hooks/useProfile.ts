@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { api, setApiToken } from "@/lib/api";
-import type { Profile, ProfileFormValues } from "@/components/profile/type";
+import type { Profile, ProfileFormValues } from "@/components/profile/types";
 import { useAuth } from "@/context/useAuth";
 
 export function useProfile() {
@@ -70,16 +70,16 @@ export function useProfile() {
     loadProfile();
   }, [loadProfile]);
 
-  const updateField = useCallback(
-    (field: keyof ProfileFormValues, value: string) => {
-      setFormValues((prev) => ({
-        ...prev,
-        [field]: value,
-      }));
-      setSaved(false);
-    },
-    [],
-  );
+const updateField = useCallback(
+  (field: keyof ProfileFormValues, value: string) => {
+    setFormValues((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+    setSaved(false);
+  },
+  [],
+);
 
   const hasChanges = useMemo(() => {
     return formValues.name !== originalValues.name;
