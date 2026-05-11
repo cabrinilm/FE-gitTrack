@@ -1,5 +1,3 @@
-// src/components/navigation/BottomNav.tsx
-
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/context/useAuth";
 import { cn } from "@/utils/cn";
