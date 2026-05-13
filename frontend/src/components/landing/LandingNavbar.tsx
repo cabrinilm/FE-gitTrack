@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Button } from "@/components/button/Button";
+import { Button } from "@/components/base-button/Button";
 import type { LandingNavLink } from "@/components/landing/types";
 
 const navLinks: LandingNavLink[] = [

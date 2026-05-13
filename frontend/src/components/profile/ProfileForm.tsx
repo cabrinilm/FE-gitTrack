@@ -1,4 +1,4 @@
-import { Button } from "@/components/button/Button";
+import { Button } from "@/components/base-button/Button";
 import { Input } from "@/components/ui/Input";
 import { FormField } from "@/components/ui/FormField";
 import { StatusMessage } from "@/components/ui/StatusMessage";

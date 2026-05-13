@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Button } from "@/components/button/Button";
+import { Button } from "@/components/base-button/Button";
 import { ChallengeCard } from "@/components/all-challenges/ChallengeCard";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { LoadingState } from "@/components/ui/LoadingState";
