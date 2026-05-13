@@ -1,0 +1,76 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@import "@fontsource-variable/geist";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+  /* Default light theme */
+  --color-background: #f8fafc;
+  --color-surface: #ffffff;
+  --color-surface-elevated: #f1f5f9;
+  --color-border: #e2e8f0;
+
+  /* Primary color */
+  --color-primary: #027fe9;
+  --color-primary-400: #2e1be6;
+  --color-primary-500: #1e08a8;
+  --color-primary-600: #150578;
+  --color-primary-700: #0f035a;
+
+  /* Secondary color */
+  --color-secondary: #22c55e;
+  --color-secondary-500: #22c55e;
+  --color-secondary-600: #16a34a;
+
+  /* Text colors */
+  --color-text-primary: #0f172a;
+  --color-text-secondary: #475569;
+  --color-text-muted: #64748b;
+
+  /* Status colors */
+  --color-success: #22c55e;
+  --color-error: #ef4444;
+  --color-warning: #f59e0b;
+}
+
+@layer base {
+  html,
+  body,
+  #root {
+    min-height: 100%;
+  }
+
+  body {
+    margin: 0;
+    background-color: var(--color-background);
+    color: var(--color-text-primary);
+    font-family: "Geist Variable", sans-serif;
+  }
+
+  * {
+    border-color: var(--color-border);
+  }
+
+  *:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+
+  .landing-theme {
+    --color-background: #f8fafc;
+    --color-surface: #ffffff;
+    --color-surface-elevated: #f1f5f9;
+    --color-border: #e2e8f0;
+
+    --color-text-primary: #0f172a;
+    --color-text-secondary: #475569;
+    --color-text-muted: #64748b;
+  }
+}
+
+/* Softer primary hover without needing a separate shade token */
+.hover\:bg-primary\/90:hover {
+  background-color: color-mix(in oklab, var(--color-primary) 90%, transparent);
+}
