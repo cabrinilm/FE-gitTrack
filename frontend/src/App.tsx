@@ -16,7 +16,7 @@ import { AuthProvider } from "@/context/AuthProvider";
 
 import { ProtectedRoute } from "@/components/guards/ProtectedRoute.tsx";
 import { AuthLayout } from "@/pages/auth/AuthLayout";
-import { ProtectedLayout } from "@/components/layout/layouts/ProtectedLayout.tsx";
+import { ProtectedLayout } from "@/components/layout/container/ProtectedLayout";
 
 import EditChallengePage from "@/pages/EditChallengePage";
 import { ProfilePage } from "@/pages/ProfilePage";
