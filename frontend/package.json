@@ -3,12 +3,12 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
- "scripts": {
-  "dev": "vite",
-  "build": "tsc -b && vite build",                       
-  "lint": "eslint .",
-  "preview": "vite preview"
-},
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
+  },
   "dependencies": {
     "@fontsource-variable/geist": "^5.2.8",
     "@supabase/supabase-js": "^2.95.3",
@@ -29,7 +29,7 @@
   "devDependencies": {
     "@eslint/js": "^9.39.1",
     "@tailwindcss/cli": "^4.1.18",
-    "@tailwindcss/vite": "^4.1.18",
+    "@tailwindcss/vite": "^4.3.0",
     "@types/node": "^24.10.1",
     "@types/react": "^19.2.5",
     "@types/react-dom": "^19.2.3",
