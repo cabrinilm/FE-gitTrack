@@ -5,7 +5,7 @@ import {
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "./Tooltip";
+} from "./Tooltip.tsx";
 
 type HeatmapDay = {
   date: string;
