@@ -46,11 +46,14 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   const recoverPassword = async (email: string): Promise<AuthResponse> => {
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: "http://localhost:5173/auth/reset-password",
-    });
-    return { user: null, session: null, error: error ?? null };
-  };
+  const siteUrl = import.meta.env.VITE_SITE_URL || "http://localhost:5173";
+
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: `${siteUrl}/auth/reset-password`,
+  });
+
+  return { user: null, session: null, error: error ?? null };
+};
 
   const resetPasswordWithToken = async (
     newPassword: string,
