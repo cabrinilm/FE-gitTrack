@@ -14,13 +14,13 @@ Instead of simple todo lists, GitTrack turns your daily actions into visual stre
 ## 🖼️ Preview
 
 ### 🌐 Landing Page
-![Landing Page](src/screenshots/landingpage.png)
+![Landing Page](frontend/src/screenshots/landingpage.png)
 
 ### 🏠 Dashboard
-![Dashboard](src/screenshots/homepage.png)
+![Dashboard](frontend/src/screenshots/homepage.png)
 
 ### 🔥 Heatmap View
-![Heatmap](src/screenshots/heatmap.png)
+![Heatmap](frontend/src/screenshots/heatmap.png)
 
 ## Why GitTrack?
 
