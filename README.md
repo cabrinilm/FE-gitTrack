@@ -7,13 +7,27 @@ GitTrack is a modern habit-tracking web application that helps you stay consiste
 Instead of simple todo lists, GitTrack turns your daily actions into visual streaks and long-term progress patterns.
 
 
+## 🌐 Live Demo
+
+**[Try GitTrack Now →](https://fe-git-track.vercel.app)**
+
+## 🖼️ Preview
+
+### 🌐 Landing Page
+![Landing Page](/screenshots/landingpage.png)
+
+### 🏠 Dashboard
+![Dashboard](/screenshots/homepage.png)
+
+### 🔥 Heatmap View
+![Heatmap](/screenshots/heatmap.png)
 
 ## Why GitTrack?
 
-Most habit trackers focus on **completing tasks**.  
-GitTrack focuses on **building consistency**.
+Most habit trackers focus on **task completion**.  
+GitTrack focuses on **consistency over time**.
 
-It helps you create structured challenges, track daily activities, and visualize your progress with individual heatmaps — turning small daily actions into clear patterns of long-term growth.
+It turns daily actions into visual progress through structured challenges, activity tracking, and heatmap-based feedback.
 
 ## ✨ Key Features
 
@@ -23,10 +37,6 @@ It helps you create structured challenges, track daily activities, and visualize
 - **Streak System** — Motivates daily engagement (resets only if you miss a full day).
 - **Visual Progress** — Transform daily effort into satisfying visual patterns.
 - **Secure & Private** — Full authentication and data isolation with Supabase.
-
-## 🌐 Live Demo
-
-**[Try GitTrack Now →](https://fe-git-track.vercel.app)**
 
 ## 🛠️ Tech Stack
 
